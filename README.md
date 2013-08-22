@@ -10,4 +10,4 @@ This project is expected to be completed by the end of the Fall Semester, Dec 20
 At that point in time, the project will be in working order and delivered to the sponsor
  for use.
  
-Sponsor:  Brent Yager (Solix inc.)
+Sponsor:  Brent Yager (Solvix inc.)
