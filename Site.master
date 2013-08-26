@@ -1,0 +1,138 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.master.cs" Inherits="MasterPage" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head id="Head1" runat="server">
+	<title>My Tracking</title>
+	<meta content="Microsoft Visual Studio.NET 7.0" name="GENERATOR"/>
+	<meta content="Visual C# 7.0" name="CODE_LANGUAGE"/>
+	<meta content="JavaScript" name="vs_defaultClientScript"/>
+	<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema"/>
+	<link rel="stylesheet" href="Styles/StyleSheetV3.css" type="text/css"/>
+	<link rel="stylesheet" href="Styles/Site.css" type="text/css"/>
+	<!-- Majority of page design comes from Intel Web Standards (http://it.intel.com/bqs/bops/Web/index.htm) -->
+    <style type="text/css">
+        Body {
+          font-family: "Helvetica";
+          background: #efefef;
+        }
+        .Sub_Header {
+          font-size: 100%;
+          font-style: italic;
+          color: #0860A8;
+        }
+    </style>
+
+    <!-- Below CSS taken from a public tutorial site and modified to fit the page -->
+    <style type="text/css">
+        img {
+          border: none;
+          } 
+        #tabsF {
+          float:left;
+          width:100%;
+          background:#efefef;
+          font-size:93%;
+          line-height:normal;
+	      /*border-bottom:1px solid #666;*/
+          }
+        #tabsF ul {
+	      margin:0;
+	      padding:10px 10px 0 50px;
+	      list-style:none;
+          }
+        #tabsF li {
+          display:inline;
+          margin:0;
+          padding:0;
+          }
+        #tabsF a {
+          float:left;
+          background:url("../images/tableftF.gif") no-repeat left top;
+          margin:0;
+          padding:0 0 0 4px;
+          text-decoration:none;
+          }
+        #tabsF a span {
+          float:left;
+          display:block;
+          background:url("../images/tabrightF.gif") no-repeat right top;
+          padding:5px 15px 4px 6px;
+          color:#666;
+          }
+        /* Commented Backslash Hack hides rule from IE5-Mac \*/
+        #tabsF a span {float:none;}
+        /* End IE5-Mac hack */
+        #tabsF a:hover span {
+          color:#FFF;
+          }
+        #tabsF a:hover {
+          background-position:0% -42px;
+          }
+        #tabsF a:hover span {
+          background-position:100% -42px;
+          }
+    </style>
+</head>
+
+<body>
+
+<form id="main_form" runat="server">
+
+<div id="topline">
+
+    <div id="navigation">
+        <ul class="top-level">
+            <li><a href="Home.aspx">My Tracking Tool</a>
+                <ul class="sub-level">
+                    <li><a href="MyReport.aspx">My Reports</a></li>
+                    <li><a href="ViewWip.aspx">View Tasks</a>
+                        <ul class="sub-level">
+                            <li><a href="ViewWip.aspx">Wip Tasks</a></li>
+                            <li><a href="ViewReady.aspx">Ready Tasks</a></li>
+                            <li><a href="ViewUpcoming.aspx">Upcoming Tasks</a></li>
+                            <li><a href="ViewComplete.aspx">Completed Tasks</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div style="float:right; padding-right:10px; color:White;">
+        <asp:Panel runat="server" ID="pnl_LoggedIn" Visible="false">Logged in as: <asp:Label runat="server" ID="lbl_userName" /><br /><asp:LinkButton runat="server" ID="btn_Logout" Text="Logout" OnClick="btn_Logout_OnClick" /></asp:Panel>
+        <asp:Panel runat="server" ID="pnl_LoggedOut" Visible="true"><asp:LinkButton runat="server" ID="btn_Login" PostBackUrl="~/Login.aspx" Text="Click to Login" /></asp:Panel>
+    </div>
+
+</div>
+<div id="leftline"></div>
+
+<div align="left" style="padding:5px;">
+
+<asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true" />
+<!-- BEGIN CONTENT TABLE -->
+<!-- CONTENT GOES HERE -->
+<asp:UpdatePanel ID="UpdatePanel1" runat="server">
+    <ContentTemplate>
+        <asp:contentplaceholder id="ContentPlaceHolder1" runat="server" />
+    </ContentTemplate>
+</asp:UpdatePanel>
+<!-- END CONTENT -->
+</div>
+
+<div style="padding:5px;">
+<center>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td width="100%" nowrap="nowrap" align="center">
+                <asp:Label ID="templateLastUpdated" Font-Size="9px" ForeColor="black" runat="server" /><br />
+            </td>
+        </tr>
+    </table>
+</center>
+</div>
+
+</form>
+
+</body>
+</html>
