@@ -75,7 +75,7 @@ public static class TTDB
     /// <param name="ex"></param>
     private static void mailException(Exception ex)
     {
-        /*MailMessage msg = new MailMessage();
+        MailMessage msg = new MailMessage();
         msg.IsBodyHtml = true;
         msg.From = new MailAddress("Exception@noreply.com");
         msg.To.Add(new MailAddress("john.couch@intel.com"));
@@ -83,7 +83,7 @@ public static class TTDB
         msg.Body = "<br /><br /><b>Shorthand:</b> " + ex.Message + "<br /><br /><b>Trace:</b>  " + ex.StackTrace + "<br /><br />" + ex.InnerException;
         SmtpClient client = new SmtpClient();
         //client.Send(msg);
-        return;*/
+        return;
     }
 
     public static void mailTo(string email, string Subject, string Body)
