@@ -1,0 +1,39 @@
+﻿.fullContainer
+{
+    margin:0px;
+    border: 1px solid #666; 
+    padding:20px; 
+    background:#FF7023;
+    -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;
+	-webkit-box-shadow: 0 5px 5px rgba(0,0,0,.5);
+	-moz-box-shadow: 0 5px 5px rgba(0,0,0,0.5);
+	box-shadow: 0 5px 5px rgba(0,0,0,0.5);
+}
+
+body
+{
+    background-color: #8294CC;
+}
+
+body > header > h1
+{
+    background-color: #1A3A99;
+    font-size: 2em;
+    color: #CC664C;
+    padding: 5px;
+}
+body > section
+{
+    padding: 4px 4px 8px 4px;
+}
+body > section > section > h2
+{
+    font-size: 1.25em;
+    color: #1A3A99;
+}
+
+a
+{
+    text-decoration:none;
+    color: #BCF0FF;
+}
