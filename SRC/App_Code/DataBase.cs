@@ -129,7 +129,7 @@ public class DataBase
         }
     }
 
-    public  bool Register_User(string UserName, string DisplayName, string PW, string email, string IP)
+    public  bool Register_User(string UserName, string DisplayName, string PW, string IP)
     {
         SqlCommand cmd = new SqlCommand();
         cmd.CommandText = "SELECT * FROM TrackingTool_Users WHERE [ownerAlias] = @UserName";
@@ -149,7 +149,7 @@ public class DataBase
             cmd.Parameters.AddWithValue("@IP", IP);
             cmd.Parameters.AddWithValue("@Active", 1);
             cmd.Parameters.AddWithValue("@userLevel", 0);
-            cmd.Parameters.AddWithValue("@Email", email);
+            cmd.Parameters.AddWithValue("@Email", "");
             cmd.Parameters.AddWithValue("@Preferred_Name", "");
             cmd.Parameters.AddWithValue("@DisplayName", DisplayName);
             cmd.Parameters.AddWithValue("@DisplayImage", "");
@@ -168,16 +168,6 @@ public class DataBase
         {
             return false;
         }
-    }
-
-    public DataTable getUserData(int userID)
-    {
-        SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM viewTrackingTool_Users WHERE [ID] = @userID";
-        cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@userID", userID);
-
-        return Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
     }
 
 
@@ -914,6 +904,28 @@ public class DataBase
         Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
     }
 
+    public void updateProjectPercentComplete(int perComplete, int projectID)
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "UPDATE [TrackingTool_Projects] SET [percentComplete] = @perComplete WHERE [ID] = @ID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@perComplete", perComplete);
+        cmd.Parameters.AddWithValue("@ID", projectID);
+
+        Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+    }
+
+    public int getProjectPercentComplete(int projectID)
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "SELECT percentComplete FROM [TrackingTool_Projects] WHERE [ID] = @ID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@ID", projectID);
+
+        DataTable DT = Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+        return int.Parse(DT.Rows[0]["percentComplete"].ToString());
+    }
+
     public void updateTaskBaseInfo(int taskID, string Name, string Description)
     {
         SqlCommand cmd = new SqlCommand();
@@ -940,17 +952,7 @@ public class DataBase
 
     public void UpdateMilestoneCompleteRate(int milestoneID)
     {
-        DataTable DT = getFeatures(milestoneID);
-
-        decimal total = DT.Rows.Count;
-        decimal acc = 0;
-        foreach (DataRow DR in DT.Rows)
-        {
-            if (DR["Completed"].ToString() == "1")
-                acc++;
-        }
-
-        updateMilestone(milestoneID, (int)((acc / total) * 100));
+        
     }
 
     public void deleteFeature(int featureID)

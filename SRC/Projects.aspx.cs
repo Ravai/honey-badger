@@ -40,7 +40,8 @@ public partial class Projects : System.Web.UI.Page
 
     private void fillWipTables()
     {
-        DataTable DT = theCake.getWipTasks(theCake.getActiveUserName(Request.UserHostAddress));
+        string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
+        DataTable DT = theCake.getWipTasks(theCake.getActiveUserName(IP));
         string TableString = "";
 
         if (DT.Rows.Count > 0)
@@ -65,7 +66,8 @@ public partial class Projects : System.Web.UI.Page
 
     private void fillReadyTables()
     {
-        DataTable DT = theCake.getReadyTasks(theCake.getActiveUserName(Request.UserHostAddress));
+        string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
+        DataTable DT = theCake.getReadyTasks(theCake.getActiveUserName(IP));
 
         if (DT.Rows.Count > 0)
         {

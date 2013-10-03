@@ -1,83 +1,78 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site2.master" AutoEventWireup="true" CodeFile="ViewTask.aspx.cs" Inherits="ViewTask" %>
+﻿<%@ Page Title="" Debug="true" Language="C#" MasterPageFile="~/Site2.master" AutoEventWireup="true" CodeFile="ViewTask.aspx.cs" Inherits="ViewTask" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
-    <div>
-        <a href="Home.aspx">Return to Main</a>
-    </div>
-
-    <div class="fullContainer" style="background-color:#303030;">
-        <div style="border: 2px ridge black; padding:10px; background-color:#808080; color:White;" >
+        
         <asp:Panel runat="server" ID="pnl_MainHeader">
-        <asp:Label runat="server" style="float:right; font-size:xx-large;" ID="lbl_totalPercentComplete" Visible="false" />
-        <asp:Label runat="server" CssClass="viewTask_Name" ID="lbl_TaskName" /><br />
-        <asp:Label runat="server" CssClass="viewTask_Description" ID="lbl_Description" /><br />
-        
-        </asp:Panel>
-        <asp:Panel runat="server" ID="pnl_Mainheader_Edit" Visible="false">
-        <asp:TextBox runat="server" ID="txt_Edit_TaskName" Width="400px" /><br />
-        <asp:TextBox runat="server" ID="txt_Edit_TaskDescription" Width="700px" TextMode="MultiLine" Rows="3" /><br />
-        <asp:Button runat="server" ID="btn_Update_NameDescription" Text="Update" OnClick="btn_Update_NameDescription_OnClick" /><br />
-        </asp:Panel>
-        </div>
-        <br />
-        
-        <table>
-        
-        <tr>
-        
-            <td width="300px" valign="top">
-            
-                <asp:Panel ID="pnl_SpecialOptions" runat="server" GroupingText="Special Options" ForeColor="#33FF66">
-                <asp:Panel runat="server" ID="btn_markDone"><asp:LinkButton runat="server" OnClick="btn_markDone_OnClick" ForeColor="#33FF66" Font-Bold="true" Font-Size="Medium" Text="Mark Task as Done" /><br /></asp:Panel>
-                <asp:Panel runat="server" ID="btn_markWip" Visible="false"><asp:LinkButton runat="server" OnClick="btn_markWip_OnClick" ForeColor="#33FF66" Font-Bold="true" Font-Size="Medium" Text="Re-Open Task" /><br /></asp:Panel>
-                <asp:Panel runat="server" ID="btn_startTask" Visible="false"><asp:LinkButton runat="server" OnClick="btn_startTask_OnClick" ForeColor="#33FF66" Font-Bold="true" Font-Size="Medium" Text="Start Task" /><br /></asp:Panel>
-                <asp:Panel runat="server" ID="btn_UpgradeSize" Visible="false"><asp:LinkButton runat="server" OnClick="btn_UpgradeSize_OnClick" ForeColor="#33FF66" Font-Bold="true" Font-Size="Medium" Text="Make Project a Large Project" /><br /></asp:Panel>
-                </asp:Panel>
-            
-            </td>
+        <h1><asp:Label runat="server" ID="lbl_TaskName" /></h1>
+        <asp:Label runat="server" ID="lbl_Description" />
 
-            <td width="300px" valign="top">
-                
-                <asp:Panel runat="server" ID="Panel2" GroupingText="Project TimeLine Expectations" ForeColor="#33FF66">
+        <asp:Literal runat="server" ID="progress_Header" />
+        <%--<asp:Label runat="server" style="float:right; font-size:xx-large;" ID="lbl_totalPercentComplete" Visible="false" />--%>
+        
+        </asp:Panel>
+        
+        
+
+        
+        
+        <hr />
+    <div class="widget">
+        <ul id="myTab" class="nav nav-tabs three-tabs fancy">
+            <li class="active"><a href="#Timelines" data-toggle="tab">Project Timelines</a></li>
+	        <li><a href="#SpecialOptions" data-toggle="tab">Special Operations</a></li>
+            <li><a href="#DiscussionBoard" data-toggle="tab">Discussion</a></li>
+        </ul>
+        <div class="tab-content">
+	        <div class="tab-pane fade in active" id="Timelines">
+                <asp:Panel runat="server" ID="Panel2">
                 <table>
                 
-                <tr><td><div style="font-weight:bold;">Expected Start:</div></td><td><asp:Label runat="server" ID="lbl_ExpectedStart" ForeColor="White" /></td></tr>
-                <tr><td><div style="font-weight:bold;">Expected Completion:</div></td><td><asp:Label runat="server" ID="lbl_ExpectedStop" ForeColor="White" /></td></tr>
+                <tr><td><div style="font-weight:bold;">Expected Start:</div></td><td><asp:Label runat="server" ID="lbl_ExpectedStart" /></td></tr>
+                <tr><td><div style="font-weight:bold;">Expected Completion:</div></td><td><asp:Label runat="server" ID="lbl_ExpectedStop" /></td></tr>
                 <tr><td colspan="2"></td></tr>
-                <tr><td><div style="font-weight:bold;">Actual Start:</div></td><td><asp:Label runat="server" ID="lbl_ActualStart" ForeColor="White" /></td></tr>
-                <tr><td><div style="font-weight:bold;">Actual Completion:</div></td><td><asp:Label runat="server" ID="lbl_ActualStop" ForeColor="White" /></td></tr>
+                <tr><td><div style="font-weight:bold;">Actual Start:</div></td><td><asp:Label runat="server" ID="lbl_ActualStart" /></td></tr>
+                <tr><td><div style="font-weight:bold;">Actual Completion:</div></td><td><asp:Label runat="server" ID="lbl_ActualStop" /></td></tr>
 
                 </table>
                 </asp:Panel>
-            
-            </td>
+            </div>
+            <div class="tab-pane fade" id="SpecialOptions">
+                <asp:Panel ID="pnl_SpecialOptions" runat="server">
+                <asp:Panel runat="server" ID="btn_markDone"><asp:LinkButton ID="LinkButton1" runat="server" OnClick="btn_markDone_OnClick" Font-Bold="true" Font-Size="Medium" Text="Mark Task as Done" /><br /></asp:Panel>
+                <asp:Panel runat="server" ID="btn_markWip" Visible="false"><asp:LinkButton ID="LinkButton2" runat="server" OnClick="btn_markWip_OnClick" Font-Bold="true" Font-Size="Medium" Text="Re-Open Task" /><br /></asp:Panel>
+                <asp:Panel runat="server" ID="btn_startTask" Visible="false"><asp:LinkButton ID="LinkButton3" runat="server" OnClick="btn_startTask_OnClick" Font-Bold="true" Font-Size="Medium" Text="Start Task" /><br /></asp:Panel>
+                <asp:Panel runat="server" ID="btn_UpgradeSize" Visible="false"><asp:LinkButton ID="LinkButton4" runat="server" OnClick="btn_UpgradeSize_OnClick" Font-Bold="true" Font-Size="Medium" Text="Make Project a Large Project" /><br /></asp:Panel>
+                </asp:Panel>
 
-            <td width="300px" valign="top">
-            
-                <asp:Panel runat="server" ID="pnl_EditOperations" GroupingText="Edit Operations" ForeColor="#33FF66">
-                <asp:LinkButton runat="server" ID="btn_Edit_NameDescription" ForeColor="#33FF66" Font-Bold="true" Font-Size="Small" Text="Edit Project Name/Description" OnClick="btn_Edit_NameDescription_OnClick" /><br />
-                <asp:LinkButton runat="server" ID="btn_Edit_Sharing" ForeColor="#33FF66" Font-Bold="true" Font-Size="Small" Text="Edit Project Sharing" OnClick="btn_Edit_Sharing_OnClick" Enabled="false" />
+                <asp:Panel runat="server" ID="pnl_EditOperations">
+                <a href="#UpdateProjectName"><h3>Update Project Name and Description</h3></a>
+                <asp:LinkButton runat="server" ID="btn_Edit_NameDescription" Font-Bold="true" Font-Size="Small" Text="Edit Project Name/Description" OnClick="btn_Edit_NameDescription_OnClick" /><br />
+                <asp:LinkButton runat="server" ID="btn_Edit_Sharing" Font-Bold="true" Font-Size="Small" Text="Edit Project Sharing" OnClick="btn_Edit_Sharing_OnClick" Enabled="false" />
                 
                 </asp:Panel>
-            
-            </td>
-        
-        </tr>
-        
-        </table>
+            </div>
+            <div class="tab-pane fade" id="DiscussionBoard">
+                <h2><asp:LinkButton runat="server" ID="lnk_GoToDiscussion" Text="Go to Discussion Boards!" /></h2>
+            </div>
+        </div>
         
     </div>
 
-    <br />
+    <hr />
 
-    <asp:Panel runat="server" ID="pnl_Milestone" Visible="false">
-    <div class="fullContainer">
-        <div style="font-size:medium;" >Milestones and their sub-Features!</div>
-        <i>Highest weighted milestones will be on the left.</i><br /><br />
-        <asp:Panel runat="server" ID="pnl_MileStones" /><br /><br /><br />
-        <asp:Button runat="server" ID="btn_AddMilestone" Text="Add Milestone" OnClick="btn_AddMilestone_OnClick" />
-        <asp:Panel runat="server" ID="pnl_AddMilestone" Visible="false">
+    <div class="row-fluid">
+        <h2>Project Milestones and Objectives!</h2>
+
+        <asp:Literal runat="server" ID="lit_Milestones" />
+        
+        <a href="#addMilestone"><h3>Add a New Milestone</h3></a>
+    </div>
+
+
+    <div id="addMilestone" class="modalDialog">
+	    <div>
+		    <a href="#close" title="Close" class="close">X</a>
             Name:<br />
             <asp:TextBox runat="server" ID="txt_Milestone_Name" Width="300px" /><br />
             Description:<br />
@@ -91,12 +86,10 @@
                 <asp:ListItem Text="5" Value="5" />
             </asp:DropDownList>
             <asp:Button runat="server" ID="btn_AddMilestone_Final" OnClick="btn_AddMilestone_Final_OnClick" Text="Add Milestone" />
-            <asp:Button runat="server" ID="btn_UpdateMilestone" OnClick="btn_UpdateMilestone_OnClick" Text="Update Milestone" Visible="false" />
-        </asp:Panel>
+            
+        </div>
     </div>
-    
     <br />
-    </asp:Panel>
 
     <asp:Panel runat="server" ID="pnl_Comments" Visible="false">
     <asp:Panel runat="server" ID="AddComments">
@@ -116,17 +109,58 @@
     <br />
     </asp:Panel>
 
-    <asp:Panel runat="server" ID="pnl_Boards" Visible="false">
-    <div class="fullContainer" style="background-color:#303030;">
-        <div style="border: 2px ridge black; padding:10px; background-color:#808080; color:White;" >
-        <h2><asp:LinkButton runat="server" ID="lnk_GoToDiscussion" ForeColor="White" Text="Go to Discussion Boards!" /></h2>
-        <%--<div style="font-size:X-large; font-variant:small-caps; font-weight:bold;">Discussion Boards</div><br />
-        <i>Select a link below to detail a project or a milestone</i>--%>
-        </div><br />
-        <%--<asp:Table runat="server" ID="tbl_Boards" Width="100%" />--%>
+    <div id="UpdateProjectName" class="modalDialog">
+	    <div>
+		    <a href="#close" title="Close" class="close">X</a>
+            <div class="modalTitles">Update Project Name and Description</div>
+            <strong>Name:</strong> <asp:TextBox runat="server" ID="txt_Edit_TaskName" Width="100%" /><br />
+            <strong>Description</strong><asp:TextBox runat="server" ID="txt_Edit_TaskDescription" Width="100%" TextMode="MultiLine" Rows="3" /><br />
+            <asp:Button runat="server" ID="btn_Update_NameDescription" Text="Update" OnClick="btn_Update_NameDescription_OnClick" /><br />
+        </div>
     </div>
-    </asp:Panel>
+
+    <div id="addChildFeature" class="modalDialog">
+	    <div>
+		    <a href="#close" title="Close" class="close">X</a>
+            <div class="modalTitles">For Adding a Sub-Objective</div>
+            <hr />
+            <strong>Name: </strong><asp:TextBox runat="server" ID="txt_addChildFeature_Name" placeholder="Enter name..." /><br />
+            <strong>Description: </strong><asp:TextBox runat="server" ID="txt_addChildFeature_Description" placeholder="Enter description..." /><br />
+            <strong>Weight: </strong><asp:DropDownList runat="server" ID="ddl_addChildFeature_Weight" /><br />
+            <br />
+            <asp:Button runat="server" ID="btn_addChildFeature" OnClick="btn_addChildFeature_OnClick" Text="Add Child Feature" />
+            <asp:Button runat="server" PostBackUrl="#" Text="Cancel" />
+        </div>
+    </div>
     
+    <div id="removeChildFeature" class="modalDialog">
+	    <div>
+		    <a href="#" title="Close" class="close">X</a>
+            <div class="modalTitles">For Removing a Child Feature</div>
+            <hr />
+            <strong>Name: </strong><asp:Label runat="server" ID="lbl_remChildFeature_Name" /><br />
+            <strong>Description: </strong><asp:Label runat="server" ID="lbl_remChildFeature_Description" /><br />
+            <strong>% Complete: </strong><asp:Label runat="server" ID="lbl_remChildFeature_PercentComplete" /><br />
+            <br />
+            Are you sure you want to Delete this Objective?<br />
+            <asp:Button ID="btnRemFeature" runat="server" OnClick="btnRem_OnClick" Text="Yes" />
+            <asp:Button runat="server" Text="No" PostBackUrl="#" />
+        </div>
+    </div>
+
+    <div id="editChildFeature" class="modalDialog">
+	    <div>
+		    <a href="#close" title="Close" class="close">X</a>
+            <div class="modalTitles">For Editing a Child Feature</div>
+            <hr />
+            <strong>Name: </strong><asp:TextBox runat="server" ID="txt_editChildFeature_Name" /><br />
+            <strong>Description: </strong><asp:TextBox runat="server" ID="txt_editChildFeature_Description" /><br />
+            <strong>Weight: </strong><asp:DropDownList runat="server" ID="ddl_editChildFeature_Weight" /><br />
+            <strong>% Complete: </strong><asp:DropDownList runat="server" ID="ddl_editChildFeature_PercentComplete" /><br />
+            <br />
+            <asp:Button ID="btnEditFeature" runat="server" OnClick="btn_EditChildFeature_OnClick" Text="Update" />
+            <asp:Button runat="server" Text="Cancel" PostBackUrl="#" />
+        </div>
+    </div>
 
 </asp:Content>
-

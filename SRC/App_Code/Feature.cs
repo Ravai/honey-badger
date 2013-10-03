@@ -28,11 +28,13 @@ public class Feature
 
     private bool isMilestone;
     private bool isFeature;
+    public bool hasChildren;
     public List<Feature> myChildren;
 
 	public Feature(int ID)
 	{
         myChildren = new List<Feature>();
+        hasChildren = false;
         
         DataTable DT = getCurrent(ID);
         if (DT.Rows.Count == 1)
@@ -64,7 +66,7 @@ public class Feature
                 setParentID(int.Parse(DR["parentID"].ToString()));
             else
                 setParentID(-1);
-            setPercentComplete(0);
+            setPercentComplete(int.Parse(DR["percentComplete"].ToString()));
             setProjectID(int.Parse(DR["projectID"].ToString()));
             if (DR["updatedTimestamp"].ToString() != "")
                 setUpdatedTimestamp(DateTime.Parse(DR["updatedTimestamp"].ToString()));
@@ -78,6 +80,7 @@ public class Feature
             {
                 myChildren.Add(new Feature(int.Parse(child["ID"].ToString())));
             }
+            if (myChildren.Count > 0) hasChildren = true;
         }
         else
         {
@@ -274,7 +277,7 @@ public class Feature
 
         TTDB.TTQuery(cmd);
 
-      //  UpdateMilestoneCompleteRate(milestoneID);
+        updateAllPercentCompletes();
     }
 
     static public int addNewMilestone(int projectID, string Name, string Description, int Weight, int boardID)
@@ -310,6 +313,9 @@ public class Feature
         cmd.Parameters.AddWithValue("@boardID", boardID);
         DataTable DT = TTDB.TTQuery(cmd);
 
+        Feature ftr = new Feature(parentID);
+        ftr.updateAllPercentCompletes();
+
         if (DT.Rows.Count > 0)
         {
             return Int32.Parse(DT.Rows[0]["ID"].ToString());
@@ -320,25 +326,68 @@ public class Feature
         }
     }
 
-    public void updatePercentComplete(int perComplete)
+    public DataTable updatePercentComplete(int perComplete)
     {
         setPercentComplete(perComplete);
 
         SqlCommand cmd = new SqlCommand();
-        if (perComplete == 100)
-        {
-            setFlagCompleted(true);
-            cmd.CommandText = "UPDATE [viewTrackingTool_Features] SET [percentComplete] = @perComplete, [flagCompleted] = 1, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
-        }
-        else
-        {
-            cmd.CommandText = "UPDATE [viewTrackingTool_Features] SET [percentComplete] = @perComplete, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
-        }
+        cmd.CommandText = "UPDATE [TrackingTool_Features] SET [percentComplete] = @perComplete, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
         cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@perComplete", getPercentComplete());
+        cmd.Parameters.AddWithValue("@perComplete", perComplete);
         cmd.Parameters.AddWithValue("@ID", getID());
 
-        TTDB.TTQuery(cmd);
+        DataTable DT = TTDB.TTQuery(cmd);
+        if (DT == null)
+        {
+            DT = new DataTable();
+        }
+        updateAllPercentCompletes();
+        return DT;
+    }
+
+    public void updateAllPercentCompletes()
+    {
+        if (getParentID() != -1)
+        {
+            Feature parent = new Feature(getParentID());
+            decimal total = 0;
+            decimal counter = 0;
+            
+            if (parent.myChildren.Count > 0)
+            {
+                foreach (Feature child in parent.myChildren)
+                {
+                    counter++;
+                    total += child.getPercentComplete();
+                }
+                parent.updatePercentComplete((int)(total / counter));
+            }
+            parent.updateAllPercentCompletes();
+        }
+    }
+
+    public DataTable updateFeatureDetails(string name, string description, int weight, int percentComplete)
+    {
+        setFeatureName(name);
+        setFeatureDescription(description);
+        setWeight(weight);
+
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "UPDATE [TrackingTool_Features] SET [featureName] = @featName, [featureDescription] = @featDesc, [weight] = @weight, [updatedTimestamp] = CURRENT_TIMESTAMP, percentComplete = @percentComplete WHERE [ID] = @ID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@featName", getFeatureName());
+        cmd.Parameters.AddWithValue("@featDesc", getFeatureDescription());
+        cmd.Parameters.AddWithValue("@weight", getWeight());
+        cmd.Parameters.AddWithValue("@ID", getID());
+        cmd.Parameters.AddWithValue("@percentComplete", percentComplete);
+
+        DataTable DT = TTDB.TTQuery(cmd);
+        if (DT == null)
+        {
+            DT = new DataTable();
+        }
+        updateAllPercentCompletes();
+        return DT;
     }
 
     public DataTable updateFeatureDetails(string name, string description, int weight)
@@ -348,7 +397,7 @@ public class Feature
         setWeight(weight);
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "UPDATE [viewTrackingTool_Features] SET [featureName] = @featName, [featureDescription] = @featDesc, [weight] = @weight, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
+        cmd.CommandText = "UPDATE [TrackingTool_Features] SET [featureName] = @featName, [featureDescription] = @featDesc, [weight] = @weight, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@featName", getFeatureName());
         cmd.Parameters.AddWithValue("@featDesc", getFeatureDescription());
@@ -368,7 +417,7 @@ public class Feature
         setFeatureName(name);
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "UPDATE [viewTrackingTool_Features] SET [featureName] = @featName, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
+        cmd.CommandText = "UPDATE [TrackingTool_Features] SET [featureName] = @featName, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@featName", getFeatureName());
         cmd.Parameters.AddWithValue("@ID", getID());
@@ -386,7 +435,7 @@ public class Feature
         setFeatureDescription(desc);
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "UPDATE [viewTrackingTool_Features] SET [featureDescription] = @featDesc, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
+        cmd.CommandText = "UPDATE [TrackingTool_Features] SET [featureDescription] = @featDesc, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@featDesc", getFeatureDescription());
         cmd.Parameters.AddWithValue("@ID", getID());
@@ -404,7 +453,7 @@ public class Feature
         setWeight(weight);
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "UPDATE [viewTrackingTool_Features] SET [weight] = @weight, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
+        cmd.CommandText = "UPDATE [TrackingTool_Features] SET [weight] = @weight, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@weight", getWeight());
         cmd.Parameters.AddWithValue("@ID", getID());
@@ -424,11 +473,11 @@ public class Feature
         SqlCommand cmd = new SqlCommand();
         if (completed)
         {
-            cmd.CommandText = "UPDATE [viewTrackingTool_Features] SET [flagCompleted] = @flagCompleted, [updatedTimestamp] = CURRENT_TIMESTAMP, [completedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
+            cmd.CommandText = "UPDATE [TrackingTool_Features] SET [flagCompleted] = @flagCompleted, [updatedTimestamp] = CURRENT_TIMESTAMP, [completedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
         }
         else
         {
-            cmd.CommandText = "UPDATE [viewTrackingTool_Features] SET [flagCompleted] = @flagCompleted, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
+            cmd.CommandText = "UPDATE [TrackingTool_Features] SET [flagCompleted] = @flagCompleted, [updatedTimestamp] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
         }
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@flagCompleted", getFlagCompleted());

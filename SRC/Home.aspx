@@ -12,10 +12,10 @@
     
     <div class="widget">
         <ul id="myTab" class="nav nav-tabs three-tabs fancy">
-	        <li class="active"><a href="#Progress" data-toggle="tab">Tasks in Progress</a></li>
-	        <li><a href="#Ready" data-toggle="tab">Ready Tasks</a></li>
+	        <li class="active"><a href="#Progress" data-toggle="tab">Tasks in Progress(<asp:Literal runat="server" ID="lit_totInProgress" />)</a></li>
+	        <li><a href="#Ready" data-toggle="tab">Ready Tasks(<asp:Literal runat="server" ID="lit_totReady" />)</a></li>
 	        <li class="dropdown">
-		        <a href="#Upcoming" data-toggle="tab">Upcoming Tasks</a>
+		        <a href="#Upcoming" data-toggle="tab">Upcoming Tasks(<asp:Literal runat="server" ID="lit_totUpcoming" />)</a>
 	        </li>
         </ul>
         <div class="tab-content">
@@ -122,87 +122,89 @@
         </table>
     </asp:Panel>
 
+    <a href="#openModal"><h3>Do you want to add a new Project?</h3></a>
 
-    <div class="fullContainer">
+    <div id="openModal" class="modalDialog">
+	    <div>
+		    <a href="#close" title="Close" class="close">X</a>
+		    
 
-    <asp:Panel runat="server" ID="pnl_AddTask1">
-        <asp:LinkButton runat="server" ID="lnkbtn_ShowAddTask" Text="[+] Do you want to add a new task/project?" CssClass="ShowAdd_Button" OnClick="lnkbtn_ShowAddTask_OnClick" />
-    </asp:Panel>
-    <asp:Panel runat="server" ID="pnl_AddTask2" Visible="false">
-        <div style="font-size:large; font-variant:small-caps; font-weight:bold; text-decoration:underline;">Add New Task</div><br />
-        <div style="font-size:medium; font-variant:small-caps; font-weight:bold;">Name: <i>(100 characters)</i></div>
-        <asp:TextBox runat="server" ID="txt_addNew_Task_Name" Width="200px" /><asp:Label runat="server" ID="lbl_NameError" Text="*" Font-Size="Medium" ForeColor="Red" Visible="false" /><br />
-        <div style="font-size:medium; font-variant:small-caps; font-weight:bold;">Description: <i>(2000 characters)</i></div>
-        <asp:TextBox runat="server" ID="txt_addNew_Task_Description" Width="400px" TextMode="MultiLine" Rows="4" /><asp:Label runat="server" ID="lbl_DescError" Text="*" Font-Size="Medium" ForeColor="Red" Visible="false" /><br />
+                    <div style="font-size:large; font-variant:small-caps; font-weight:bold; text-decoration:underline;">Add New Task</div><br />
+                    <div style="font-size:medium; font-variant:small-caps; font-weight:bold;">Name: <i>(100 characters)</i></div>
+                    <asp:TextBox runat="server" ID="txt_addNew_Task_Name" Width="200px" /><asp:Label runat="server" ID="lbl_NameError" Text="*" Font-Size="Medium" ForeColor="Red" Visible="false" /><br />
+                    <div style="font-size:medium; font-variant:small-caps; font-weight:bold;">Description: <i>(2000 characters)</i></div>
+                    <asp:TextBox runat="server" ID="txt_addNew_Task_Description" Width="400px" TextMode="MultiLine" Rows="4" /><asp:Label runat="server" ID="lbl_DescError" Text="*" Font-Size="Medium" ForeColor="Red" Visible="false" /><br />
         
-        <table>
-        <tr>
-            <td align="center"><div style="font-size:medium; font-variant:small-caps; font-weight:bold;">Expected Start</div></td>
-            <td align="center"><div style="font-size:medium; font-variant:small-caps; font-weight:bold;">Expected Stop</div></td>
-        </tr>
-        <tr>
-            <td align="center">
-                <asp:Calendar ID="Calendar_ExpectedStart"   
-                    runat="server"   
-                    DayNameFormat="FirstLetter"  
-                    Font-Names="Arial"   
-                    Font-Size="11px"   
-                    NextMonthText="»"   
-                    PrevMonthText="«"  
-                    SelectMonthText="»"   
-                    SelectWeekText="›"  
-                    CssClass="myCalendar"  
-                    BorderStyle="None"   
-                    CellPadding="1">  
+                    <table>
+                    <tr>
+                        <td align="center"><div style="font-size:medium; font-variant:small-caps; font-weight:bold;">Expected Start</div></td>
+                        <td align="center"><div style="font-size:medium; font-variant:small-caps; font-weight:bold;">Expected Stop</div></td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <asp:Calendar ID="Calendar_ExpectedStart"   
+                                runat="server"   
+                                DayNameFormat="FirstLetter"  
+                                Font-Names="Arial"   
+                                Font-Size="11px"   
+                                NextMonthText="»"   
+                                PrevMonthText="«"  
+                                SelectMonthText="»"   
+                                SelectWeekText="›"  
+                                CssClass="myCalendar"  
+                                BorderStyle="None"   
+                                CellPadding="1">  
   
-                    <OtherMonthDayStyle ForeColor="Gray" />  
+                                <OtherMonthDayStyle ForeColor="Gray" />  
   
-                    <DayStyle CssClass="myCalendarDay" />  
+                                <DayStyle CssClass="myCalendarDay" />  
   
-                    <SelectedDayStyle Font-Bold="True" Font-Size="12px" />  
+                                <SelectedDayStyle Font-Bold="True" Font-Size="12px" />  
   
-                    <SelectorStyle CssClass="myCalendarSelector" />  
+                                <SelectorStyle CssClass="myCalendarSelector" />  
   
-                    <NextPrevStyle CssClass="myCalendarNextPrev" />  
+                                <NextPrevStyle CssClass="myCalendarNextPrev" />  
   
-                    <TitleStyle CssClass="myCalendarTitle" />  
-                </asp:Calendar>
-            </td>
-            <td align="center">
-                <asp:Calendar ID="Calendar_ExpectedStop"   
-                    runat="server"   
-                    DayNameFormat="FirstLetter"  
-                    Font-Names="Arial"   
-                    Font-Size="11px"   
-                    NextMonthText="»"   
-                    PrevMonthText="«"  
-                    SelectMonthText="»"   
-                    SelectWeekText="›"  
-                    CssClass="myCalendar"  
-                    BorderStyle="None"   
-                    CellPadding="1">  
+                                <TitleStyle CssClass="myCalendarTitle" />  
+                            </asp:Calendar>
+                        </td>
+                        <td align="center">
+                            <asp:Calendar ID="Calendar_ExpectedStop"   
+                                runat="server"   
+                                DayNameFormat="FirstLetter"  
+                                Font-Names="Arial"   
+                                Font-Size="11px"   
+                                NextMonthText="»"   
+                                PrevMonthText="«"  
+                                SelectMonthText="»"   
+                                SelectWeekText="›"  
+                                CssClass="myCalendar"  
+                                BorderStyle="None"   
+                                CellPadding="1">  
   
-                    <OtherMonthDayStyle ForeColor="Gray" />  
+                                <OtherMonthDayStyle ForeColor="Gray" />  
   
-                    <DayStyle CssClass="myCalendarDay" />  
+                                <DayStyle CssClass="myCalendarDay" />  
   
-                    <SelectedDayStyle Font-Bold="True" Font-Size="12px" />  
+                                <SelectedDayStyle Font-Bold="True" Font-Size="12px" />  
   
-                    <SelectorStyle CssClass="myCalendarSelector" />  
+                                <SelectorStyle CssClass="myCalendarSelector" />  
   
-                    <NextPrevStyle CssClass="myCalendarNextPrev" />  
+                                <NextPrevStyle CssClass="myCalendarNextPrev" />  
   
-                    <TitleStyle CssClass="myCalendarTitle" />  
-                </asp:Calendar>
-            </td>
-        </tr>
-        </table>
+                                <TitleStyle CssClass="myCalendarTitle" />  
+                            </asp:Calendar>
+                        </td>
+                    </tr>
+                    </table>
 
-        <asp:Button runat="server" Text="Add" ID="btn_AddNewTask" OnClick="btn_AddNewTask_OnClick" />
-        <asp:Button runat="server" Text="Cancel" ID="btn_CancelNewTask" OnClick="btn_CancelNewTask_OnClick" />
-        <asp:Label runat="server" ID="lbl_Error" Visible="false" ForeColor="Red" Font-Italic="true" Font-Size="Large" />
-    </asp:Panel>
-    
+                    <asp:Button runat="server" Text="Add" ID="btn_AddNewTask" OnClick="btn_AddNewTask_OnClick" />
+                    <asp:Button runat="server" Text="Cancel" ID="btn_CancelNewTask" PostBackUrl="#close"/>
+                    <asp:Label runat="server" ID="lbl_Error" Visible="false" ForeColor="Red" Font-Italic="true" Font-Size="Large" />
+
+	    </div>
     </div>
+
+    
 </asp:Content>
 

@@ -1,4 +1,11 @@
-﻿#topline
+﻿.modalTitles
+{
+    font-family: 'Kite One', sans-serif;
+    font-weight: bold;
+    font-size: 2em;
+}
+
+#topline
 {
     height: 50px;
     width: 100%;

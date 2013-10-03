@@ -35,27 +35,24 @@ public partial class Register : System.Web.UI.Page
 
     protected void btn_Submit_OnClick(object sender, EventArgs e)
     {
-        string user_IP = (HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"] == null) ? HttpContext.Current.Request.UserHostAddress : HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+        string user_IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
 
-        if (txt_UserName.Text != null && txt_Password1.Text != null) //required fields
+        if (txt_Password1.Text == txt_Password2.Text)
         {
-            if (txt_Password1.Text == txt_Password2.Text)
+            if (theCake.Register_User(txt_UserName.Text, txt_DisplayName.Text, txt_Password1.Text, user_IP))
             {
-                if (theCake.Register_User(txt_UserName.Text, txt_DisplayName.Text, txt_Password1.Text, txt_EmailAddress.Text, user_IP))
-                {
-                    theCake.Login_User(txt_UserName.Text, txt_Password1.Text, user_IP);
+                theCake.Login_User(txt_UserName.Text, txt_Password1.Text, user_IP);
 
-                    Response.Redirect("Default.aspx");
-                }
-                else
-                {
-                    lbl_FailMessage.Text = "The username you have chosen already has been taken.  Please choose another.";
-                }
+                Response.Redirect("Default.aspx");
             }
             else
             {
-                lbl_FailMessage.Text = "Your passwords do not match.  Please try again.";
+                lbl_FailMessage.Text = "The username you have chosen already has been taken.  Please choose another.";
             }
+        }
+        else
+        {
+            lbl_FailMessage.Text = "Your passwords do not match.  Please try again.";
         }
     }
 }

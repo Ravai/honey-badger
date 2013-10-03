@@ -16,15 +16,18 @@ public partial class ViewTask : System.Web.UI.Page
     DataBase theCake = new DataBase();
     bool ProjectWrite = true;
     bool BoardWrite = true;
+    string ID = "";
 
     protected void Page_Load(object sender, EventArgs e)
     {
         MaintainScrollPositionOnPostBack = true;
+        updateProjectPercent();
 
         if (Request.QueryString["ID"] != null)
         {
+            ID = Request.QueryString["ID"].ToString();
             string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-            DataTable DT = theCake.getTask(Int32.Parse(Request.QueryString["ID"].ToString()), theCake.getActiveUserName(IP));
+            DataTable DT = theCake.getTask(Int32.Parse(ID), theCake.getActiveUserName(IP));
 
             if (DT.Rows.Count == 0)
             {
@@ -35,7 +38,7 @@ public partial class ViewTask : System.Web.UI.Page
             if (theCake.getActiveUserName(IP) != ownerAlias)
             {
                 int userID = theCake.getUserID(theCake.getActiveUserName(IP));
-                DataTable permissionChecker = theCake.getUserProjectPermissions(userID, Int32.Parse(Request.QueryString["ID"].ToString()));
+                DataTable permissionChecker = theCake.getUserProjectPermissions(userID, Int32.Parse(ID));
                 if (permissionChecker.Rows[0]["permission_Project_Write"].ToString() == "0")
                     ProjectWrite = false;
                 if (permissionChecker.Rows[0]["permission_Board_Write"].ToString() == "0")
@@ -46,7 +49,7 @@ public partial class ViewTask : System.Web.UI.Page
             {
                 pnl_EditOperations.Visible = false;
                 pnl_SpecialOptions.Visible = false;
-                btn_AddMilestone.Visible = false;
+                //btn_AddMilestone.Visible = false;
             }
             if (!BoardWrite)
             {
@@ -55,6 +58,8 @@ public partial class ViewTask : System.Web.UI.Page
 
             lbl_TaskName.Text = DT.Rows[0]["taskName"].ToString();
             lbl_Description.Text = DT.Rows[0]["taskDescription"].ToString();
+            txt_Edit_TaskName.Text = DT.Rows[0]["taskName"].ToString();
+            txt_Edit_TaskDescription.Text = DT.Rows[0]["taskDescription"].ToString();
 
             lbl_ExpectedStart.Text = DateTime.Parse(DT.Rows[0]["expectedStart"].ToString()).ToShortDateString();
             lbl_ExpectedStop.Text = DateTime.Parse(DT.Rows[0]["expectedStop"].ToString()).ToShortDateString();
@@ -80,14 +85,49 @@ public partial class ViewTask : System.Web.UI.Page
                 }
                 else
                 {
-                    pnl_Milestone.Visible = true;
+                    //pnl_Milestone.Visible = true;
                     FillMilestones();
-                    pnl_Boards.Visible = true;
+                    //pnl_Boards.Visible = true;
                     getallBoards();
                 }
             }
             else
             {
+                if (Request.QueryString["feat"] != null)
+                {
+                    if (!IsPostBack)
+                    {
+                        Feature ftr = new Feature(int.Parse(Request.QueryString["feat"].ToString()));
+                        lbl_remChildFeature_Name.Text = ftr.getFeatureName();
+                        lbl_remChildFeature_Description.Text = ftr.getFeatureDescription();
+                        lbl_remChildFeature_PercentComplete.Text = ftr.getPercentComplete().ToString() + "%";
+                        btnRemFeature.CommandArgument = ftr.getID().ToString();
+
+                        txt_editChildFeature_Name.Text = ftr.getFeatureName();
+                        txt_editChildFeature_Description.Text = ftr.getFeatureDescription();
+                        for (int i = 0; i <= 100; i++)
+                        {
+                            ddl_editChildFeature_PercentComplete.Items.Add(i.ToString());
+                        }
+                        for (int i = 1; i <= 5; i++)
+                        {
+                            ddl_editChildFeature_Weight.Items.Add(i.ToString());
+                            ddl_addChildFeature_Weight.Items.Add(i.ToString());
+                        }
+                        ddl_editChildFeature_PercentComplete.SelectedIndex = ftr.getPercentComplete();
+                        ddl_editChildFeature_Weight.SelectedIndex = ftr.getWeight() - 1;
+
+                        if (ftr.hasChildren)
+                        {
+                            ddl_editChildFeature_PercentComplete.Enabled = false;
+                        }
+                        else
+                        {
+                            ddl_editChildFeature_PercentComplete.Enabled = true;
+                        }
+                    }
+                }
+
                 if (DT.Rows[0]["actualStart"].ToString() == "")
                 {
                     btn_markDone.Visible = false;
@@ -105,9 +145,9 @@ public partial class ViewTask : System.Web.UI.Page
                 }
                 else
                 {
-                    pnl_Milestone.Visible = true;
+                    //pnl_Milestone.Visible = true;
                     FillMilestones();
-                    pnl_Boards.Visible = true;
+                    //pnl_Boards.Visible = true;
                     getallBoards();
                 }
             }
@@ -175,158 +215,67 @@ public partial class ViewTask : System.Web.UI.Page
         }
     }
 
+    private string getFeatureLines(Feature ftr)
+    {
+        string retString = "";
+        if (ftr.myChildren.Count > 0)
+        {
+            retString += "<li>" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"green\"><i>" + ftr.getPercentComplete() + "%</i></font><a href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\">[+]</a>|<a href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\">[e]</a><ul>";
+            foreach (Feature child in ftr.myChildren)
+            {
+                retString += getFeatureLines(child);
+            }
+            retString += "</ul></li>";
+        }
+        else
+        {
+            retString += "<li>" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"green\"><i>" + ftr.getPercentComplete() + "%</i></font><a href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\">[+]</a>|<a href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\">[e]</a>|<a href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#removeChildFeature\">[r]</a></li>";
+        }
+        return retString;
+    }
+
     public void FillMilestones()
     {
         string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
         DataTable DT = theCake.getMilestones(theCake.getActiveUserName(IP), Int32.Parse(Request.QueryString["ID"].ToString()));
+        int projectID = int.Parse(Request.QueryString["ID"].ToString());
 
-        decimal totalMax = 0;
-        decimal countMax = 0;
+        string headerControl = "";
+        headerControl += "<div class=\"container-fluid\"><div id=\"three_summaries\" class=\"row-fluid\">";
+        lit_Milestones.Text = headerControl;
 
-        Table baseTable = new Table();
-        baseTable.CellPadding = 0;
-        baseTable.CellSpacing = 3;
-        TableRow baseRow = new TableRow();
-        int counter = 0;
-        int maxPerRow = 4;
-
-        foreach (DataRow DR in DT.Rows)
+        if (DT.Rows.Count > 0)
         {
-            Feature topFeature = new Feature(int.Parse(DR["ID"].ToString()));
-            totalMax += topFeature.getWeight();
-            countMax += (decimal)(topFeature.getWeight()) * ((decimal)(topFeature.getPercentComplete()) / 100);
-
-            TableCell baseCell = new TableCell();
-            baseCell.VerticalAlign = VerticalAlign.Top;
-            baseCell.Width = Unit.Pixel(300);
-            if (counter == maxPerRow)
+            foreach (DataRow DR in DT.Rows)
             {
-                baseTable.Rows.Add(baseRow);
-                baseRow = new TableRow();
-                counter = 0;
+                Feature headFeature = new Feature(int.Parse(DR["ID"].ToString()));
+
+                string milestoneControl = "";
+                milestoneControl += "<div class=\"span6\"><div class=\"widget\"><div style=\"font-size:1.2em; font-family: 'Kite One', sans-serif;\">" +
+                    headFeature.getFeatureName() + "</div><progress value=\"" +
+                    ((decimal)(headFeature.getPercentComplete()) / 100) + "\"></progress>";
+
+                milestoneControl += getFeatureLines(headFeature);
+
+                milestoneControl += "</div></div>";
+
+                lit_Milestones.Text += milestoneControl;
             }
-            counter++;
-
-            Table tbl = new Table();
-            tbl.Width = Unit.Percentage(100);
-
-            TableRow TR = new TableRow();
-            TableCell TC = new TableCell();
-            Literal hr = new Literal();
-            hr.Text = "<hr />";
-            Label name = new Label();
-            name.Font.Size = FontUnit.Small;
-            name.Font.Bold = true;
-            name.Text = topFeature.getFeatureName() + " <i>(" + topFeature.getPercentComplete() + "%)</i>";
-            LinkButton edit = new LinkButton();
-            edit.Text = "[edit]";
-            edit.Font.Size = FontUnit.XXSmall;
-            edit.CommandArgument = topFeature.getID().ToString();
-            edit.Click += new EventHandler(btn_gotoUpdateMilestone);
-            TC.HorizontalAlign = HorizontalAlign.Center;
-            TC.Controls.Add(hr);
-            TC.Controls.Add(name);
-            TC.Controls.Add(edit);
-            tbl.ToolTip = topFeature.getFeatureDescription();
-            TR.Cells.Add(TC);
-            tbl.Rows.Add(TR);
-
-            TR = new TableRow();
-            TC = new TableCell();
-            if (topFeature.getPercentComplete() == 0)
-            {
-                TC.Text = "<center><table width=\"100%\" style=\"border:1px solid black;\" cellspacing=0><tr><td></td></tr></table></center>";
-            }
-            else if (topFeature.getPercentComplete() == 100)
-            {
-                TC.Text = "<center><table width=\"100%\" style=\"border:1px solid black;\" cellspacing=0><tr><td style=\"background-color:Green;\"></td></tr></table></center>";
-            }
-            else
-            {
-                TC.Text = "<center><table width=\"100%\" style=\"border:1px solid black;\" cellspacing=0><tr><td width=\"" + DR["completed"].ToString() + "%\" style=\"background-color:Green;\"></td><td></td></tr></table></center>";
-            }
-            TR.Cells.Add(TC);
-            tbl.Rows.Add(TR);
-
-            //DataTable DT2 = theCake.getFeatures(topFeature.getID());
-            TableRow TR2 = new TableRow();
-            TableCell TC2 = new TableCell();
-            foreach (Feature child in topFeature.myChildren)
-            //if (DT2.Rows.Count > 0)
-            {
-                //foreach (DataRow DR2 in DT2.Rows)
-                //{
-                Button btnDone = new Button();
-                btnDone.Text = ((char)(0X2713)).ToString();
-                btnDone.CommandArgument = child.getID().ToString();
-                btnDone.Click += new EventHandler(btnDone_OnClick);
-                if (!ProjectWrite) btnDone.Visible = false;
-                if (child.getPercentComplete() == 0) TC2.Controls.Add(btnDone);
-                Button btnRem = new Button();
-                btnRem.Text = "x";
-                btnRem.CommandArgument = child.getID().ToString();
-                btnRem.Click += new EventHandler(btnRem_OnClick);
-                if (!ProjectWrite) btnRem.Visible = false;
-                if (child.getPercentComplete() == 0) TC2.Controls.Add(btnRem);
-                Label lbl = new Label();
-                lbl.Text = " - " + child.getFeatureName();
-                if (child.getPercentComplete() == 100)
-                {
-                    lbl.ForeColor = System.Drawing.Color.Green;
-                    lbl.Font.Italic = true;
-                }
-                TC2.Controls.Add(lbl);
-                Label blnk = new Label();
-                blnk.Text = "<br />";
-                TC2.Controls.Add(blnk);
-                //}
-            }
-            TR2.Cells.Add(TC2);
-            tbl.Rows.Add(TR2);
-            
-
-            if (BoardWrite)
-            {
-                TableRow TR3 = new TableRow();
-                TableCell TC3 = new TableCell();
-
-                // Ability to add Feature is the series of buttons here.
-                LinkButton addFeature = new LinkButton();
-                addFeature.Text = "{+}";
-                addFeature.Click += new EventHandler(btn_AddFeature_OnClick);
-                TextBox txtFeature = new TextBox();
-                txtFeature.Visible = false;
-                Button addFeature_Final = new Button();
-                addFeature_Final.Text = "Add Feature";
-                addFeature_Final.Visible = false;
-                addFeature_Final.CommandArgument = DR["ID"].ToString();
-                addFeature_Final.Click += new EventHandler(btn_AddFeatureFinal_OnClick);
-
-                TC3.Controls.Add(addFeature);
-                TC3.Controls.Add(txtFeature);
-                TC3.Controls.Add(addFeature_Final);
-                TR3.Cells.Add(TC3);
-                tbl.Rows.Add(TR3);
-            }
-
-            baseCell.Controls.Add(tbl);
-            baseRow.Cells.Add(baseCell);
         }
-        baseTable.Rows.Add(baseRow);
-
-        pnl_MileStones.Controls.Add(baseTable);
-
-        if (totalMax > 0)
+        else
         {
-            lbl_totalPercentComplete.Text = ((int)(100 * ((decimal)countMax) / ((decimal)totalMax))).ToString() + "% Completed";
-            lbl_totalPercentComplete.Visible = true;
+            lit_Milestones.Text = "No Milestones set up yet!";
         }
+
+        string footerControl = "";
+        footerControl += "</div></div>";
+        lit_Milestones.Text += footerControl;
+
+        progress_Header.Text = "<progress value=\"" + ((decimal)(theCake.getProjectPercentComplete(projectID)))/100 +"\" />";
     }
 
     protected void btnDone_OnClick(object sender, EventArgs e)
     {
-        Feature ftr = new Feature(Int32.Parse(((Button)sender).CommandArgument));
-        ftr.updatePercentComplete(100);
         theCake.completeFeature(Int32.Parse(((Button)sender).CommandArgument));
         Response.Redirect("ViewTask.aspx?ID=" + Request.QueryString["ID"].ToString());
     }
@@ -358,8 +307,8 @@ public partial class ViewTask : System.Web.UI.Page
 
     protected void btn_AddMilestone_OnClick(object sender, EventArgs e)
     {
-        pnl_AddMilestone.Visible = true;
-        btn_AddMilestone.Visible = false;
+        //pnl_AddMilestone.Visible = true;
+        //btn_AddMilestone.Visible = false;
     }
 
     protected void btn_AddMilestone_Final_OnClick(object sender, EventArgs e)
@@ -396,73 +345,6 @@ public partial class ViewTask : System.Web.UI.Page
         {
             lnk_GoToDiscussion.PostBackUrl = "Boards.aspx?ID=" + DT.Rows[0]["boardID"].ToString();
         }
-
-    //    foreach (DataRow DR in DT.Rows)
-    //    {
-    //        Board brd = new Board(Int32.Parse(DR["boardID"].ToString()));
-
-
-    //        TableRow TR1 = new TableRow();
-    //        TableCell TC1 = new TableCell();
-
-    //        Table catTBL = new Table();
-    //        catTBL.CellPadding = 5;
-    //        catTBL.Width = Unit.Percentage(100);
-    //        catTBL.BorderColor = System.Drawing.Color.Black;
-    //        catTBL.BorderStyle = BorderStyle.Solid;
-    //        catTBL.BorderWidth = Unit.Pixel(1);
-    //        catTBL.BackColor = System.Drawing.ColorTranslator.FromHtml("#1b1f27");
-    //        TableRow catTR = new TableRow();
-    //        TableCell catTC = new TableCell();
-    //        catTC.Width = Unit.Percentage(80);
-    //        LinkButton CategoryName = new LinkButton();
-    //        CategoryName.Text = brd.get_board_CategoryName();
-    //        CategoryName.ForeColor = System.Drawing.ColorTranslator.FromHtml("#0000FF");
-    //        CategoryName.Font.Size = FontUnit.XLarge;
-    //        CategoryName.Font.Bold = true;
-    //        CategoryName.Font.Name = "Courier";
-    //        CategoryName.Style.Add("font-variant", "small-caps");
-    //        CategoryName.PostBackUrl = "Boards.aspx?ID=" + brd.get_BoardID();
-    //        catTC.Controls.Add(CategoryName);
-    //        Literal hr = new Literal();
-    //        hr.Text = "<br /><hr /><br />";
-    //        catTC.Controls.Add(hr);
-    //        Label created = new Label();
-    //        created.Text = "created on " + brd.get_createdTimestamp().ToShortDateString() + " by " + theCake.getUserAlias(brd.get_createdBy()) + ".";
-    //        created.Font.Size = FontUnit.XXSmall;
-    //        created.Font.Italic = true;
-    //        catTC.Controls.Add(created);
-    //        catTC.CssClass = "CategoryTable";
-
-    //        catTR.Cells.Add(catTC);
-    //        TableCell catTC2 = new TableCell();
-    //        catTC2.Width = Unit.Percentage(20);
-    //        catTC2.CssClass = "CategoryTable";
-    //        catTC2.HorizontalAlign = HorizontalAlign.Center;
-    //        Label l1 = new Label();
-    //        l1.Text = ":Threads:<br />";
-    //        l1.Font.Bold = true;
-    //        catTC2.Controls.Add(l1);
-    //        Label threads = new Label();
-    //        threads.Text = brd.ThreadCount().ToString();
-    //        catTC2.Controls.Add(threads);
-    //        Literal hr2 = new Literal();
-    //        hr2.Text = "<br />";
-    //        catTC2.Controls.Add(hr2);
-    //        Label l2 = new Label();
-    //        l2.Text = ":Posts:<br />";
-    //        l2.Font.Bold = true;
-    //        catTC2.Controls.Add(l2);
-    //        Label posts = new Label();
-    //        posts.Text = brd.PostCount().ToString();
-    //        catTC2.Controls.Add(posts);
-    //        catTR.Cells.Add(catTC2);
-
-    //        catTBL.Rows.Add(catTR);
-    //        TC1.Controls.Add(catTBL);
-    //        TR1.Cells.Add(TC1);
-    //        tbl_Boards.Rows.Add(TR1);
-    //    }
     }
 
     protected void btn_UpgradeSize_OnClick(object sender, EventArgs e)
@@ -478,12 +360,14 @@ public partial class ViewTask : System.Web.UI.Page
         txt_Edit_TaskName.Text = lbl_TaskName.Text;
 
         pnl_MainHeader.Visible = false;
-        pnl_Mainheader_Edit.Visible = true;
+        //pnl_Mainheader_Edit.Visible = true;
     }
 
     protected void btn_Update_NameDescription_OnClick(object sender, EventArgs e)
     {
-        theCake.updateTaskBaseInfo(Int32.Parse(Request.QueryString["ID"].ToString()), txt_Edit_TaskName.Text, txt_Edit_TaskDescription.Text);
+        string ProjectName = txt_Edit_TaskName.Text.Replace("\n", "<br/>");
+        string ProjectDescription = txt_Edit_TaskDescription.Text.Replace("\n", "<br/>");
+        theCake.updateTaskBaseInfo(Int32.Parse(Request.QueryString["ID"].ToString()), ProjectName, ProjectDescription);
         Response.Redirect("ViewTask.aspx?ID=" + Request.QueryString["ID"].ToString());
     }
 
@@ -495,7 +379,7 @@ public partial class ViewTask : System.Web.UI.Page
     protected void btn_UpdateMilestone_OnClick(object sender, EventArgs e)
     {
         Feature ftr = new Feature(Int32.Parse(((Button)sender).CommandArgument));
-        ftr.updateFeatureDetails(txt_Milestone_Name.Text, txt_Milestone_Desc.Text, int.Parse(ddl_Milestone_Weight.SelectedValue));
+        ftr.updateFeatureDetails(txt_Milestone_Name.Text, txt_Milestone_Desc.Text, int.Parse(ddl_Milestone_Weight.SelectedValue), 0);
         //theCake.updateMilestone(Int32.Parse(((Button)sender).CommandArgument), txt_Milestone_Name.Text, txt_Milestone_Desc.Text, Int32.Parse(ddl_Milestone_Weight.SelectedItem.Text));
         Response.Redirect("ViewTask.aspx?ID=" + Request.QueryString["ID"].ToString());
     }
@@ -503,16 +387,68 @@ public partial class ViewTask : System.Web.UI.Page
     protected void btn_gotoUpdateMilestone(object sender, EventArgs e)
     {
         int featureID = Int32.Parse(((LinkButton)sender).CommandArgument);
-        btn_UpdateMilestone.CommandArgument = featureID.ToString();
+        //btn_UpdateMilestone.CommandArgument = featureID.ToString();
         Feature ftr = new Feature(featureID);
         txt_Milestone_Desc.Text = ftr.getFeatureDescription();
         txt_Milestone_Name.Text = ftr.getFeatureName();
         ddl_Milestone_Weight.SelectedValue = ftr.getWeight().ToString();
 
-        btn_UpdateMilestone.Visible = true;
-        btn_AddMilestone.Visible = false;
+        //btn_UpdateMilestone.Visible = true;
+        //btn_AddMilestone.Visible = false;
         btn_AddMilestone_Final.Visible = false;
-        pnl_AddMilestone.Visible = true;
+        //pnl_AddMilestone.Visible = true;
         
+    }
+
+    protected void btn_EditChildFeature_OnClick(object sender, EventArgs e)
+    {
+        int featureID = int.Parse(Request.QueryString["feat"].ToString());
+        string name = txt_editChildFeature_Name.Text;
+        string description = txt_editChildFeature_Description.Text;
+        int weight = int.Parse(ddl_editChildFeature_Weight.SelectedItem.Value);
+        int percentComplete = int.Parse(ddl_editChildFeature_PercentComplete.SelectedItem.Value);
+
+        Feature ftr = new Feature(featureID);
+        if (ddl_editChildFeature_PercentComplete.Enabled)
+        {
+            ftr.updateFeatureDetails(name, description, weight, percentComplete);
+        }
+        else
+        {
+            ftr.updateFeatureDetails(name, description, weight);
+        }
+        Response.Redirect("ViewTask.aspx?ID=" + Request.QueryString["ID"].ToString());
+    }
+
+    protected void btn_addChildFeature_OnClick(object sender, EventArgs e)
+    {
+        int featureID = int.Parse(Request.QueryString["feat"].ToString());
+        int projectID = int.Parse(Request.QueryString["ID"].ToString());
+        Feature.addNewFeature(projectID, featureID, txt_addChildFeature_Name.Text, txt_addChildFeature_Description.Text, 0, -1);
+        Response.Redirect("ViewTask.aspx?ID=" + Request.QueryString["ID"].ToString());
+    }
+
+    private void updateProjectPercent()
+    {
+        int projectID = int.Parse(Request.QueryString["ID"].ToString());
+        string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
+
+        DataTable DT = theCake.getMilestones(theCake.getActiveUserName(IP), Int32.Parse(Request.QueryString["ID"].ToString()));
+        decimal total = 0;
+        decimal counter = 0;
+        if (DT.Rows.Count > 0)
+        {
+            foreach (DataRow DR in DT.Rows)
+            {
+                Feature ftr = new Feature(int.Parse(DR["ID"].ToString()));
+                counter++;
+                total += ftr.getPercentComplete();
+            }
+            theCake.updateProjectPercentComplete((int)(total / counter), projectID);
+        }
+        else
+        {
+            theCake.updateProjectPercentComplete(0, projectID);
+        }
     }
 }

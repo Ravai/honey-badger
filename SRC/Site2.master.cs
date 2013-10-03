@@ -25,7 +25,6 @@ public partial class Site2 : System.Web.UI.MasterPage
         {
             LoggedIn = true;
             lbl_userName.Text = DT.Rows[0]["Display_Name"].ToString();
-            btn_MyAccount.PostBackUrl = "UserProfile.aspx?userID=" + DT.Rows[0]["ID"].ToString();
         }
         else
         {

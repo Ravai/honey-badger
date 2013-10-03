@@ -3,53 +3,29 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
 <div class="container_full">
-    Thank you for wishing to register with this Tracking Tool<br />
+    <h2>Register</h2>
+    <div style="color:red; font-size:x-small;">* - denotes Required field</div>
+    
+    <h3>User Information</h3>
+    <asp:TextBox runat="server" ID="txt_UserName" placeholder="Enter a unique user name..." /><font color="red">*</font><br />
+    
+    <asp:TextBox runat="server" ID="txt_FirstName" placeholder="Your first name..." />
+    <asp:TextBox runat="server" ID="txt_MI" placeholder="Middle Initial/Name..." />
+    <asp:TextBox runat="server" ID="txt_LastName" placeholder="Last name..." /><font color="red">*</font><br />
+
+    <asp:TextBox runat="server" ID="txt_DisplayName" placeholder="Enter your desired Display Name..." /><font color="red">*</font><br />
+    <asp:TextBox runat="server" ID="txt_Email" placeholder="Enter your email address..." /><font color="red">*</font><br />
+    <asp:TextBox runat="server" ID="txt_Phone" placeholder="Enter your phone number..." /><br />
+
+    <h3>Associations</h3>
+    No associations as of yet...<br />
+
+    <h3>Password Creation</h3>
+    <asp:TextBox runat="server" ID="txt_Password1" TextMode="Password" placeholder="Enter A Password..." /><font color="red">*</font><br />
+    <asp:TextBox runat="server" ID="txt_Password2" TextMode="Password" placeholder="Enter the password again..." /><font color="red">*</font><br />
+
     <br />
-    Please fill out the below info to get yourself registered.<br />
-    <br />
-    * Indicates required field
-    <table style="color:Black;">
-        <tr>
-            <td>
-                Choose a UserName *: 
-            </td>
-            <td>
-                <asp:TextBox runat="server" ID="txt_UserName" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Choose a Display Name: 
-            </td>
-            <td>
-                <asp:TextBox runat="server" ID="txt_DisplayName" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Create a Password: * 
-            </td>
-            <td>
-                <asp:TextBox runat="server" ID="txt_Password1" TextMode="Password" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Validate the Password: * 
-            </td>
-            <td>
-                <asp:TextBox runat="server" ID="txt_Password2" TextMode="Password" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Email address:
-            </td>
-            <td>
-                <asp:TextBox runat="server" ID="txt_EmailAddress" />
-            </td>
-        </tr>
-    </table>
+
     <asp:Button runat="server" Text="Submit Registration" ID="btn_Submit" OnClick="btn_Submit_OnClick" /><br />
     <br />
     <asp:Label runat="server" ID="lbl_FailMessage" ForeColor="Red" Font-Bold="true" />

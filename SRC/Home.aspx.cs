@@ -19,17 +19,18 @@ public partial class Home : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         MaintainScrollPositionOnPostBack = true;
-        fillWipTable();
-        fillReadyTable();
-        fillCompletedTable();
-        fillUpcomingTable();
-        getMessages();
         if (sharedTaskTotal == 0) pnl_SharedTasks.Visible = false;
 
         if (!IsPostBack)
         {
             Calendar_ExpectedStart.SelectedDate = DateTime.Today;
             Calendar_ExpectedStop.SelectedDate = DateTime.Today;
+            fillWipTable();
+            fillReadyTable();
+            //fillCompletedTable();
+            fillUpcomingTable();
+            getMessages();
+
         }
     }
 
@@ -88,7 +89,8 @@ public partial class Home : System.Web.UI.Page
             Description = Description.Replace("\r\n", "<br />");
 
             string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-            theCake.addNewTask(txt_addNew_Task_Name.Text, Description, Calendar_ExpectedStart.SelectedDate, Calendar_ExpectedStop.SelectedDate, theCake.getActiveUserName(IP));
+            int projectID = theCake.addNewTask(txt_addNew_Task_Name.Text, Description, Calendar_ExpectedStart.SelectedDate, Calendar_ExpectedStop.SelectedDate, theCake.getActiveUserName(IP));
+            theCake.increaseProjectSize(projectID, theCake.getUserID(theCake.getActiveUserName(IP)));
             Response.Redirect("Home.aspx");
         }
     }
@@ -103,49 +105,18 @@ public partial class Home : System.Web.UI.Page
         {
             foreach (DataRow DR in DT.Rows)
             {
-                ProgressList.Text += "<li><p class=\"pull-right\"><progress value=\"" + float.Parse(DR["Percent_Completed"].ToString()) / 100 + "\" /></p>" +
-                    "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
-                    "<p class=\"info\">" + DR["taskDescription"].ToString() + "</p></li>";
+                ProgressList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
+                    "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
             }
+            lit_totInProgress.Text = DT.Rows.Count.ToString();
         }
         else
         {
             ProgressList.Text += "You have no tasks in Progress";
+            lit_totInProgress.Text = "0";
         }
         ProgressList.Text += "</ul";
 
-        IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-        DT = theCake.getSharedWipTasks(theCake.getActiveUserName(IP));
-
-        if (DT.Rows.Count > 0)
-        {
-            //if (DT.Rows.Count > 3) btn_gotoWip.Visible = true;
-
-            int counter = 0;
-            foreach (DataRow DR in DT.Rows)
-            {
-                // Only showing top 3 if there are more than three
-                if (counter == 3) break;
-                counter++;
-
-                TableRow TR = new TableRow();
-                TableCell TC1 = new TableCell();
-                TC1.Text = "<strong><u><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a></u></strong><br />" + DR["taskDescription"].ToString();
-                TC1.VerticalAlign = VerticalAlign.Top;
-                TR.Cells.Add(TC1);
-                tbl_Shared_WIP.Rows.Add(TR);
-                sharedTaskTotal++;
-            }
-        }
-        else
-        {
-            TableRow TR = new TableRow();
-            TableCell TC1 = new TableCell();
-            TC1.Text = "You have no WIP tasks.";
-            TC1.VerticalAlign = VerticalAlign.Top;
-            TR.Cells.Add(TC1);
-            tbl_Shared_WIP.Rows.Add(TR);
-        }
     }
 
     protected void fillReadyTable()
@@ -161,113 +132,16 @@ public partial class Home : System.Web.UI.Page
                     "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
                     "<p class=\"info\">" + DR["taskDescription"].ToString() + "</p></li>";
             }
+            lit_totReady.Text = DT.Rows.Count.ToString();
         }
         else
         {
             ReadyList.Text += "You have no tasks Ready";
+            lit_totReady.Text = "0";
         }
 
-        IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-        DT = theCake.getSharedReadyTasks(theCake.getActiveUserName(IP));
-
-        if (DT.Rows.Count > 0)
-        {
-            //if (DT.Rows.Count > 3) btn_gotoReady.Visible = true;
-
-            int counter = 0;
-            foreach (DataRow DR in DT.Rows)
-            {
-                // Only showing top 3 if there are more than three
-                if (counter == 3) break;
-                counter++;
-
-                TableRow TR = new TableRow();
-                TableCell TC1 = new TableCell();
-                TC1.Text = "<strong><u><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a></u></strong><br />" + DR["taskDescription"].ToString();
-                TC1.VerticalAlign = VerticalAlign.Top;
-                TR.Cells.Add(TC1);
-                tbl_Shared_Ready.Rows.Add(TR);
-                sharedTaskTotal++;
-            }
-        }
-        else
-        {
-            TableRow TR = new TableRow();
-            TableCell TC1 = new TableCell();
-            TC1.Text = "You have no Ready tasks.";
-            TC1.VerticalAlign = VerticalAlign.Top;
-            TR.Cells.Add(TC1);
-            tbl_Shared_Ready.Rows.Add(TR);
-        }
     }
 
-    protected void fillCompletedTable()
-    {
-        //    string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-        //    DataTable DT = theCake.getCompletedTasks(theCake.getActiveUserName(IP));
-
-        //    if (DT.Rows.Count > 0)
-        //    {
-        //        if (DT.Rows.Count > 3) btn_gotoComplete.Visible = true;
-
-        //        int counter = 0;
-        //        foreach (DataRow DR in DT.Rows)
-        //        {
-        //            // Only showing top 3 if there are more than three
-        //            if (counter == 3) break;
-        //            counter++;
-
-        //            TableRow TR = new TableRow();
-        //            TableCell TC1 = new TableCell();
-        //            TC1.Text = "<strong><u><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a></u></strong><br />" + DR["taskDescription"].ToString();
-        //            TC1.VerticalAlign = VerticalAlign.Top;
-        //            TR.Cells.Add(TC1);
-        //            tbl_CompletedTaskList.Rows.Add(TR);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        TableRow TR = new TableRow();
-        //        TableCell TC1 = new TableCell();
-        //        TC1.Text = "You have no completed tasks.";
-        //        TC1.VerticalAlign = VerticalAlign.Top;
-        //        TR.Cells.Add(TC1);
-        //        tbl_CompletedTaskList.Rows.Add(TR);
-        //    }
-
-        //    IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-        //    DT = theCake.getSharedCompletedTasks(theCake.getActiveUserName(IP));
-
-        //    if (DT.Rows.Count > 0)
-        //    {
-        //        if (DT.Rows.Count > 3) btn_gotoComplete.Visible = true;
-
-        //        int counter = 0;
-        //        foreach (DataRow DR in DT.Rows)
-        //        {
-        //            // Only showing top 3 if there are more than three
-        //            if (counter == 3) break;
-        //            counter++;
-
-        //            TableRow TR = new TableRow();
-        //            TableCell TC1 = new TableCell();
-        //            TC1.Text = "<strong><u><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a></u></strong><br />" + DR["taskDescription"].ToString();
-        //            TC1.VerticalAlign = VerticalAlign.Top;
-        //            TR.Cells.Add(TC1);
-        //            tbl_Shared_Completed.Rows.Add(TR);
-        //            sharedTaskTotal++;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        TableRow TR = new TableRow();
-        //        TableCell TC1 = new TableCell();
-        //        TC1.Text = "You have no completed tasks.";
-        //        TC1.VerticalAlign = VerticalAlign.Top;
-        //        TR.Cells.Add(TC1);
-        //        tbl_Shared_Completed.Rows.Add(TR);
-        //    }
-    }
 
     protected void fillUpcomingTable()
     {
@@ -282,55 +156,13 @@ public partial class Home : System.Web.UI.Page
                     "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
                     "<p class=\"info\">" + DR["taskDescription"].ToString() + "</p></li>";
             }
+            lit_totUpcoming.Text = DT.Rows.Count.ToString();
         }
         else
         {
             UpcomingList.Text += "You have no tasks Upcoming";
+            lit_totUpcoming.Text = "0";
         }
 
-        IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-        DT = theCake.getSharedUpcomingTasks(theCake.getActiveUserName(IP));
-
-        if (DT.Rows.Count > 0)
-        {
-            //if (DT.Rows.Count > 3) btn_gotoUpcoming.Visible = true;
-
-            int counter = 0;
-            foreach (DataRow DR in DT.Rows)
-            {
-                // Only showing top 3 if there are more than three
-                if (counter == 3) break;
-                counter++;
-
-                TableRow TR = new TableRow();
-                TableCell TC1 = new TableCell();
-                TC1.Text = "<strong><u><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a></u></strong><br />" + DR["taskDescription"].ToString();
-                TC1.VerticalAlign = VerticalAlign.Top;
-                TR.Cells.Add(TC1);
-                tbl_Shared_Upcoming.Rows.Add(TR);
-                sharedTaskTotal++;
-            }
-        }
-        else
-        {
-            TableRow TR = new TableRow();
-            TableCell TC1 = new TableCell();
-            TC1.Text = "You have no upcoming tasks.";
-            TC1.VerticalAlign = VerticalAlign.Top;
-            TR.Cells.Add(TC1);
-            tbl_Shared_Upcoming.Rows.Add(TR);
-        }
-    }
-
-    protected void lnkbtn_ShowAddTask_OnClick(object sender, EventArgs e)
-    {
-        pnl_AddTask1.Visible = false;
-        pnl_AddTask2.Visible = true;
-    }
-
-    protected void btn_CancelNewTask_OnClick(object sender, EventArgs e)
-    {
-        pnl_AddTask1.Visible = true;
-        pnl_AddTask2.Visible = false;
     }
 }
