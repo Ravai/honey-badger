@@ -12,17 +12,21 @@
         </tr>
         <tr>
             <td align="right" style="color:black;">Email: </td>
-            <td align="center"><asp:Label runat="server" ID="lbl_email" /></asp:Label></td>
+            <td align="center"><asp:Label runat="server" ID="lbl_email" /></td>
         </tr>
         <tr>
             <td align="right" style="color:black;">Phone number: </td>
-            <td align="center"><asp:Label runat="server" ID="lbl_phone" /></asp:Label></td>
+            <td align="center"><asp:Label runat="server" ID="lbl_phone" /></td>
         </tr>
         <tr>
             <td align="right" style="color:black;">Last online: </td>
-            <td align="center"><asp:Label runat="server" ID="lbl_lastOnline" /></asp:Label></td>
+            <td align="center"><asp:Label runat="server" ID="lbl_lastOnline" /></td>
         </tr>
     </table>
+
+    <div class="pull-right">
+        <asp:LinkButton runat="server" ID="lnk_edit" Text="Edit" />
+    </div>
     
 </div>
 </asp:Content>

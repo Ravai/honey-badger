@@ -24,6 +24,16 @@ public class DataBase
 
     }
 
+    public DataTable getUserData(int userID)
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "SELECT * FROM viewTrackingTool_Users WHERE [ID] = @userID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@userID", userID);
+
+        return Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+    }
+
     // ==================================================================================================
     // ==================================================================================================
     //                                             ACCESSORS                                             
