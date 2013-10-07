@@ -237,7 +237,7 @@ public class Feature
     public DataTable getFeatures(int parentID)
     {
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [TrackingTool_Features] WHERE [parentID] = @parentID";
+        cmd.CommandText = "SELECT * FROM [TrackingTool_Features] WHERE [parentID] = @parentID ORDER BY [createdTimestamp] ASC";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@parentID", parentID);
 
@@ -277,7 +277,16 @@ public class Feature
 
         TTDB.TTQuery(cmd);
 
-        updateAllPercentCompletes();
+        Feature parentFeature = new Feature(getParentID());
+        if (parentFeature.hasChildren)
+        {
+            Feature child = parentFeature.myChildren[0];
+            child.updateAllPercentCompletes();
+        }
+        else
+        {
+            parentFeature.updatePercentComplete(0);
+        }
     }
 
     static public int addNewMilestone(int projectID, string Name, string Description, int Weight, int boardID)
@@ -289,7 +298,18 @@ public class Feature
         cmd.Parameters.AddWithValue("@featureDescription", Description);
         cmd.Parameters.AddWithValue("@weight", Weight);
         cmd.Parameters.AddWithValue("@boardID", boardID);
+        TTDB.TTQuery(cmd);
+
+        cmd = new SqlCommand();
+        cmd.CommandText = "SELECT * FROM [TrackingTool_Features] WHERE projectID = @projectID AND parentID IS NULL AND featureName = @featureName and featureDescription = @featureDescription and weight = @weight";
+        cmd.Parameters.AddWithValue("@projectID", projectID);
+        cmd.Parameters.AddWithValue("@featureName", Name);
+        cmd.Parameters.AddWithValue("@featureDescription", Description);
+        cmd.Parameters.AddWithValue("@weight", Weight);
         DataTable DT = TTDB.TTQuery(cmd);
+
+        Feature ftr = new Feature(int.Parse(DT.Rows[0]["ID"].ToString()));
+        ftr.updateAllPercentCompletes();
 
         if (DT.Rows.Count > 0)
         {
@@ -311,9 +331,18 @@ public class Feature
         cmd.Parameters.AddWithValue("@featureDescription", Description);
         cmd.Parameters.AddWithValue("@weight", Weight);
         cmd.Parameters.AddWithValue("@boardID", boardID);
+        TTDB.TTQuery(cmd);
+
+        cmd = new SqlCommand();
+        cmd.CommandText = "SELECT * FROM [TrackingTool_Features] WHERE projectID = @projectID AND parentID = @parentID AND featureName = @featureName and featureDescription = @featureDescription and weight = @weight";
+        cmd.Parameters.AddWithValue("@projectID", projectID);
+        cmd.Parameters.AddWithValue("@parentID", parentID);
+        cmd.Parameters.AddWithValue("@featureName", Name);
+        cmd.Parameters.AddWithValue("@featureDescription", Description);
+        cmd.Parameters.AddWithValue("@weight", Weight);
         DataTable DT = TTDB.TTQuery(cmd);
 
-        Feature ftr = new Feature(parentID);
+        Feature ftr = new Feature(int.Parse(DT.Rows[0]["ID"].ToString()));
         ftr.updateAllPercentCompletes();
 
         if (DT.Rows.Count > 0)

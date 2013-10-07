@@ -39,7 +39,7 @@ public partial class Register : System.Web.UI.Page
 
         if (txt_Password1.Text == txt_Password2.Text)
         {
-            if (theCake.Register_User(txt_UserName.Text, txt_DisplayName.Text, txt_Password1.Text, user_IP))
+            if (theCake.Register_User(txt_UserName.Text, txt_FirstName.Text, txt_MI.Text, txt_LastName.Text, txt_Email.Text, txt_Phone.Text, txt_DisplayName.Text, txt_Password1.Text, user_IP))
             {
                 theCake.Login_User(txt_UserName.Text, txt_Password1.Text, user_IP);
 

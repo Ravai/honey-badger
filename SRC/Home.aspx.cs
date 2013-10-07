@@ -29,9 +29,10 @@ public partial class Home : System.Web.UI.Page
             fillReadyTable();
             //fillCompletedTable();
             fillUpcomingTable();
-            getMessages();
+            
 
         }
+        getMessages();
     }
 
     private void getMessages()
@@ -99,16 +100,22 @@ public partial class Home : System.Web.UI.Page
     {
         string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
         DataTable DT = theCake.getWipTasks(theCake.getActiveUserName(IP));
+        DataTable DT2 = theCake.getSharedWipTasks(theCake.getActiveUserName(IP));
 
         ProgressList.Text += "<ul class=\"cards\">";
-        if (DT.Rows.Count > 0)
+        if (DT.Rows.Count > 0 || DT2.Rows.Count > 0)
         {
             foreach (DataRow DR in DT.Rows)
             {
                 ProgressList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
                     "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
             }
-            lit_totInProgress.Text = DT.Rows.Count.ToString();
+            foreach (DataRow DR in DT2.Rows)
+            {
+                ProgressList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\"><strong>[SHARED]</strong> " + DR["taskName"].ToString() + "</a>" +
+                    "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
+            }
+            lit_totInProgress.Text = (DT.Rows.Count + DT2.Rows.Count).ToString();
         }
         else
         {

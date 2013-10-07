@@ -1,6 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site2.master" AutoEventWireup="true" CodeFile="Home.aspx.cs" Inherits="Home" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+
+    
+
 <script type="text/javascript">
     function PopupPicker(ctl, w, h) {
         var PopupWindow = null;
@@ -9,7 +12,14 @@
         PopupWindow.focus();
     }
 </script>
-    
+    <asp:Panel runat="server" ID="pnl_Messages" Visible="false">
+    <div class="fullContainer">
+    <strong>You have a new message!</strong>
+    <asp:Table runat="server" ID="tbl_Messages" Width="100%" />
+    </div>
+    <hr />
+    </asp:Panel>
+
     <div class="widget">
         <ul id="myTab" class="nav nav-tabs three-tabs fancy">
 	        <li class="active"><a href="#Progress" data-toggle="tab">Tasks in Progress(<asp:Literal runat="server" ID="lit_totInProgress" />)</a></li>
@@ -40,12 +50,7 @@
     </div>
 
 
-    <asp:Panel runat="server" ID="pnl_Messages" Visible="false">
-    <div class="fullContainer">
-    <strong>You have a new message!</strong>
-    <asp:Table runat="server" ID="tbl_Messages" Width="100%" />
-    </div>
-    </asp:Panel>
+    
 
 <%--    <div style="font-size:large; font-variant:small-caps; font-weight:bold;"><br />My Tasks<br /></div>
     <table width="100%">
@@ -123,8 +128,14 @@
     </asp:Panel>
 
     <a href="#openModal"><h3>Do you want to add a new Project?</h3></a>
-
+    
     <div id="openModal" class="modalDialog">
+        <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true" />
+        <!-- BEGIN CONTENT TABLE -->
+        <!-- CONTENT GOES HERE -->
+        <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+        <ContentTemplate>
+    
 	    <div>
 		    <a href="#close" title="Close" class="close">X</a>
 		    
@@ -170,7 +181,7 @@
                         </td>
                         <td align="center">
                             <asp:Calendar ID="Calendar_ExpectedStop"   
-                                runat="server"   
+                                runat="server" 
                                 DayNameFormat="FirstLetter"  
                                 Font-Names="Arial"   
                                 Font-Size="11px"   
@@ -203,8 +214,10 @@
                     <asp:Label runat="server" ID="lbl_Error" Visible="false" ForeColor="Red" Font-Italic="true" Font-Size="Large" />
 
 	    </div>
+
+        </ContentTemplate>
+        </asp:UpdatePanel>
     </div>
 
-    
 </asp:Content>
 

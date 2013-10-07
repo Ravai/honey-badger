@@ -282,7 +282,8 @@ public partial class ViewTask : System.Web.UI.Page
 
     protected void btnRem_OnClick(object sender, EventArgs e)
     {
-        theCake.deleteFeature(Int32.Parse(((Button)sender).CommandArgument));
+        Feature ftr = new Feature(Int32.Parse(((Button)sender).CommandArgument));
+        ftr.deleteFeature();
         Response.Redirect("ViewTask.aspx?ID=" + Request.QueryString["ID"].ToString());
     }
 

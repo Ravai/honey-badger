@@ -21,7 +21,10 @@
         <link rel="stylesheet" href="Styles/Site.css" type="text/css"/>
         <link rel="stylesheet" href="Styles/modal.css" type="text/css" />
         <link rel="stylesheet" href="Styles/progress.css" type="text/css" />
-		<script src="lib/jquery-1.7.2.min.js" type="text/javascript"></script>
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <link rel="stylesheet" href="/resources/demos/style.css" />
+
 		<script src="javascripts/site.js" type="text/javascript"></script>
 
 		<link rel="stylesheet" type="text/css" href="stylesheets/theme.css" />
@@ -52,7 +55,6 @@
 				<div class="navbar-inner">
 					<ul class="nav pull-right">
 
-					<li class="hidden-phone"><a href="#" role="button">Settings</a></li>
 					<li id="fat-menu" class="dropdown">
 					<a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
 					<i class="icon-user"></i> <asp:Label runat="server" ID="lbl_userName" />
@@ -60,9 +62,7 @@
 					</a>
 
 					<ul class="dropdown-menu">
-					<li><a tabindex="-1" href="#">My Account</a></li>
-					<li class="divider"></li>
-					<li><a tabindex="-1" class="visible-phone" href="#">Settings</a></li>
+					<li><asp:LinkButton runat="server" ID="lnk_MyAccount" Text="My Account" /></li>
 					<li class="divider visible-phone"></li>
 					<li><asp:LinkButton runat="server" ID="btn_Logout" OnClick="btn_Logout_OnClick">Logout</asp:LinkButton></li>
 					</ul>
@@ -139,11 +139,11 @@
 
             		<li class=" "><a href="ViewWip.aspx"><i class="icon-book"></i> <span>Projects in Progress</span></a></li>
 
-					<li class=" "><a href="ViewReady.aspx"><i class="icon-bar-chart"></i> <span>Ready Projects</span></a></li>
+					<li class=" "><a href="ViewReady.aspx"><i class="icon-book"></i> <span>Ready Projects</span></a></li>
 
-                    <li class=" "><a href="ViewUpcoming.aspx"><i class="icon-bar-chart"></i> <span>Upcoming Projects</span></a></li>
+                    <li class=" "><a href="ViewUpcoming.aspx"><i class="icon-book"></i> <span>Upcoming Projects</span></a></li>
 
-                    <li class=" "><a href="ViewComplete.aspx"><i class="icon-bar-chart"></i> <span>Completed Projects</span></a></li>
+                    <li class=" "><a href="ViewComplete.aspx"><i class="icon-book"></i> <span>Completed Projects</span></a></li>
 
 					<%--<li class=" "><a href="blog.html"><i class="icon-beaker"></i> <span>Blog</span></a></li>
 
@@ -165,14 +165,9 @@
                 <div class="content">
                 <div class="container-fluid">
                 <div class="row-fluid">
-                    <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true" />
-                    <!-- BEGIN CONTENT TABLE -->
-                    <!-- CONTENT GOES HERE -->
-                    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
-                    <ContentTemplate>
+                    
 				        <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server" />
-                    </ContentTemplate>
-                    </asp:UpdatePanel>
+
                     <br />
                 </div>
                 </div>
@@ -190,8 +185,8 @@
 		<footer>
 		<hr />
         <br />
-		<p class="pull-right">Original Design by <a href="http://www.portnine.com" target="_blank">Portnine</a>.  Modified by the CSUS Senior Project Team.</p>
-		<p>&copy; 2013 <a href="#">Senior Project</a></p>
+		<p class="pull-right">&copy; 2013 <a href="mailto:john.p.couch@gmail.com;katelynlindsay11@gmail.com;kvo426@gmail.com;randellk02@gmail.com;zackcbrown@gmail.com?Subject=Contact The Senior Project Team!" target="_top">Senior Project</a></p>
+		<p></p>
 		</footer>
 
 		<script src="lib/bootstrap/js/bootstrap.js"></script>

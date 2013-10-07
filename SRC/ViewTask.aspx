@@ -47,8 +47,7 @@
 
                 <asp:Panel runat="server" ID="pnl_EditOperations">
                 <a href="#UpdateProjectName"><h3>Update Project Name and Description</h3></a>
-                <asp:LinkButton runat="server" ID="btn_Edit_NameDescription" Font-Bold="true" Font-Size="Small" Text="Edit Project Name/Description" OnClick="btn_Edit_NameDescription_OnClick" /><br />
-                <asp:LinkButton runat="server" ID="btn_Edit_Sharing" Font-Bold="true" Font-Size="Small" Text="Edit Project Sharing" OnClick="btn_Edit_Sharing_OnClick" Enabled="false" />
+                <asp:LinkButton runat="server" ID="btn_Edit_Sharing" Font-Bold="true" Font-Size="Small" Text="Edit Project Sharing" OnClick="btn_Edit_Sharing_OnClick" Enabled="true" />
                 
                 </asp:Panel>
             </div>

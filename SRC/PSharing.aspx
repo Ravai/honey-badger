@@ -19,8 +19,8 @@
                 </tr>
                 <tr>
                     <td align="center"><strong>First Name</strong><br /><asp:TextBox runat="server" ID="txt_FirstName" /></td>
+                    <td align="center"><strong>Middle Name</strong><br /><asp:TextBox runat="server" ID="txt_MiddleName" /></td>
                     <td align="center"><strong>Last Name</strong><br /><asp:TextBox runat="server" ID="txt_LastName" /></td>
-                    <td align="center"><strong>MI</strong><br /><asp:TextBox runat="server" ID="txt_MI" Width="25px" /></td>
                 </tr>
                 <tr>
                     <td colspan="3" align="center">
@@ -36,18 +36,18 @@
             </table>
             </asp:Panel>
 
-            <asp:LinkButton runat="server" ID="lnkbtn_AddbyWWID" OnClick="lnkbtn_AddbyWWID_OnClick" CommandArgument="0" Text="[+] Add By WWID?" Font-Bold="true" Font-Underline="true" /><br />
-            <asp:Panel runat="server" ID="pnl_AddByWWID" Visible="false">
+            <asp:LinkButton runat="server" ID="lnkbtn_AddbyUserName" OnClick="lnkbtn_AddbyUserName_OnClick" CommandArgument="0" Text="[+] Add By user name?" Font-Bold="true" Font-Underline="true" /><br />
+            <asp:Panel runat="server" ID="pnl_AddByUserName" Visible="false">
             <table width="100%">
                 <tr>
                     <td colspan="3"><strong><u><i>To add a new person</i></u></strong></td>
                 </tr>
                 <tr>
-                    <td align="center"><strong>WWID</strong><br /><asp:TextBox runat="server" ID="txt_WWID" /></td>
+                    <td align="center"><strong>User Name</strong><br /><asp:TextBox runat="server" ID="txt_userName" /></td>
                 </tr>
                 <tr>
                     <td colspan="3" align="center">
-                        <asp:Button runat="server" ID="btn_checkWWID" Text="Check WWID" OnClick="btn_CheckWWID_OnClick" /><br />
+                        <asp:Button runat="server" ID="btn_checkuserName" Text="Check UserNames" OnClick="btn_CheckuserName_OnClick" /><br />
                         <asp:Label runat="server" ID="lbl_checkMessages2" ForeColor="Red" Font-Italic="true" />
                     </td>
                 </tr>
@@ -63,7 +63,9 @@
 
             <tr><td>
             
-            <asp:Panel ID="Panel1" runat="server" GroupingText="Permission Levels" Width="100%">
+            <asp:Panel ID="Panel1" runat="server" Width="100%">
+            <h2>Permission Levels</h2>
+            <hr />
             <table width="100%">
                 <tr>
                     <td colspan="2" align="center"><strong><u>Choose Permission Levels</u></strong></td>

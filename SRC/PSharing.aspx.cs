@@ -18,12 +18,19 @@ public partial class PSharing : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        lnk_ReturnToProject.PostBackUrl = "ViewTask.aspx?ID=" + Request.QueryString["ID"].ToString();
-        getPermissions();
-        if (IsPostBack)
+        if (Request.QueryString["ID"] != null)
         {
-            SearchNames();
-            SearchWWID();
+            lnk_ReturnToProject.PostBackUrl = "ViewTask.aspx?ID=" + Request.QueryString["ID"].ToString();
+            getPermissions();
+            if (IsPostBack)
+            {
+                SearchNames();
+                SearchuserName();
+            }
+        }
+        else
+        {
+            Response.Redirect("Home.aspx");
         }
     }
 
@@ -79,12 +86,7 @@ public partial class PSharing : System.Web.UI.Page
 
     private void SearchNames()
     {
-        DataTable DT = new DataTable();
-
-        //if (txt_MI.Text.Length > 0)
-        //    DT = theCake.getfromCDIS(txt_FirstName.Text.Trim(), txt_LastName.Text.Trim(), txt_MI.Text.Trim());
-        //else
-        //    DT = theCake.getfromCDIS(txt_FirstName.Text.Trim(), txt_LastName.Text.Trim());
+        DataTable DT = theCake.searchUsersByName(txt_FirstName.Text.Trim(), txt_MiddleName.Text.Trim(), txt_LastName.Text.Trim());
 
         if (DT.Rows.Count == 0)
         {
@@ -105,17 +107,15 @@ public partial class PSharing : System.Web.UI.Page
                 TableCell TC = new TableCell();
                 RadioButton rb = new RadioButton();
                 rb.GroupName = "possibles";
-                if (DR["MiddleInitial"].ToString() == "")
+                if (DR["middleName"].ToString() == "")
                 {
-                    rb.Text = "[" + DR["WWID"].ToString() + "] " + DR["FirstName"].ToString() + " " + DR["LastName"].ToString();
-                    rb.ID = "[" + DR["WWID"].ToString() + "] " + DR["FirstName"].ToString() + " " + DR["LastName"].ToString();
-                    rb.ID = DR["ccMailPO"].ToString() + "\\" + DR["shortID"].ToString();
+                    rb.Text = "[" + DR["ownerAlias"].ToString() + "] " + DR["firstName"].ToString() + " " + DR["lastName"].ToString();
+                    rb.ID = DR["ownerAlias"].ToString();
                 }
                 else
                 {
-                    rb.Text = "[" + DR["WWID"].ToString() + "] " + DR["FirstName"].ToString() + " " + DR["MiddleInitial"].ToString() + " " + DR["LastName"].ToString();
-                    rb.ID = "[" + DR["WWID"].ToString() + "] " + DR["FirstName"].ToString() + " " + DR["MiddleInitial"].ToString() + " " + DR["LastName"].ToString();
-                    rb.ID = DR["ccMailPO"].ToString() + "\\" + DR["shortID"].ToString();
+                    rb.Text = "[" + DR["ownerAlias"].ToString() + "] " + DR["firstName"].ToString() + " " + DR["middleName"].ToString() + " " + DR["lastName"].ToString();
+                    rb.ID = DR["ownerAlias"].ToString();
                 }
                 TC.Controls.Add(rb);
                 TR.Cells.Add(TC);
@@ -124,15 +124,15 @@ public partial class PSharing : System.Web.UI.Page
         }
     }
 
-    private void SearchWWID()
+    private void SearchuserName()
     {
-        DataTable DT = new DataTable();
+        DataTable DT = theCake.searchUsersByUserName(txt_userName.Text.Trim());
 
-        //DT = theCake.getfromCDIS(txt_WWID.Text.Trim());
+        //DT = theCake.getfromCDIS(txt_userName.Text.Trim());
         
         if (DT.Rows.Count == 0)
         {
-            lbl_checkMessages2.Text = "No matches found for WWID";
+            lbl_checkMessages2.Text = "No matches found for userName";
             //btn_AddNewPermission.Enabled = false;
             newAlias = "";
         }
@@ -149,17 +149,15 @@ public partial class PSharing : System.Web.UI.Page
                 TableCell TC = new TableCell();
                 RadioButton rb = new RadioButton();
                 rb.GroupName = "possibles";
-                if (DR["MiddleInitial"].ToString() == "")
+                if (DR["middleName"].ToString() == "")
                 {
-                    rb.Text = "[" + DR["WWID"].ToString() + "] " + DR["FirstName"].ToString() + " " + DR["LastName"].ToString();
-                    //rb.ID = "[" + DR["WWID"].ToString() + "] " + DR["FirstName"].ToString() + " " + DR["LastName"].ToString();
-                    rb.ID = DR["ccMailPO"].ToString() + "\\" + DR["shortID"].ToString();
+                    rb.Text = "[" + DR["ownerAlias"].ToString() + "] " + DR["firstName"].ToString() + " " + DR["lastName"].ToString();
+                    rb.ID = DR["ownerAlias"].ToString();
                 }
                 else
                 {
-                    rb.Text = "[" + DR["WWID"].ToString() + "] " + DR["FirstName"].ToString() + " " + DR["MiddleInitial"].ToString() + " " + DR["LastName"].ToString();
-                    //rb.ID = "[" + DR["WWID"].ToString() + "] " + DR["FirstName"].ToString() + " " + DR["MiddleInitial"].ToString() + " " + DR["LastName"].ToString();
-                    rb.ID = DR["ccMailPO"].ToString() + "\\" + DR["shortID"].ToString();
+                    rb.Text = "[" + DR["ownerAlias"].ToString() + "] " + DR["firstName"].ToString() + " " + DR["middleName"].ToString() + " " + DR["lastName"].ToString();
+                    rb.ID = DR["ownerAlias"].ToString();
                 }
                 TC.Controls.Add(rb);
                 TR.Cells.Add(TC);
@@ -173,9 +171,9 @@ public partial class PSharing : System.Web.UI.Page
         SearchNames();
     }
 
-    protected void btn_CheckWWID_OnClick(object sender, EventArgs e)
+    protected void btn_CheckuserName_OnClick(object sender, EventArgs e)
     {
-        SearchWWID();
+        SearchuserName();
     }
 
     protected void btn_AddNewPermission_OnClick(object sender, EventArgs e)
@@ -238,19 +236,19 @@ public partial class PSharing : System.Web.UI.Page
         }
     }
 
-    protected void lnkbtn_AddbyWWID_OnClick(object sender, EventArgs e)
+    protected void lnkbtn_AddbyUserName_OnClick(object sender, EventArgs e)
     {
-        if (lnkbtn_AddbyWWID.CommandArgument == "0")
+        if (lnkbtn_AddbyUserName.CommandArgument == "0")
         {
-            pnl_AddByWWID.Visible = true;
-            lnkbtn_AddbyWWID.Text = "[-] Minimize";
-            lnkbtn_AddbyWWID.CommandArgument = "1";
+            pnl_AddByUserName.Visible = true;
+            lnkbtn_AddbyUserName.Text = "[-] Minimize";
+            lnkbtn_AddbyUserName.CommandArgument = "1";
         }
         else
         {
-            pnl_AddByWWID.Visible = false;
-            lnkbtn_AddbyWWID.Text = "[+] Add By WWID?";
-            lnkbtn_AddbyWWID.CommandArgument = "0";
+            pnl_AddByUserName.Visible = false;
+            lnkbtn_AddbyUserName.Text = "[+] Add By userName?";
+            lnkbtn_AddbyUserName.CommandArgument = "0";
         }
     }
 }

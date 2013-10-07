@@ -12,7 +12,6 @@ using System.Web;
 /// Base Class for Accessing and Setting data
 /// 
 /// TT DB String:  ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString
-/// CDIS String:    ConfigurationManager.ConnectionStrings["CDISConnectionString"].ConnectionString
 /// </summary>
 public class DataBase
 {
@@ -24,6 +23,71 @@ public class DataBase
 
     }
 
+    // ==================================================================================================
+    // ==================================================================================================
+    //                                             ACCESSORS                                             
+    // ==================================================================================================
+    // ==================================================================================================
+
+    public DataTable searchUsersByName(string firstName, string middleName, string lastName)
+    {
+        if (firstName.Length == 0 && middleName.Length == 0 && lastName.Length == 0)
+        {
+            return new DataTable();
+        }
+
+        bool first = true;
+        string whereClause = "WHERE ";
+
+        if (firstName.Length > 0)
+        {
+            whereClause += "[firstName] LIKE @firstName ";
+            first = false;
+        }
+        if (middleName.Length > 0)
+        {
+            if (!first)
+                whereClause += "AND ";
+            whereClause += "[middleName] LIKE @middleName ";
+            first = false;
+        }
+        if (lastName.Length > 0)
+        {
+            if (!first)
+                whereClause += "AND ";
+            whereClause += "[lastName] LIKE @lastName ";
+        }
+
+        SqlCommand cmd = new SqlCommand();
+        cmd.Parameters.Clear();
+        cmd.CommandText = "SELECT * FROM viewTrackingTool_Users " + whereClause;
+        cmd.Parameters.AddWithValue("@firstName", "%" + firstName + "%");
+        cmd.Parameters.AddWithValue("@middleName", "%" + middleName + "%");
+        cmd.Parameters.AddWithValue("@lastName", "%" + lastName + "%");
+        
+        DataTable DT = Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+        if (DT != null)
+            return DT;
+        else
+            return new DataTable();
+    }
+
+    public DataTable searchUsersByUserName(string userName)
+    {
+        if (userName.Length == 0)
+            return new DataTable();
+        SqlCommand cmd = new SqlCommand();
+        cmd.Parameters.Clear();
+        cmd.CommandText = "SELECT * FROM viewTrackingTool_Users WHERE [ownerAlias] LIKE @userName";
+        cmd.Parameters.AddWithValue("@userName", "%" + userName + "%");
+
+        DataTable DT = Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+        if (DT != null)
+            return DT;
+        else
+            return new DataTable();
+    }
+
     public DataTable getUserData(int userID)
     {
         SqlCommand cmd = new SqlCommand();
@@ -33,12 +97,6 @@ public class DataBase
 
         return Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
     }
-
-    // ==================================================================================================
-    // ==================================================================================================
-    //                                             ACCESSORS                                             
-    // ==================================================================================================
-    // ==================================================================================================
 
     public string getActiveUserName(string IP)
     {
@@ -139,7 +197,7 @@ public class DataBase
         }
     }
 
-    public  bool Register_User(string UserName, string DisplayName, string PW, string IP)
+    public  bool Register_User(string UserName, string firstName, string middleName, string lastName, string email, string phone, string DisplayName, string PW, string IP)
     {
         SqlCommand cmd = new SqlCommand();
         cmd.CommandText = "SELECT * FROM TrackingTool_Users WHERE [ownerAlias] = @UserName";
@@ -152,15 +210,18 @@ public class DataBase
             //try
             //{
             cmd = new SqlCommand();
-            cmd.CommandText = "INSERT INTO TrackingTool_Users VALUES(@UserName, @user_PW, @IP, @IP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, @Active, @userLevel, @Email, @Preferred_Name, @DisplayName, @DisplayImage, @User_Status, @Footer)";
+            cmd.CommandText = "INSERT INTO TrackingTool_Users VALUES(@UserName, @user_PW, @IP, @IP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, @Active, @userLevel, @firstName, @middleName, @lastName, @eMail, @phoneNumber, @DisplayName, @DisplayImage, @User_Status, @Footer)";
             cmd.Parameters.Clear();
             cmd.Parameters.AddWithValue("@UserName", UserName);
             cmd.Parameters.AddWithValue("@user_PW", PW);
             cmd.Parameters.AddWithValue("@IP", IP);
             cmd.Parameters.AddWithValue("@Active", 1);
             cmd.Parameters.AddWithValue("@userLevel", 0);
-            cmd.Parameters.AddWithValue("@Email", "");
-            cmd.Parameters.AddWithValue("@Preferred_Name", "");
+            cmd.Parameters.AddWithValue("@firstName", firstName);
+            cmd.Parameters.AddWithValue("@middleName", middleName);
+            cmd.Parameters.AddWithValue("@lastName", lastName);
+            cmd.Parameters.AddWithValue("@eMail", email);
+            cmd.Parameters.AddWithValue("@phoneNumber", phone);
             cmd.Parameters.AddWithValue("@DisplayName", DisplayName);
             cmd.Parameters.AddWithValue("@DisplayImage", "");
             cmd.Parameters.AddWithValue("@User_Status", "");
@@ -1006,7 +1067,7 @@ public class DataBase
 
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "INSERT INTO [TrackingTool_Projects] VALUES(@taskName, @taskDescription, @expectedStart, @expectedStop, NULL, NULL, 0, @ownerID, NULL, 0)";
+        cmd.CommandText = "INSERT INTO [TrackingTool_Projects] VALUES(@taskName, @taskDescription, @expectedStart, @expectedStop, NULL, NULL, 0, @ownerID, NULL, 0, 0)";
         cmd.Parameters.AddWithValue("@taskName", taskName);
         cmd.Parameters.AddWithValue("@taskDescription", taskDescription);
         cmd.Parameters.AddWithValue("@expectedStart", expectedStart);
