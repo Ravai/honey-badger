@@ -19,7 +19,7 @@
         <hr />
     <div class="widget">
         <ul id="myTab" class="nav nav-tabs three-tabs fancy">
-            <li class="active"><a href="#Timelines" data-toggle="tab">Project Timelines</a></li>
+            <li class="active"><a href="#Timelines" data-toggle="tab">Project Details</a></li>
 	        <li><a href="#SpecialOptions" data-toggle="tab">Special Operations</a></li>
             <li><a href="#DiscussionBoard" data-toggle="tab">Discussion</a></li>
         </ul>
@@ -27,28 +27,29 @@
 	        <div class="tab-pane fade in active" id="Timelines">
                 <asp:Panel runat="server" ID="Panel2">
                 <table>
-                
+                <tr><td><div style="font-weight:bold;">Project Owner: </div></td><td><asp:Label runat="server" ID="lbl_projectOwner" /></td></tr>
+                <tr><td colspan="2"><hr /></td></tr>
                 <tr><td><div style="font-weight:bold;">Expected Start:</div></td><td><asp:Label runat="server" ID="lbl_ExpectedStart" /></td></tr>
                 <tr><td><div style="font-weight:bold;">Expected Completion:</div></td><td><asp:Label runat="server" ID="lbl_ExpectedStop" /></td></tr>
                 <tr><td colspan="2"></td></tr>
                 <tr><td><div style="font-weight:bold;">Actual Start:</div></td><td><asp:Label runat="server" ID="lbl_ActualStart" /></td></tr>
                 <tr><td><div style="font-weight:bold;">Actual Completion:</div></td><td><asp:Label runat="server" ID="lbl_ActualStop" /></td></tr>
-
                 </table>
                 </asp:Panel>
             </div>
             <div class="tab-pane fade" id="SpecialOptions">
                 <asp:Panel ID="pnl_SpecialOptions" runat="server">
-                <asp:Panel runat="server" ID="btn_markDone"><asp:LinkButton ID="LinkButton1" runat="server" OnClick="btn_markDone_OnClick" Font-Bold="true" Font-Size="Medium" Text="Mark Task as Done" /><br /></asp:Panel>
-                <asp:Panel runat="server" ID="btn_markWip" Visible="false"><asp:LinkButton ID="LinkButton2" runat="server" OnClick="btn_markWip_OnClick" Font-Bold="true" Font-Size="Medium" Text="Re-Open Task" /><br /></asp:Panel>
-                <asp:Panel runat="server" ID="btn_startTask" Visible="false"><asp:LinkButton ID="LinkButton3" runat="server" OnClick="btn_startTask_OnClick" Font-Bold="true" Font-Size="Medium" Text="Start Task" /><br /></asp:Panel>
-                <asp:Panel runat="server" ID="btn_UpgradeSize" Visible="false"><asp:LinkButton ID="LinkButton4" runat="server" OnClick="btn_UpgradeSize_OnClick" Font-Bold="true" Font-Size="Medium" Text="Make Project a Large Project" /><br /></asp:Panel>
-                </asp:Panel>
+                <asp:Panel runat="server" ID="btn_markDone"><asp:LinkButton ID="LinkButton1" runat="server" OnClick="btn_markDone_OnClick" Font-Bold="true" Font-Size="Medium"><h3>Mark Task as Done</h3></asp:LinkButton></asp:Panel>
+                <asp:Panel runat="server" ID="btn_markWip" Visible="false"><asp:LinkButton ID="LinkButton2" runat="server" OnClick="btn_markWip_OnClick" Font-Bold="true" Font-Size="Medium"><h3>Re-Open Task</h3></asp:LinkButton></asp:Panel>
+                <asp:Panel runat="server" ID="btn_startTask" Visible="false"><asp:LinkButton ID="LinkButton3" runat="server" OnClick="btn_startTask_OnClick" Font-Bold="true" Font-Size="Medium"><h3>Start Task</h3></asp:LinkButton></asp:Panel>
+                <asp:Panel runat="server" ID="btn_UpgradeSize" Visible="false"><asp:LinkButton ID="LinkButton4" runat="server" OnClick="btn_UpgradeSize_OnClick" Font-Bold="true" Font-Size="Medium"><h3>Make Project a Large Project</h3></asp:LinkButton></asp:Panel>
+                
 
                 <asp:Panel runat="server" ID="pnl_EditOperations">
                 <a href="#UpdateProjectName"><h3>Update Project Name and Description</h3></a>
-                <asp:LinkButton runat="server" ID="btn_Edit_Sharing" Font-Bold="true" Font-Size="Small" Text="Edit Project Sharing" OnClick="btn_Edit_Sharing_OnClick" Enabled="true" />
+                <asp:LinkButton runat="server" ID="btn_Edit_Sharing" Font-Bold="true" Font-Size="Medium" OnClick="btn_Edit_Sharing_OnClick" Enabled="true"><h3>Edit Project Sharing</h3></asp:LinkButton>
                 
+                </asp:Panel>
                 </asp:Panel>
             </div>
             <div class="tab-pane fade" id="DiscussionBoard">
@@ -159,6 +160,20 @@
             <br />
             <asp:Button ID="btnEditFeature" runat="server" OnClick="btn_EditChildFeature_OnClick" Text="Update" />
             <asp:Button runat="server" Text="Cancel" PostBackUrl="#" />
+        </div>
+    </div>
+
+    <div id="quickComplete" class="modalDialog">
+        <div>
+            <a href="#close" title="Close" class="close">X</a>
+            <div class="modalTitles">Quick Complete!</div>
+            <hr />
+            <strong>Name: </strong><asp:Label runat="server" ID="lbl_quickComplete_Name" /><br />
+            <strong>Description: </strong><asp:Label runat="server" ID="lbl_quickComplete_Description" /><br />
+            <strong>% Complete: </strong><asp:Label runat="server" ID="lbl_quickComplete_PercentComplete" /><br />
+            <br />
+            <asp:Button ID="btnQuickComplete" runat="server" OnClick="btnQuickComplete_OnClick" Text="Complete!" />
+            <asp:Button ID="Button2" runat="server" Text="Cancel" PostBackUrl="#" />
         </div>
     </div>
 

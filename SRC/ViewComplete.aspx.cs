@@ -25,34 +25,27 @@ public partial class ViewComplete : System.Web.UI.Page
     {
         string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
         DataTable DT = theCake.getCompletedTasks(theCake.getActiveUserName(IP));
+        DataTable DT2 = theCake.getSharedCompletedTasks(theCake.getActiveUserName(IP));
 
         if (DT.Rows.Count > 0)
         {
             foreach (DataRow DR in DT.Rows)
             {
-                TableRow TR = new TableRow();
-                TableCell TC1 = new TableCell();
-                TC1.Text = "<strong><u><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a></u></strong><br />" + DR["taskDescription"].ToString();
-                TableCell TC2 = new TableCell();
-                TC2.Text = "<u>Date Started</u><br /><i><font color=red>" + DateTime.Parse(DR["actualStart"].ToString()).Date + "</font></i>";
-                TableCell TC3 = new TableCell();
-                TC3.Text = "<u>Date Completed</u><br /><i><font color=red>" + DateTime.Parse(DR["actualStop"].ToString()).Date + "</font></i>";
-                TC1.Width = Unit.Percentage(30);
-                TC2.Width = Unit.Percentage(20);
-                TC3.Width = Unit.Percentage(50);
-                TR.Cells.Add(TC1);
-                TR.Cells.Add(TC2);
-                TR.Cells.Add(TC3);
-                tbl_CompletedTaskList.Rows.Add(TR);
+                CompletedList.Text += "<li>" + "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
+                    "<p class=\"info\">" + DR["taskDescription"].ToString() + "</p></li>";
             }
+            foreach (DataRow DR in DT2.Rows)
+            {
+                CompletedList.Text += "<li>" + "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\"><strong>[SHARED]</strong>" + DR["taskName"].ToString() + "</a>" +
+                    "<p class=\"info\">" + DR["taskDescription"].ToString() + "</p></li>";
+            }
+            //lit_totReady.Text = (DT.Rows.Count + DT2.Rows.Count).ToString();
         }
         else
         {
-            TableRow TR = new TableRow();
-            TableCell TC1 = new TableCell();
-            TC1.Text = "You have no completed tasks.";
-            TR.Cells.Add(TC1);
-            tbl_CompletedTaskList.Rows.Add(TR);
+            CompletedList.Text += "You have no tasks completed.";
+            //lit_totReady.Text = "0";
         }
+
     }
 }

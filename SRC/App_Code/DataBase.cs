@@ -29,6 +29,23 @@ public class DataBase
     // ==================================================================================================
     // ==================================================================================================
 
+    public void updateUserInfo(int UserID, string FirstName, string MiddleName, string LastName, string DisplayName, string Email, string PhoneNumber, string DisplayImage)
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "UPDATE [TrackingTool_Users] SET [firstName] = @FirstName, [middleName] = @MiddleName, [lastName] = @LastName, [Display_Name] = @DisplayName, [eMail] = @Email, [phoneNumber] = @PhoneNumber, [Display_Image] = @DisplayImage WHERE [ID] = @UserID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@FirstName", FirstName);
+        cmd.Parameters.AddWithValue("@MiddleName", MiddleName);
+        cmd.Parameters.AddWithValue("@LastName", LastName);
+        cmd.Parameters.AddWithValue("@DisplayName", DisplayName);
+        cmd.Parameters.AddWithValue("@Email", Email);
+        cmd.Parameters.AddWithValue("@PhoneNumber", PhoneNumber);
+        cmd.Parameters.AddWithValue("@DisplayImage", DisplayImage);
+		cmd.Parameters.AddWithValue("@UserID", UserID);
+        
+		Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+    }
+
     public DataTable searchUsersByName(string firstName, string middleName, string lastName)
     {
         if (firstName.Length == 0 && middleName.Length == 0 && lastName.Length == 0)
@@ -176,9 +193,10 @@ public class DataBase
         if (DT.Rows.Count == 1)
         {
             cmd = new SqlCommand();
-            cmd.CommandText = "DELETE FROM TrackingTool_Users_Active WHERE [uniqID] = @uniqID";
+            cmd.CommandText = "DELETE FROM TrackingTool_Users_Active WHERE [uniqID] = @uniqID OR [User_IP] = @IP";
             cmd.Parameters.Clear();
             cmd.Parameters.AddWithValue("@uniqID", DT.Rows[0]["ID"].ToString());
+            cmd.Parameters.AddWithValue("@IP", IP);
 
             Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
 

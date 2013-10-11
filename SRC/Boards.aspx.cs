@@ -49,13 +49,16 @@ public partial class Boards : System.Web.UI.Page
                     Response.Redirect("Home.aspx");
                 }
             }
+
+            if (!BoardWrite)
+            {
+                pnl_addThread.Visible = false;
+            }
         }
         else
         {
             Response.Redirect("Home.aspx");
         }
-
-        if (!BoardWrite) pnl_AddThread1.Visible = false;
     }
 
     public void getThreads()
@@ -66,60 +69,37 @@ public partial class Boards : System.Web.UI.Page
         {
             Thread thrd = new Thread(Int32.Parse(DR["threadID"].ToString()));
 
-            TableRow TR1 = new TableRow();
-            TableCell TC1 = new TableCell();
+            string threadItem = "";
 
-            Table catTBL = new Table();
-            catTBL.CellPadding = 5;
-            catTBL.Width = Unit.Percentage(100);
-            catTBL.BorderColor = System.Drawing.Color.Black;
-            catTBL.BorderStyle = BorderStyle.Solid;
-            catTBL.BorderWidth = Unit.Pixel(1);
-            catTBL.BackColor = System.Drawing.ColorTranslator.FromHtml("#1b1f27");
-            TableRow catTR = new TableRow();
-            TableCell catTC = new TableCell();
-            catTC.Width = Unit.Percentage(80);
-            LinkButton CategoryName = new LinkButton();
-            CategoryName.Text = thrd.get_thread_Name();
-            CategoryName.ForeColor = System.Drawing.ColorTranslator.FromHtml("#0000FF");
-            CategoryName.Font.Size = FontUnit.XLarge;
-            CategoryName.Font.Bold = true;
-            CategoryName.Font.Name = "Courier";
-            CategoryName.Style.Add("font-variant", "small-caps");
-            CategoryName.PostBackUrl = "Threads.aspx?ID=" + thrd.get_threadID().ToString();
-            catTC.Controls.Add(CategoryName);
-            Literal hr = new Literal();
-            hr.Text = "<br /><hr />";
-            catTC.Controls.Add(hr);
-            Label Description = new Label();
-            Description.Text = thrd.get_thread_Description() + "<br /><br />";
-            Description.Font.Size = FontUnit.Small;
-            catTC.Controls.Add(Description);
-            Label created = new Label();
-            created.Text = "created on " + thrd.get_createdTimestamp().ToShortDateString() + " by " + theCake.getUserAlias(thrd.get_createdBy()) + ".";
-            created.Font.Size = FontUnit.XXSmall;
-            created.Font.Italic = true;
-            catTC.Controls.Add(created);
-            catTC.CssClass = "CategoryTable";
+            threadItem += "<div style=\"border:1px solid #646469;\">" +
+                "<div align=\"center\">" +
+                "<section style=\"display:table; width:90%; margin:10px; text-align:left;\">" +
+                    "<section style=\"display:inline-block; width:90%; height:100%; vertical-align:top;\">" +
+                        "<div style=\"font-variant:small-caps; font-size:1.2em;\">" +
+                            "<a href=\"Threads.aspx?ID=" + thrd.get_threadID().ToString() + "\">" + thrd.get_thread_Name() + "</a>" +
+                        "</div>" +
+                        "<hr style=\"margin:2px;\" />" +
+                        "<div style=\"font-size:.9em;\">" +
+                            thrd.get_thread_Description() +
+                        "</div>" +
+                        "<br />" +
+                        "<div style=\"font-size:.6em;\">" +
+                            "created on " + thrd.get_createdTimestamp().ToShortDateString() + " by " + theCake.getUserAlias(thrd.get_createdBy()) + "." +
+                        "</div>" +
+                    "</section>" +
+                    "<section style=\"display:inline-block; width:10%; height:100%;\">" +
+                        "<div class=\"widget pull-right\" style=\"width:100%;\">" +
+                            "<div align=\"center\">" +
+                                "<p><strong>Post Count</strong></p>" +
+                                thrd.count().ToString() +
+                            "</div>" +
+                        "</div>" +
+                    "</section>" +
+                "</section>" +
+                "</div>" +
+            "</div>";
 
-            catTR.Cells.Add(catTC);
-            TableCell catTC2 = new TableCell();
-            catTC2.Width = Unit.Percentage(20);
-            catTC2.CssClass = "CategoryTable";
-            catTC2.HorizontalAlign = HorizontalAlign.Center;
-            Label l2 = new Label();
-            l2.Text = ":Posts:<br />";
-            l2.Font.Bold = true;
-            catTC2.Controls.Add(l2);
-            Label posts = new Label();
-            posts.Text = thrd.count().ToString();
-            catTC2.Controls.Add(posts);
-            catTR.Cells.Add(catTC2);
-
-            catTBL.Rows.Add(catTR);
-            TC1.Controls.Add(catTBL);
-            TR1.Cells.Add(TC1);
-            tbl_Threads.Rows.Add(TR1);
+            lit_ThreadList.Text += threadItem;
         }
     }
 
@@ -128,17 +108,5 @@ public partial class Boards : System.Web.UI.Page
         string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
         theCake.addNewThread(Int32.Parse(Request.QueryString["ID"].ToString()),txt_Subject.Text, txt_Description.Text, theCake.getUserID(theCake.getActiveUserName(IP)));
         Response.Redirect("Boards.aspx?ID=" + Request.QueryString["ID"].ToString());
-    }
-
-    protected void lnkbtn_ShowAddThread_OnClick(object sender, EventArgs e)
-    {
-        pnl_AddThread1.Visible = false;
-        pnl_AddThread2.Visible = true;
-    }
-
-    protected void btn_CancelNewThread_OnClick(object sender, EventArgs e)
-    {
-        pnl_AddThread1.Visible = true;
-        pnl_AddThread2.Visible = false;
     }
 }

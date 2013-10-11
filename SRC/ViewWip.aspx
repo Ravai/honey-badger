@@ -2,14 +2,9 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
-    <div>
-        <a href="Home.aspx">Return to Main</a>
-    </div>
+    <h1>Tasks that are In-Progress!</h1>
 
-    <div class="fullContainer">
-    <div style="font-size:Medium; font-weight:bold;">Tasks in WIP</div> <i>(Task has been started)</i><br />
-    <asp:Table runat="server" Width="100%" ID="tbl_WipTaskList" />
-    </div><br />
+    <asp:Literal runat="server" ID="ProgressList" />
 
 </asp:Content>
 

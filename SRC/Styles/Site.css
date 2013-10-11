@@ -1,4 +1,60 @@
-﻿.modalTitles
+﻿.google.button {
+  padding: 3px 8px;
+  -webkit-border-radius: 2px 2px;
+  border: solid 1px rgb(153, 153, 153);
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 255, 255)), to(rgb(221, 221, 221)));
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  text-shadow: 0px 1px 1px rgba(255,255,255,1);
+  line-height: 1;
+  font-size: .7em;
+  vertical-align:middle;
+}
+
+.google2.button {
+  padding: 4px 10px;
+  -webkit-border-radius: 2px 2px;
+  border: solid 1px rgb(153, 153, 153);
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 255, 255)), to(rgb(221, 221, 221)));
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  text-shadow: 0px 1px 1px rgba(255,255,255,1);
+  line-height: 1;
+  font-size: 1.1em;
+  vertical-align:middle;
+}
+
+.google2.button.blue {
+  border-color: rgb(82,108,147);
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 255, 255)), to(rgb(82,108,147)));
+}
+
+.google.button.blue {
+  border-color: rgb(98,202,227);
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 255, 255)), to(rgb(98,202,227)));
+}
+
+.google.button.red {
+  border-color: rgb(136,0,0);
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 255, 255)), to(rgb(136,0,0)));
+  color: white;
+  text-shadow: 0px 1px 1px rgba(0,0,0,1);
+}
+
+.google.button.green {
+  border-color: rgb(76,161,112);
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 255, 255)), to(rgb(76,161,112)));
+  color: black;
+  text-shadow: 0px 1px 1px rgba(255,255,255,1);
+}
+
+.modalTitles
 {
     font-family: 'Kite One', sans-serif;
     font-weight: bold;

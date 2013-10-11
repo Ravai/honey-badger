@@ -21,10 +21,11 @@ public partial class ViewTask : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         MaintainScrollPositionOnPostBack = true;
-        updateProjectPercent();
-
+        
         if (Request.QueryString["ID"] != null)
         {
+            updateProjectPercent();
+
             ID = Request.QueryString["ID"].ToString();
             string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
             DataTable DT = theCake.getTask(Int32.Parse(ID), theCake.getActiveUserName(IP));
@@ -58,6 +59,7 @@ public partial class ViewTask : System.Web.UI.Page
 
             lbl_TaskName.Text = DT.Rows[0]["taskName"].ToString();
             lbl_Description.Text = DT.Rows[0]["taskDescription"].ToString();
+            lbl_projectOwner.Text = DT.Rows[0]["Display_Name"].ToString();
             txt_Edit_TaskName.Text = DT.Rows[0]["taskName"].ToString();
             txt_Edit_TaskDescription.Text = DT.Rows[0]["taskDescription"].ToString();
 
@@ -125,6 +127,10 @@ public partial class ViewTask : System.Web.UI.Page
                         {
                             ddl_editChildFeature_PercentComplete.Enabled = true;
                         }
+
+                        lbl_quickComplete_Name.Text = ftr.getFeatureName();
+                        lbl_quickComplete_Description.Text = ftr.getFeatureDescription();
+                        lbl_quickComplete_PercentComplete.Text = ftr.getPercentComplete().ToString();
                     }
                 }
 
@@ -214,13 +220,20 @@ public partial class ViewTask : System.Web.UI.Page
             tbl_Comments.Rows.Add(TR);
         }
     }
-
+    
     private string getFeatureLines(Feature ftr)
     {
         string retString = "";
         if (ftr.myChildren.Count > 0)
         {
-            retString += "<li>" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"green\"><i>" + ftr.getPercentComplete() + "%</i></font><a href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\">[+]</a>|<a href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\">[e]</a><ul>";
+            if (ftr.getPercentComplete() == 100)
+            {
+                retString += "<li title=\"" + ftr.getFeatureDescription() + "\">" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"green\"><i>" + ftr.getPercentComplete() + "%</i></font>&nbsp;&nbsp;<a class=\"google button blue\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\">add Sub-Objective</a><a class=\"google button\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\">edit</a><ul><hr style=\"height:1px; margin:2px;\" />";
+            }
+            else
+            {
+                retString += "<li title=\"" + ftr.getFeatureDescription() + "\">" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"red\"><i>" + ftr.getPercentComplete() + "%</i></font>&nbsp;&nbsp;<a class=\"google button blue\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\">add Sub-Objective</a><a class=\"google button\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\">edit</a><ul><hr style=\"height:1px; margin:2px;\" />";
+            }
             foreach (Feature child in ftr.myChildren)
             {
                 retString += getFeatureLines(child);
@@ -229,7 +242,14 @@ public partial class ViewTask : System.Web.UI.Page
         }
         else
         {
-            retString += "<li>" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"green\"><i>" + ftr.getPercentComplete() + "%</i></font><a href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\">[+]</a>|<a href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\">[e]</a>|<a href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#removeChildFeature\">[r]</a></li>";
+            if (ftr.getPercentComplete() == 100)
+            {
+                retString += "<li title=\"" + ftr.getFeatureDescription() + "\">" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"green\"><i>" + ftr.getPercentComplete() + "%</i></font>&nbsp;&nbsp;<a class=\"google button blue\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\">add Sub-Objective</a><a class=\"google button\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\">edit</a><a class=\"google button red\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#removeChildFeature\">remove</a></li><hr style=\"height:1px; margin:2px;\" />";
+            }
+            else
+            {
+                retString += "<li title=\"" + ftr.getFeatureDescription() + "\">" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"red\"><i>" + ftr.getPercentComplete() + "%</i></font>&nbsp;&nbsp;<a class=\"google button blue\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\">add Sub-Objective</a><a class=\"google button\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\">edit</a><a class=\"google button red\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#removeChildFeature\">remove</a><a class=\"google button green\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#quickComplete\">Quick Complete</a></li><hr style=\"height:1px; margin:2px;\" />";
+            }
         }
         return retString;
     }
@@ -451,5 +471,15 @@ public partial class ViewTask : System.Web.UI.Page
         {
             theCake.updateProjectPercentComplete(0, projectID);
         }
+    }
+
+    protected void btnQuickComplete_OnClick(object sender, EventArgs e)
+    {
+        string projectID = Request.QueryString["ID"].ToString();
+        int featureID = int.Parse(Request.QueryString["feat"].ToString());
+        Feature ftr = new Feature(featureID);
+        ftr.updatePercentComplete(100);
+
+        Response.Redirect("ViewTask.aspx?ID=" + projectID);
     }
 }

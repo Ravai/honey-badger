@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,7 +12,10 @@ public partial class Login : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
+        DataTable DT = theCake.getActiveUserData(IP);
+        if (DT.Rows.Count == 1)
+            Response.Redirect("Home.aspx");
     }
 
     protected void btn_Submit_OnClick(object sender, EventArgs e)

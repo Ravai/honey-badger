@@ -26,7 +26,8 @@ public partial class Threads : System.Web.UI.Page
             lbl_ThreadName.Text = DT.Rows[0]["thread_Name"].ToString();
             lnk_ReturnToBoard.PostBackUrl = "Boards.aspx?ID=" + DT.Rows[0]["boardID"].ToString();
 
-            getPosts();
+            if (!IsPostBack)
+                getPosts();
 
             DataTable newDT = theCake.getBoard(Int32.Parse(DT.Rows[0]["boardID"].ToString()));
             boardName.Text = newDT.Rows[0]["board_CategoryName"].ToString();
@@ -50,13 +51,14 @@ public partial class Threads : System.Web.UI.Page
                     Response.Redirect("Home.aspx");
                 }
             }
+
+            if (!BoardWrite)
+                pnl_AddPost.Visible = false;
         }
         else
         {
             Response.Redirect("Home.aspx");
         }
-
-        if (!BoardWrite) lnkbtn_ShowAddPost.Visible = false;
     }
 
     public void getPosts()
@@ -69,79 +71,53 @@ public partial class Threads : System.Web.UI.Page
             {
                 Post pst = new Post(Int32.Parse(DR["postID"].ToString()));
 
-                TableRow TR1 = new TableRow();
-                TableCell TC1 = new TableCell();
+                string postBlock = "";
 
-                Table catTBL = new Table();
-                catTBL.CellPadding = 5;
-                catTBL.Width = Unit.Percentage(100);
-                catTBL.BorderColor = System.Drawing.Color.Black;
-                catTBL.BorderStyle = BorderStyle.Solid;
-                catTBL.BorderWidth = Unit.Pixel(1);
-                catTBL.BackColor = System.Drawing.ColorTranslator.FromHtml("#1b1f27");
-                TableRow catTR = new TableRow();
+                postBlock += "<div class=\"widget\">" + 
+                    "<section style=\"display:table;\">" + 
+                        "<section style=\"display:inline-block;\">" + 
+                            "<div class=\"widget\" align=\"center\">" + 
+                                theCake.getUserAlias(pst.get_postBy()) + "<br />" + 
+                                "<img height=\"100px\" width=\"100px\" src=\"images/avatars/Common/SampleAvatar.gif\" />" + 
+                            "</div>" + 
+                        "</section>" + 
+                        "<section style=\"display:inline-block; vertical-align:top; margin:5px; width:100%-100px;\">" + 
+                            "<div style=\"font-size:.8em;\">" + 
+                                "<strong>Posted:</strong> " + pst.get_createdTimestamp().ToShortDateString() + " " + pst.get_createdTimestamp().ToShortTimeString() + 
+                            "</div>" + 
+                            "<hr style=\"margin:1px;\" />" + 
+                            "<p style=\"font-size:1.1em;\">" + pst.get_post_Full() + "</p>" + 
+                        "</section>" + 
+                    "</section>" + 
+                "</div>";
 
-                TableCell catTC2 = new TableCell();
-                catTC2.VerticalAlign = VerticalAlign.Top;
-                catTC2.Width = Unit.Percentage(10);
-                catTC2.CssClass = "CategoryTable";
-                catTC2.HorizontalAlign = HorizontalAlign.Center;
-                Label user = new Label();
-                user.Text = theCake.getUserAlias(pst.get_postBy()) + "<hr />";
-                catTC2.Controls.Add(user);
-                Label postedOn = new Label();
-                postedOn.Text = "<strong>Created: </strong><br />" + pst.get_createdTimestamp().ToShortDateString() + "<br />" + pst.get_createdTimestamp().ToShortTimeString();
-                catTC2.Controls.Add(postedOn);
-                catTR.Cells.Add(catTC2);
+                lit_Posts.Text += postBlock;
 
-                TableCell catTC = new TableCell();
-                catTC.Width = Unit.Percentage(90);
-                catTC.VerticalAlign = VerticalAlign.Top;
-                Label CategoryName = new Label();
-                CategoryName.Text = pst.get_post_Full();
-                CategoryName.ForeColor = System.Drawing.ColorTranslator.FromHtml("#0000FF");
-                CategoryName.Font.Size = FontUnit.XLarge;
-                CategoryName.Font.Name = "Courier";
-                catTC.Controls.Add(CategoryName);
-                catTC.CssClass = "CategoryTable";
-                catTR.Cells.Add(catTC);
-
-                catTBL.Rows.Add(catTR);
-                TC1.Controls.Add(catTBL);
-                TR1.Cells.Add(TC1);
-                tbl_Posts.Rows.Add(TR1);
             }
         }
         else
         {
-            TableRow TR1 = new TableRow();
-            TableCell TC1 = new TableCell();
+            string postBlock = "";
 
-            Table catTBL = new Table();
-            catTBL.CellPadding = 5;
-            catTBL.Width = Unit.Percentage(100);
-            catTBL.BorderColor = System.Drawing.Color.Black;
-            catTBL.BorderStyle = BorderStyle.Solid;
-            catTBL.BorderWidth = Unit.Pixel(1);
-            catTBL.BackColor = System.Drawing.ColorTranslator.FromHtml("#1b1f27");
-            TableRow catTR = new TableRow();
+            postBlock += "<div class=\"widget\">" +
+                "<section style=\"display:table;\">" +
+                    "<section style=\"display:inline-block;\">" +
+                        "<div class=\"widget\" align=\"center\">" +
+                            "System Monkey<br />" +
+                            "<img height=\"100px\" width=\"100px\" src=\"http://placekitten.com/100/100\" />" +
+                        "</div>" +
+                    "</section>" +
+                    "<section style=\"display:inline-block; vertical-align:top; margin:5px; width:100%-100px;\">" +
+                        "<div style=\"font-size:.8em;\">" +
+                            "<strong>Posted:</strong> Never Occurred!" + 
+                        "</div>" +
+                        "<hr style=\"margin:1px;\" />" +
+                        "<p style=\"font-size:1.1em;\">No posts have occurred here yet.  Feel free to post something...</p>" +
+                    "</section>" +
+                "</section>" +
+            "</div>";
 
-            TableCell catTC = new TableCell();
-            catTC.Width = Unit.Percentage(90);
-            Label CategoryName = new Label();
-            CategoryName.Text = "There has been no posts.  Be the first to say something!";
-            CategoryName.ForeColor = System.Drawing.ColorTranslator.FromHtml("#0000FF");
-            CategoryName.Font.Size = FontUnit.XLarge;
-            CategoryName.Font.Name = "Courier";
-            CategoryName.Style.Add("font-variant", "small-caps");
-            catTC.Controls.Add(CategoryName);
-            catTC.CssClass = "CategoryTable";
-            catTR.Cells.Add(catTC);
-
-            catTBL.Rows.Add(catTR);
-            TC1.Controls.Add(catTBL);
-            TR1.Cells.Add(TC1);
-            tbl_Posts.Rows.Add(TR1);
+            lit_Posts.Text += postBlock;
         }
     }
 
@@ -153,17 +129,5 @@ public partial class Threads : System.Web.UI.Page
         string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
         theCake.addNewPost(Int32.Parse(Request.QueryString["ID"].ToString()), newPost, theCake.getUserID(theCake.getActiveUserName(IP)));
         Response.Redirect("Threads.aspx?ID=" + Request.QueryString["ID"].ToString());
-    }
-
-    protected void lnkbtn_ShowAddPost_OnClick(object sender, EventArgs e)
-    {
-        pnl_AddPost1.Visible = false;
-        pnl_AddPost2.Visible = true;
-    }
-
-    protected void btn_CancelNewPost_OnClick(object sender, EventArgs e)
-    {
-        pnl_AddPost1.Visible = true;
-        pnl_AddPost2.Visible = false;
     }
 }

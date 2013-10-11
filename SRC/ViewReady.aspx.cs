@@ -25,35 +25,27 @@ public partial class ViewReady : System.Web.UI.Page
     {
         string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
         DataTable DT = theCake.getReadyTasks(theCake.getActiveUserName(IP));
+        DataTable DT2 = theCake.getSharedReadyTasks(theCake.getActiveUserName(IP));
 
         if (DT.Rows.Count > 0)
         {
             foreach (DataRow DR in DT.Rows)
             {
-
-                TableRow TR = new TableRow();
-                TableCell TC1 = new TableCell();
-                TC1.Text = "<strong><u><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a></u></strong><br />" + DR["taskDescription"].ToString();
-                TableCell TC2 = new TableCell();
-                TC2.Text = "<u>Expected Start</u><br /><i><font color=red>" + DateTime.Parse(DR["expectedStart"].ToString()).Date + "</font></i>";
-                TableCell TC3 = new TableCell();
-                TC3.Text = "<u>Expected Stop</u><br /><i><font color=red>" + DateTime.Parse(DR["expectedStop"].ToString()).Date + "</font></i>";
-                TC1.Width = Unit.Percentage(30);
-                TC2.Width = Unit.Percentage(20);
-                TC3.Width = Unit.Percentage(50);
-                TR.Cells.Add(TC1);
-                TR.Cells.Add(TC2);
-                TR.Cells.Add(TC3);
-                tbl_ReadyTaskList.Rows.Add(TR);
+                ReadyList.Text += "<li>" + "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
+                    "<p class=\"info\">" + DR["taskDescription"].ToString() + "</p></li>";
             }
+            foreach (DataRow DR in DT2.Rows)
+            {
+                ReadyList.Text += "<li>" + "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\"><strong>[SHARED]</strong>" + DR["taskName"].ToString() + "</a>" +
+                    "<p class=\"info\">" + DR["taskDescription"].ToString() + "</p></li>";
+            }
+            //lit_totReady.Text = (DT.Rows.Count + DT2.Rows.Count).ToString();
         }
         else
         {
-            TableRow TR = new TableRow();
-            TableCell TC1 = new TableCell();
-            TC1.Text = "You have no Ready tasks.";
-            TR.Cells.Add(TC1);
-            tbl_ReadyTaskList.Rows.Add(TR);
+            ReadyList.Text += "You have no tasks Ready";
+            //lit_totReady.Text = "0";
         }
+
     }
 }

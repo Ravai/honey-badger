@@ -2,14 +2,10 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
-    <div>
-        <a href="Home.aspx">Return to Main</a>
-    </div>
-
-    <div class="fullContainer">
-    <div style="font-size:Medium; font-weight:bold;">Completed Tasks</div> <i>(Task marked as Done)</i><br />
-    <asp:Table runat="server" Width="100%" ID="tbl_CompletedTaskList" />
-    </div><br />
+    <h1>Tasks that are Completed!</h1>
+    <ul class="cards">
+    <asp:Literal runat="server" ID="CompletedList" />
+    </ul>
 
 </asp:Content>
 

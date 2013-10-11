@@ -19,7 +19,6 @@ public partial class Home : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         MaintainScrollPositionOnPostBack = true;
-        if (sharedTaskTotal == 0) pnl_SharedTasks.Visible = false;
 
         if (!IsPostBack)
         {
@@ -130,6 +129,7 @@ public partial class Home : System.Web.UI.Page
     {
         string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
         DataTable DT = theCake.getReadyTasks(theCake.getActiveUserName(IP));
+        DataTable DT2 = theCake.getSharedReadyTasks(theCake.getActiveUserName(IP));
 
         if (DT.Rows.Count > 0)
         {
@@ -139,7 +139,12 @@ public partial class Home : System.Web.UI.Page
                     "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
                     "<p class=\"info\">" + DR["taskDescription"].ToString() + "</p></li>";
             }
-            lit_totReady.Text = DT.Rows.Count.ToString();
+            foreach (DataRow DR in DT2.Rows)
+            {
+                ReadyList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\"><strong>[SHARED]</strong> " + DR["taskName"].ToString() + "</a>" +
+                    "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
+            }
+            lit_totReady.Text = (DT.Rows.Count + DT2.Rows.Count).ToString();
         }
         else
         {
@@ -154,6 +159,7 @@ public partial class Home : System.Web.UI.Page
     {
         string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
         DataTable DT = theCake.getUpcomingTasks(theCake.getActiveUserName(IP));
+        DataTable DT2 = theCake.getSharedUpcomingTasks(theCake.getActiveUserName(IP));
 
         if (DT.Rows.Count > 0)
         {
@@ -163,7 +169,12 @@ public partial class Home : System.Web.UI.Page
                     "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
                     "<p class=\"info\">" + DR["taskDescription"].ToString() + "</p></li>";
             }
-            lit_totUpcoming.Text = DT.Rows.Count.ToString();
+            foreach (DataRow DR in DT2.Rows)
+            {
+                UpcomingList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\"><strong>[SHARED]</strong> " + DR["taskName"].ToString() + "</a>" +
+                    "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
+            }
+            lit_totUpcoming.Text = (DT.Rows.Count + DT2.Rows.Count).ToString();
         }
         else
         {

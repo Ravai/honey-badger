@@ -13,9 +13,23 @@
     <asp:TextBox runat="server" ID="txt_MI" placeholder="Middle Initial/Name..." />
     <asp:TextBox runat="server" ID="txt_LastName" placeholder="Last name..." /><font color="red">*</font><br />
 
-    <asp:TextBox runat="server" ID="txt_DisplayName" placeholder="Enter your desired Display Name..." /><font color="red">*</font><br />
     <asp:TextBox runat="server" ID="txt_Email" placeholder="Enter your email address..." /><font color="red">*</font><br />
     <asp:TextBox runat="server" ID="txt_Phone" placeholder="Enter your phone number..." /><br />
+    <br />
+    <table>
+        <tr>
+            <td colspan="2"><strong>Display Name:</strong></td>
+        </tr>
+        <tr>
+            <td style="padding:10px;" width="50%">
+                Your Full Name&nbsp;<asp:RadioButton runat="server" ID="radio_Name" GroupName="displayname" />
+            </td>
+            <td style="padding:10px;" width="50%">
+                User Name&nbsp;<asp:RadioButton runat="server" ID="radio_UserName" GroupName="displayname" />
+            </td>
+        </tr>
+    </table>
+      
 
     <h3>Associations</h3>
     No associations as of yet...<br />

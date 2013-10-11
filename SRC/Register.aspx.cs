@@ -39,7 +39,19 @@ public partial class Register : System.Web.UI.Page
 
         if (txt_Password1.Text == txt_Password2.Text)
         {
-            if (theCake.Register_User(txt_UserName.Text, txt_FirstName.Text, txt_MI.Text, txt_LastName.Text, txt_Email.Text, txt_Phone.Text, txt_DisplayName.Text, txt_Password1.Text, user_IP))
+            string displayName = "";
+            if (radio_Name.Checked)
+            {
+                if (txt_MI.Text.Length > 0)
+                    displayName = txt_FirstName.Text + " " + txt_MI.Text + " " + txt_LastName.Text;
+                else
+                    displayName = txt_FirstName.Text + " " + txt_LastName.Text;
+            }
+            else
+            {
+                displayName = txt_UserName.Text;
+            }
+            if (theCake.Register_User(txt_UserName.Text, txt_FirstName.Text, txt_MI.Text, txt_LastName.Text, txt_Email.Text, txt_Phone.Text, displayName, txt_Password1.Text, user_IP))
             {
                 theCake.Login_User(txt_UserName.Text, txt_Password1.Text, user_IP);
 

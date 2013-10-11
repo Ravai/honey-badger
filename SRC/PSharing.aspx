@@ -3,10 +3,10 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
     <div class="fullContainer">
+        <div class="row-fluid">
         <asp:LinkButton runat="server" ID="lnk_ReturnToProject" Text="Return to Project" /><br /><br />
 
-        <table><tr>
-        <td width="50%" valign="top">
+        <div class="span5 widget">
         
         <table width="100%">
             <tr><td>
@@ -95,11 +95,9 @@
             
             </td></tr>
         </table>
-        
-        </td>
+        </div>
+        <div class="span5 widget">
 
-        <td width="50%" valign="top" align="center">
-        
         <asp:Panel runat="server" ID="pnl_ListofAdds">
         
         <strong><u>List of People with Permissions to this Project</u></strong><br />
@@ -107,14 +105,12 @@
         
         </asp:Panel>
 
-        </td>
-        
-        </tr></table>
+        </div>
 
         
         
 
-    
+    </div>
     </div>
 
 </asp:Content>
