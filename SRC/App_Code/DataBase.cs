@@ -1303,8 +1303,10 @@ public class DataBase
         int giverID = getUserID(GivingUserAlias);
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "INSERT INTO [TrackingTool_ProjectPermissions] VALUES(@projectID, @userGivenTo, @userGivenBy, @PR, @PW, @BR, @BW, CURRENT_TIMESTAMP, NULL, 0)";
+        cmd.CommandText = "INSERT INTO [TrackingTool_ProjectPermissions] VALUES(@projectID, @projectTitle, @projectTitleDescription, @userGivenTo, @userGivenBy, @PR, @PW, @BR, @BW, CURRENT_TIMESTAMP, NULL, 0)";
         cmd.Parameters.AddWithValue("@projectID", projectID);
+        cmd.Parameters.AddWithValue("@projectTitle", "Team Member");
+        cmd.Parameters.AddWithValue("@projectTitleDescription", "Team Member");
         cmd.Parameters.AddWithValue("@userGivenTo", newID);
         cmd.Parameters.AddWithValue("@userGivenBy", giverID);
         cmd.Parameters.AddWithValue("@PR", PR);
