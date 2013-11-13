@@ -20,11 +20,13 @@ public class Post
     private DateTime createdTimestamp;
     private int updatedBy;
     private DateTime updatedTimestamp;
+    private string Display_Image;
+    private string Display_Name;
 
 	public Post(int ID)
 	{
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [TrackingTool_Board_Posts] WHERE [postID] = @postID";
+        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Boards_Posts] WHERE [postID] = @postID";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@postID", ID);
 
@@ -37,6 +39,8 @@ public class Post
             post_Full = DT.Rows[0]["post_Full"].ToString();
             postBy = Int32.Parse(DT.Rows[0]["postBy"].ToString());
             createdTimestamp = DateTime.Parse(DT.Rows[0]["createdTimestamp"].ToString());
+            Display_Image = DT.Rows[0]["Display_Image"].ToString();
+            Display_Name = DT.Rows[0]["Display_Name"].ToString();
             if (DT.Rows[0]["updatedBy"].ToString() != "")
             {
                 updatedBy = Int32.Parse(DT.Rows[0]["updatedBy"].ToString());
@@ -78,6 +82,16 @@ public class Post
     public DateTime get_updatedTimestamp()
     {
         return updatedTimestamp;
+    }
+
+    public string get_DisplayName()
+    {
+        return Display_Name;
+    }
+
+    public string get_DisplayImage()
+    {
+        return Display_Image;
     }
 
     public void update_post_Full(string s, int user)

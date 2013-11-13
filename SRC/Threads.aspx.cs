@@ -77,8 +77,8 @@ public partial class Threads : System.Web.UI.Page
                     "<section style=\"display:table;\">" + 
                         "<section style=\"display:inline-block;\">" + 
                             "<div class=\"widget\" align=\"center\">" + 
-                                theCake.getUserAlias(pst.get_postBy()) + "<br />" + 
-                                "<img height=\"100px\" width=\"100px\" src=\"images/avatars/Common/SampleAvatar.gif\" />" + 
+                                pst.get_DisplayName() + "<br />" + 
+                                "<img height=\"100px\" width=\"100px\" src=\"" + pst.get_DisplayImage() + "\" />" + 
                             "</div>" + 
                         "</section>" + 
                         "<section style=\"display:inline-block; vertical-align:top; margin:5px; width:100%-100px;\">" + 

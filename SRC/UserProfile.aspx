@@ -3,27 +3,43 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
 <div class="container_full">
-    <asp:Label runat="server" ID="lbl_DisplayName" /><br />
-    <asp:Image runat="server" ID="img_avatar" />
+    <asp:Label runat="server" ID="lbl_DisplayName" />
+    <section style="display:table">
+        <section style="display:inline-block; vertical-align:top;">
+            <asp:Image runat="server" ID="img_avatar" BorderColor="#0860a8" BorderWidth="2"/>
+        </section>
+
+        <section style="display:inline-block; vertical-align:top; padding-left:10px;">
+        <strong>Username: </strong>
+        <asp:Label runat="server" ID="lbl_alias" />
+        <br />
+        <strong>Name: </strong>
+        <asp:Label runat="server" ID="lbl_name" />
+        <br />
+        <strong>Email: </strong>
+        <asp:Label runat="server" ID="lbl_email" />
+        <br /> 
+        <strong>Phone number: </strong>
+        <asp:Label runat="server" ID="lbl_phone" />
+        <br />
+        </section>
+    </section>
+    <hr />
+
+    <!-- <strong>Associations</strong><br />
+    No associations as of yet...<br /> -->
+
+    <asp:Panel runat="server" ID="pnl_PersonalProjects">
+    <h2>Personal Projects</h2>
+    <asp:Table runat="server" ID="tbl_Projects" Width="50%" />
+    </asp:Panel>
+
     <br />
-    <strong>Basic Information</strong>
+    <h2>Shared Projects</h2>
+    <asp:Table runat="server" ID="tbl_sharedProjects" Width="50%" />
+
     <br />
-    <strong>Username:  </strong>
-    <asp:Label runat="server" ID="lbl_alias" />
-    <br />
-    <strong>Name:  </strong>
-    <asp:Label runat="server" ID="lbl_name" />
-    <br />
-    <strong>Email:  </strong>
-    <asp:Label runat="server" ID="lbl_email" />
-    <br />
-    <strong>Phone number:  </strong>
-    <asp:Label runat="server" ID="lbl_phone" />
-    <br />
-    <br />
-    <strong>Associations</strong><br />
-    No associations as of yet...<br />
-    <br />
+    <hr />
     <strong>Date Joined:  </strong>
     <asp:Label runat="server" ID="lbl_dateJoined" />
     <br />

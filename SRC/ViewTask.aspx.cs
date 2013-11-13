@@ -228,11 +228,11 @@ public partial class ViewTask : System.Web.UI.Page
         {
             if (ftr.getPercentComplete() == 100)
             {
-                retString += "<li title=\"" + ftr.getFeatureDescription() + "\">" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"green\"><i>" + ftr.getPercentComplete() + "%</i></font>&nbsp;&nbsp;<a class=\"google button blue\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\">add Sub-Objective</a><a class=\"google button\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\">edit</a><ul><hr style=\"height:1px; margin:2px;\" />";
+                retString += "<li title=\"" + ftr.getFeatureDescription() + "\">" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"green\"><i>" + ftr.getPercentComplete() + "%</i></font>&nbsp;&nbsp;<a class=\"google button blue\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\" title=\"Add New Sub-Objective\">+</a><a class=\"google button\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\" title=\"Edit Objective\">E</a><ul><hr style=\"height:1px; margin:2px;\" />";
             }
             else
             {
-                retString += "<li title=\"" + ftr.getFeatureDescription() + "\">" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"red\"><i>" + ftr.getPercentComplete() + "%</i></font>&nbsp;&nbsp;<a class=\"google button blue\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\">add Sub-Objective</a><a class=\"google button\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\">edit</a><ul><hr style=\"height:1px; margin:2px;\" />";
+                retString += "<li title=\"" + ftr.getFeatureDescription() + "\">" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"red\"><i>" + ftr.getPercentComplete() + "%</i></font>&nbsp;&nbsp;<a class=\"google button blue\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\" title=\"Add New Sub-Objective\">+</a><a class=\"google button\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\" title=\"Edit Objective\">E</a><ul><hr style=\"height:1px; margin:2px;\" />";
             }
             foreach (Feature child in ftr.myChildren)
             {
@@ -244,11 +244,11 @@ public partial class ViewTask : System.Web.UI.Page
         {
             if (ftr.getPercentComplete() == 100)
             {
-                retString += "<li title=\"" + ftr.getFeatureDescription() + "\">" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"green\"><i>" + ftr.getPercentComplete() + "%</i></font>&nbsp;&nbsp;<a class=\"google button blue\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\">add Sub-Objective</a><a class=\"google button\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\">edit</a><a class=\"google button red\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#removeChildFeature\">remove</a></li><hr style=\"height:1px; margin:2px;\" />";
+                retString += "<li title=\"" + ftr.getFeatureDescription() + "\">" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"green\"><i>" + ftr.getPercentComplete() + "%</i></font>&nbsp;&nbsp;<a class=\"google button blue\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\" title=\"Add New Sub-Objective\">+</a><a class=\"google button\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\" title=\"Edit Objective\">E</a><a class=\"google button red\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#removeChildFeature\" title=\"Remove Objective\">&#215;</a></li><hr style=\"height:1px; margin:2px;\" />";
             }
             else
             {
-                retString += "<li title=\"" + ftr.getFeatureDescription() + "\">" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"red\"><i>" + ftr.getPercentComplete() + "%</i></font>&nbsp;&nbsp;<a class=\"google button blue\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\">add Sub-Objective</a><a class=\"google button\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\">edit</a><a class=\"google button red\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#removeChildFeature\">remove</a><a class=\"google button green\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#quickComplete\">Quick Complete</a></li><hr style=\"height:1px; margin:2px;\" />";
+                retString += "<li title=\"" + ftr.getFeatureDescription() + "\">" + ftr.getFeatureName() + "&nbsp;&nbsp;<font color=\"red\"><i>" + ftr.getPercentComplete() + "%</i></font>&nbsp;&nbsp;<a class=\"google button blue\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#addChildFeature\" title=\"Add New Sub-Objective\">+</a><a class=\"google button\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#editChildFeature\" title=\"Edit Objective\">E</a><a class=\"google button red\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#removeChildFeature\" title=\"Remove Objective\">&#215;</a><a class=\"google button green\" href=\"?ID=" + ID + "&feat=" + ftr.getID() + "#quickComplete\" title=\"Complete Objective\">&#x2713;</a></li><hr style=\"height:1px; margin:2px;\" />";
             }
         }
         return retString;
