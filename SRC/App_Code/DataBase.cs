@@ -192,6 +192,11 @@ public class DataBase
         DataTable DT = Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
         if (DT.Rows.Count == 1)
         {
+            // Verfiy hash
+            string hash = DT.Rows[0]["user_PW"].ToString();
+            if (!PasswordHash.PasswordHash.ValidatePassword(PW, hash))
+                return false;
+
             cmd = new SqlCommand();
             cmd.CommandText = "DELETE FROM TrackingTool_Users_Active WHERE [uniqID] = @uniqID OR [User_IP] = @IP";
             cmd.Parameters.Clear();
@@ -222,7 +227,6 @@ public class DataBase
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@UserName", UserName);
         string hashedSaltPassword;
-        string salt, password;
 
         DataTable DT = Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
         if (DT.Rows.Count == 0)
@@ -237,7 +241,7 @@ public class DataBase
             cmd.CommandText = "INSERT INTO TrackingTool_Users VALUES(@UserName, @user_PW, @IP, @IP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, @Active, @userLevel, @firstName, @middleName, @lastName, @eMail, @phoneNumber, @DisplayName, @DisplayImage, @User_Status, @Footer)";
             cmd.Parameters.Clear();
             cmd.Parameters.AddWithValue("@UserName", UserName);
-            cmd.Parameters.AddWithValue("@user_PW", PW);
+            cmd.Parameters.AddWithValue("@user_PW", hashedSaltPassword);
             cmd.Parameters.AddWithValue("@IP", IP);
             cmd.Parameters.AddWithValue("@Active", 1);
             cmd.Parameters.AddWithValue("@userLevel", 0);
