@@ -10,6 +10,7 @@ using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
+using PasswordHash;
 
 public partial class Register : System.Web.UI.Page
 {
@@ -36,7 +37,7 @@ public partial class Register : System.Web.UI.Page
     protected void btn_Submit_OnClick(object sender, EventArgs e)
     {
         string user_IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-
+        
         if (txt_Password1.Text == txt_Password2.Text)
         {
             string displayName = "";

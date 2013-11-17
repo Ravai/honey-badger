@@ -184,10 +184,10 @@ public class DataBase
     public bool Login_User(string UserName, string PW, string IP)
     {
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM TrackingTool_Users WHERE [ownerAlias] = @UserName AND [user_PW] = @PW";
+
+        cmd.CommandText = "SELECT * FROM TrackingTool_Users WHERE [ownerAlias] = @UserName";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@UserName", UserName);
-        cmd.Parameters.AddWithValue("@PW", PW);
 
         DataTable DT = Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
         if (DT.Rows.Count == 1)
@@ -221,12 +221,18 @@ public class DataBase
         cmd.CommandText = "SELECT * FROM TrackingTool_Users WHERE [ownerAlias] = @UserName";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@UserName", UserName);
+        string hashedSaltPassword;
+        string salt, password;
 
         DataTable DT = Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
         if (DT.Rows.Count == 0)
         {
             //try
             //{
+
+            // Hash the password with salt
+            hashedSaltPassword = PasswordHash.PasswordHash.CreateHash(PW);
+
             cmd = new SqlCommand();
             cmd.CommandText = "INSERT INTO TrackingTool_Users VALUES(@UserName, @user_PW, @IP, @IP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, @Active, @userLevel, @firstName, @middleName, @lastName, @eMail, @phoneNumber, @DisplayName, @DisplayImage, @User_Status, @Footer)";
             cmd.Parameters.Clear();
@@ -1441,5 +1447,4 @@ public class DataBase
     {
         return "Why you trying to print this class?";
     }
-
 }
