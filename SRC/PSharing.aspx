@@ -18,9 +18,9 @@
                     <td colspan="3"><strong><u><i>To add a new person</i></u></strong></td>
                 </tr>
                 <tr>
-                    <td align="center"><strong>First Name</strong><br /><asp:TextBox runat="server" ID="txt_FirstName" /></td>
-                    <td align="center"><strong>Middle Name</strong><br /><asp:TextBox runat="server" ID="txt_MiddleName" /></td>
-                    <td align="center"><strong>Last Name</strong><br /><asp:TextBox runat="server" ID="txt_LastName" /></td>
+                    <td align="center"><strong>First Name</strong><br /><asp:TextBox runat="server" ID="txt_FirstName" style="width:auto"/></td>
+                    <td align="center"><strong>Middle Name</strong><br /><asp:TextBox runat="server" ID="txt_MiddleName" style="width:auto"/></td>
+                    <td align="center"><strong>Last Name</strong><br /><asp:TextBox runat="server" ID="txt_LastName" style="width:auto"/></td>
                 </tr>
                 <tr>
                     <td colspan="3" align="center">
@@ -94,24 +94,19 @@
                 <asp:Button runat="server" ID="btn_AddNewPermission" Text="Add New Permission" OnClick="btn_AddNewPermission_OnClick" Enabled="false" /><br />
             
             </td></tr>
+
+            <tr><td align="center">
+                <asp:Panel runat="server" ID="pnl_ListofAdds">
+                <hr />
+                <strong><u>List of People with Permissions to this Project</u></strong><br />
+                <asp:Table runat="server" ID="tbl_List" />
+                </asp:Panel>
+            </td></tr>
+
         </table>
         </div>
-        <div class="span5 widget">
-
-        <asp:Panel runat="server" ID="pnl_ListofAdds">
-        
-        <strong><u>List of People with Permissions to this Project</u></strong><br />
-        <asp:Table runat="server" ID="tbl_List" />
-        
-        </asp:Panel>
-
-        </div>
-
-        
-        
-
     </div>
-    </div>
+</div>
 
 </asp:Content>
 
