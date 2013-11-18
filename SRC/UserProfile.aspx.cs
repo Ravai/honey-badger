@@ -44,6 +44,7 @@ public partial class UserProfile : System.Web.UI.Page
                         pnl_PersonalProjects.Visible = false;
                     }
 
+                    // Display user info
                     if (DT.Rows.Count == 1)
                     {
                         
@@ -110,6 +111,77 @@ public partial class UserProfile : System.Web.UI.Page
         }
     }
 
+    protected void btn_SearchUsernames_OnClick(object sender, EventArgs e)
+    {
+        int uID;
+        bool result = Int32.TryParse(Request.QueryString["userID"].ToString(), out uID);
+        DataTable DT = theCake.searchUsersByUserName(txt_usernameSearch.Text.Trim());
+
+        if (DT.Rows.Count == 0) // No results found
+        {
+            TableRow TR0 = new TableRow();
+            TableCell TC0 = new TableCell();
+            Label no_res = new Label();
+            no_res.Text = "No matches were found.";
+            TC0.Controls.Add(no_res);
+            TR0.Cells.Add(TC0);
+            tbl_searchResults.Rows.Add(TR0);
+        }
+
+        if (DT.Rows.Count >= 1) // Results found
+        {
+            foreach (DataRow DR in DT.Rows)
+            {
+                TableRow TR1 = new TableRow();
+                TableCell TC1 = new TableCell();
+                Label username_res = new Label();
+                username_res.Text = "<a href=\"UserProfile.aspx?userID=" + DR["ID"].ToString() + "\">" + DR["ownerAlias"].ToString() + "</a>";
+                TC1.Controls.Add(username_res);
+                TR1.Cells.Add(TC1);
+                tbl_searchResults.Rows.Add(TR1);
+            }
+        }
+    }
+
+    protected void btn_SearchUsers_OnClick(object sender, EventArgs e)
+    {
+        int uID;
+        bool result = Int32.TryParse(Request.QueryString["userID"].ToString(), out uID);
+        DataTable DT = theCake.searchUsersByName(txt_first_name.Text.Trim(), txt_middle_name.Text.Trim(), txt_last_name.Text.Trim());
+
+        if (DT.Rows.Count == 0) // No results found
+        {
+            TableRow TR0 = new TableRow();
+            TableCell TC0 = new TableCell();
+            Label no_res = new Label();
+            no_res.Text = "No matches were found.";
+            TC0.Controls.Add(no_res);
+            TR0.Cells.Add(TC0);
+            tbl_searchResults.Rows.Add(TR0);
+        }
+
+        if (DT.Rows.Count >= 1) // Results found
+        {
+            foreach (DataRow DR in DT.Rows)
+            {
+                TableRow TR1 = new TableRow();
+                TableCell TC1 = new TableCell();
+                Label name_res = new Label();
+                if (DR["middleName"].ToString() == "")
+                {
+                    name_res.Text = "<a href=\"UserProfile.aspx?userID=" + DR["ID"].ToString() + "\">" + DR["firstName"].ToString() + " " + DR["lastName"].ToString() + "</a>";
+                }
+                else
+                {
+                    name_res.Text = "<a href=\"UserProfile.aspx?userID=" + DR["ID"].ToString() + "\">" + DR["firstName"].ToString() + " " + DR["middleName"] + " " + DR["lastName"].ToString() + "</a>";
+                }
+                TC1.Controls.Add(name_res);
+                TR1.Cells.Add(TC1);
+                tbl_searchResults.Rows.Add(TR1);
+            }
+        }
+    }
+
     protected void btn_ApplyChanges_OnClick(object sender, EventArgs e)
     {
         int uID;
@@ -121,14 +193,20 @@ public partial class UserProfile : System.Web.UI.Page
             lbl_Error.Text = "Please fill in all of the required fields (First Name, Last Name, Email Address).";
             lbl_Error.Visible = true;
 
-            if (txt_FirstName.Text == "") lbl_FirstNameError.Visible = true;
-            else lbl_FirstNameError.Visible = false;
-            if (txt_LastName.Text == "") lbl_LastNameError.Visible = true;
-            else lbl_LastNameError.Visible = false;
-            if (txt_EmailAddress.Text == "") lbl_EmailError.Visible = true;
-            else lbl_EmailError.Visible = false;
+            if (txt_FirstName.Text == "") 
+                lbl_FirstNameError.Visible = true;
+            else 
+                lbl_FirstNameError.Visible = false;
+            if (txt_LastName.Text == "") 
+                lbl_LastNameError.Visible = true;
+            else 
+                lbl_LastNameError.Visible = false;
+            if (txt_EmailAddress.Text == "") 
+                lbl_EmailError.Visible = true;
+            else 
+                lbl_EmailError.Visible = false;
 
-            Response.Redirect("UserProfile.aspx?userID=" + uID + "#openEdit");
+            //Response.Redirect("UserProfile.aspx?userID=" + uID + "#openEdit");
         }
         else // required fields are filled
         {
@@ -156,6 +234,20 @@ public partial class UserProfile : System.Web.UI.Page
         DataTable DT1 = theCake.getUserData(uID);
         DataTable DT2 = theCake.getTasks(DT1.Rows[0]["ownerAlias"].ToString());
 
+        TableRow TR0 = new TableRow();
+        TableCell TCname = new TableCell();
+        TableCell TCpercent = new TableCell();
+        Label name = new Label();
+        Label percent = new Label();
+        name.Text = "<u><strong>Project Name</strong></u>";
+        percent.Text = "<u><strong>Percent Completed</strong></u>";
+        TCname.Controls.Add(name);
+        TCpercent.Controls.Add(percent);
+        TCpercent.HorizontalAlign = HorizontalAlign.Center;
+        TR0.Cells.Add(TCname);
+        TR0.Cells.Add(TCpercent);
+        tbl_Projects.Rows.Add(TR0);
+
         // List each project the user has
         if (DT2.Rows.Count > 0)
         {
@@ -167,10 +259,24 @@ public partial class UserProfile : System.Web.UI.Page
                     projectFlag = 1;
                     TableRow TR = new TableRow();
                     TableCell TC = new TableCell();
+                    TableCell TC2 = new TableCell();
                     Label L1 = new Label();
+                    Label L2 = new Label();
                     L1.Text = DR["taskName"].ToString();
+                    //L2.Text = DR["Percent_Completed"].ToString() + "%";
+                    if (int.Parse(DR["doneFlag"].ToString()) == 1)
+                    {
+                        L2.Text = "<p><progress value=\"" + 1 + "\" ></progress></p>";
+                        //L2.Text = "COMPLETED";
+                    }
+                    else
+                    {
+                        L2.Text = "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>";
+                    }
                     TC.Controls.Add(L1);
+                    TC2.Controls.Add(L2);
                     TR.Cells.Add(TC);
+                    TR.Cells.Add(TC2);
                     tbl_Projects.Rows.Add(TR);
                 }
             }

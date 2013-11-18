@@ -3,6 +3,53 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
 <div class="container_full">
+
+    <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true" />
+
+    <asp:Panel runat="server" ID="Panel0">
+        <div class="pull-right">
+            <a href="#openSearch">Search Users</a>
+        </div>
+    </asp:Panel>
+
+    <div id="openSearch" class="modalDialog">
+        <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+        <ContentTemplate>
+        <div>
+            <a href="#close" title="Close" class="close">X</a>
+                
+                <div style="font-size:large; font-variant:small-caps; font-weight:bold; text-decoration:underline;">Search Users</div><br />
+                
+                <div style="font-size:medium; font-variant:small-caps; font-weight:bold;">Search by username: 
+                    <br />
+                    <br />
+                    <div style="font-size:small; font-variant:small-caps; font-weight:bold">Username:<asp:TextBox runat="server" ID="txt_usernameSearch" /></div>
+                </div>
+                <br />
+                <asp:Button runat="server" Text="Search Usernames" ID="search_username" OnClick="btn_SearchUsernames_OnClick" />
+                <br />
+                <br />
+
+                <div style="font-size:medium; font-variant:small-caps; font-weight:bold;">Search by name: 
+                    <br />
+                    <br />
+                    <div style="font-size:small; font-variant:small-caps; font-weight:bold">First Name:<asp:TextBox runat="server" ID="txt_first_name" /></div>
+                    <div style="font-size:small; font-variant:small-caps; font-weight:bold">Middle Name:<asp:TextBox runat="server" ID="txt_middle_name" /></div>
+                    <div style="font-size:small; font-variant:small-caps; font-weight:bold">Last Name:<asp:TextBox runat="server" ID="txt_last_name" /></div>
+                </div>
+                <br />
+                <asp:Button runat="server" Text="Search Names" ID="search_name" OnClick="btn_SearchUsers_OnClick" />
+                <br />
+                <hr />
+                <asp:Table runat="server" ID="tbl_searchResults" />
+        </div>
+        </ContentTemplate>
+        </asp:UpdatePanel>
+    </div>
+
+
+
+
     <asp:Label runat="server" ID="lbl_DisplayName" />
     <section style="display:table">
         <section style="display:inline-block; vertical-align:top;">
@@ -51,6 +98,8 @@
     </asp:Panel>
 
     <div id="openEdit" class="modalDialog">
+        <asp:UpdatePanel ID="UpdatePanel2" runat="server">
+        <ContentTemplate>
         <div>
             <a href="#close" title="Close" class="close">X</a>
                 
@@ -69,8 +118,8 @@
                 
                 <hr />
                 <div style="font-size:medium; font-variant:small-caps; font-weight:bold;">Display Name: <i>(Select one)</i> </div>
-                Username <asp:RadioButton runat="server" ID="rdbt_UserName" Checked="true" GroupName="DisplayName" />
-                 Your name <asp:RadioButton runat="server" ID="rdbt_Name" GroupName="DisplayName" />
+                Your name <asp:RadioButton runat="server" ID="rdbt_Name" Checked="true" GroupName="DisplayName" />
+                Username <asp:RadioButton runat="server" ID="rdbt_UserName" GroupName="DisplayName" />
 
                 <hr />
                 <div style="font-size:medium; font-variant:small-caps; font-weight:bold;">Email Address: 
@@ -88,10 +137,11 @@
             
                 <br />
                 <asp:Button runat="server" Text="Apply" ID="btn_ApplyChanges" OnClick="btn_ApplyChanges_OnClick" />
-                <asp:Button runat="server" Text="Cancel" ID="btn_CancelNewTask" PostBackUrl="#close" />
                 <asp:Label runat="server" ID="lbl_Error" Visible="false" ForeColor="Red" Font-Italic="true" Font-Size="Large" />
                 <br />
         </div>
+        </ContentTemplate>
+        </asp:UpdatePanel>
     </div>
     
 </div>
