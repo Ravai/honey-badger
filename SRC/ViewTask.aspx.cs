@@ -21,7 +21,7 @@ public partial class ViewTask : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         MaintainScrollPositionOnPostBack = true;
-        
+
         if (Request.QueryString["ID"] != null)
         {
             updateProjectPercent();
@@ -60,9 +60,11 @@ public partial class ViewTask : System.Web.UI.Page
             lbl_TaskName.Text = DT.Rows[0]["taskName"].ToString();
             lbl_Description.Text = DT.Rows[0]["taskDescription"].ToString();
             lbl_projectOwner.Text = DT.Rows[0]["Display_Name"].ToString();
-            txt_Edit_TaskName.Text = DT.Rows[0]["taskName"].ToString();
-            txt_Edit_TaskDescription.Text = DT.Rows[0]["taskDescription"].ToString();
-
+            if (!IsPostBack)
+            {
+                txt_Edit_TaskName.Text = DT.Rows[0]["taskName"].ToString();
+                txt_Edit_TaskDescription.Text = DT.Rows[0]["taskDescription"].ToString();
+            }
             lbl_ExpectedStart.Text = DateTime.Parse(DT.Rows[0]["expectedStart"].ToString()).ToShortDateString();
             lbl_ExpectedStop.Text = DateTime.Parse(DT.Rows[0]["expectedStop"].ToString()).ToShortDateString();
 
@@ -157,13 +159,13 @@ public partial class ViewTask : System.Web.UI.Page
                     getallBoards();
                 }
             }
-
-
         }
         else
         {
             Response.Redirect("Home.aspx");
         }
+
+
     }
 
     protected void btn_startTask_OnClick(object sender, EventArgs e)
@@ -374,7 +376,7 @@ public partial class ViewTask : System.Web.UI.Page
         theCake.increaseProjectSize(Int32.Parse(Request.QueryString["ID"].ToString()), theCake.getUserID(theCake.getActiveUserName(IP)));
         Response.Redirect("ViewTask.aspx?ID=" + Request.QueryString["ID"].ToString());
     }
-
+    
     protected void btn_Edit_NameDescription_OnClick(object sender, EventArgs e)
     {
         txt_Edit_TaskDescription.Text = lbl_Description.Text;
@@ -386,9 +388,9 @@ public partial class ViewTask : System.Web.UI.Page
 
     protected void btn_Update_NameDescription_OnClick(object sender, EventArgs e)
     {
-        string ProjectName = txt_Edit_TaskName.Text.Replace("\n", "<br/>");
-        string ProjectDescription = txt_Edit_TaskDescription.Text.Replace("\n", "<br/>");
-        theCake.updateTaskBaseInfo(Int32.Parse(Request.QueryString["ID"].ToString()), ProjectName, ProjectDescription);
+        string NewProjectName = txt_Edit_TaskName.Text.Replace("\n", "<br/>");
+        string NewProjectDescription = txt_Edit_TaskDescription.Text.Replace("\n", "<br/>");
+        theCake.updateTaskBaseInfo(Int32.Parse(Request.QueryString["ID"].ToString()), NewProjectName, NewProjectDescription);
         Response.Redirect("ViewTask.aspx?ID=" + Request.QueryString["ID"].ToString());
     }
 
