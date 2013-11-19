@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -101,19 +102,33 @@ public partial class Home : System.Web.UI.Page
         DataTable DT = theCake.getWipTasks(theCake.getActiveUserName(IP));
         DataTable DT2 = theCake.getSharedWipTasks(theCake.getActiveUserName(IP));
 
+        List<Project> myWipTasks = Project.getWipTasks(theCake.getActiveUserName(IP));
+        List<Project> mySharedWipTasks = Project.getSharedWipTasks(theCake.getUserID(theCake.getActiveUserName(IP)));
+
         ProgressList.Text += "<ul class=\"cards\">";
         if (DT.Rows.Count > 0 || DT2.Rows.Count > 0)
         {
-            foreach (DataRow DR in DT.Rows)
+            foreach (Project proj in myWipTasks)
             {
-                ProgressList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
-                    "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
+                ProgressList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + proj.getID() + "\">" + proj.getTaskName() +"</a>" +
+                    "<p><progress value=\"" + ((decimal)(proj.getPercentComplete())) / 100 + "\" ></progress></p>" + "</li>";
             }
-            foreach (DataRow DR in DT2.Rows)
+            foreach (Project proj in mySharedWipTasks)
             {
-                ProgressList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\"><strong>[SHARED]</strong> " + DR["taskName"].ToString() + "</a>" +
-                    "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
+                ProgressList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + proj.getID() + "\"><strong>[SHARED]</strong> " + proj.getTaskName() + "</a>" +
+                    "<p><progress value=\"" + ((decimal)(proj.getPercentComplete())) / 100 + "\" ></progress></p>" + "</li>";
             }
+
+            //foreach (DataRow DR in DT.Rows)
+            //{
+            //    ProgressList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
+            //        "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
+            //}
+            //foreach (DataRow DR in DT2.Rows)
+            //{
+            //    ProgressList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\"><strong>[SHARED]</strong> " + DR["taskName"].ToString() + "</a>" +
+            //        "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
+            //}
             lit_totInProgress.Text = (DT.Rows.Count + DT2.Rows.Count).ToString();
         }
         else

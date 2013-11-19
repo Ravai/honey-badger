@@ -12,10 +12,6 @@
         
         </asp:Panel>
         
-        
-
-        
-        
         <hr />
     <div class="widget">
         <ul id="myTab" class="nav nav-tabs three-tabs fancy">
@@ -39,21 +35,21 @@
             </div>
             <div class="tab-pane fade" id="SpecialOptions">
                 <asp:Panel ID="pnl_SpecialOptions" runat="server">
-                <asp:Panel runat="server" ID="btn_markDone"><asp:LinkButton ID="LinkButton1" runat="server" OnClick="btn_markDone_OnClick" Font-Bold="true" Font-Size="Medium"><h3>Mark Task as Done</h3></asp:LinkButton></asp:Panel>
-                <asp:Panel runat="server" ID="btn_markWip" Visible="false"><asp:LinkButton ID="LinkButton2" runat="server" OnClick="btn_markWip_OnClick" Font-Bold="true" Font-Size="Medium"><h3>Re-Open Task</h3></asp:LinkButton></asp:Panel>
-                <asp:Panel runat="server" ID="btn_startTask" Visible="false"><asp:LinkButton ID="LinkButton3" runat="server" OnClick="btn_startTask_OnClick" Font-Bold="true" Font-Size="Medium"><h3>Start Task</h3></asp:LinkButton></asp:Panel>
-                <asp:Panel runat="server" ID="btn_UpgradeSize" Visible="false"><asp:LinkButton ID="LinkButton4" runat="server" OnClick="btn_UpgradeSize_OnClick" Font-Bold="true" Font-Size="Medium"><h3>Make Project a Large Project</h3></asp:LinkButton></asp:Panel>
+                <asp:Panel runat="server" ID="btn_markDone"><asp:LinkButton ID="LinkButton1" runat="server" OnClick="btn_markDone_OnClick" CssClass="specialOperationsButton" Text="Mark Task as Done" /></asp:Panel>
+                <asp:Panel runat="server" ID="btn_markWip" Visible="false"><asp:LinkButton ID="LinkButton2" runat="server" OnClick="btn_markWip_OnClick" CssClass="specialOperationsButton" Text="Re-Open Task" /></asp:Panel>
+                <asp:Panel runat="server" ID="btn_startTask" Visible="false"><asp:LinkButton ID="LinkButton3" runat="server" OnClick="btn_startTask_OnClick" CssClass="specialOperationsButton" Text="Start Task" /></asp:Panel>
+                <asp:Panel runat="server" ID="btn_UpgradeSize" Visible="false"><asp:LinkButton ID="LinkButton4" runat="server" OnClick="btn_UpgradeSize_OnClick" CssClass="specialOperationsButton" Text="Make Project a Large Project" /></asp:Panel>
                 
-
+                <br />
                 <asp:Panel runat="server" ID="pnl_EditOperations">
-                <a href="#UpdateProjectName"><h3>Update Project Name and Description</h3></a>
-                <asp:LinkButton runat="server" ID="btn_Edit_Sharing" Font-Bold="true" Font-Size="Medium" OnClick="btn_Edit_Sharing_OnClick" Enabled="true"><h3>Edit Project Sharing</h3></asp:LinkButton>
+                <asp:LinkButton runat="server" PostBackUrl="#UpdateProjectName" CssClass="specialOperationsButton" Text="Update Project Name and Description" /><br /><br />
+                <asp:LinkButton runat="server" ID="btn_Edit_Sharing" CssClass="specialOperationsButton" OnClick="btn_Edit_Sharing_OnClick" Enabled="true" Text="Edit Project Sharing" /><br />
                 
                 </asp:Panel>
                 </asp:Panel>
             </div>
             <div class="tab-pane fade" id="DiscussionBoard">
-                <h2><asp:LinkButton runat="server" ID="lnk_GoToDiscussion" Text="Go to Discussion Boards!" /></h2>
+                <h2><asp:LinkButton runat="server" ID="lnk_GoToDiscussion" CssClass="specialOperationsButton" Text="Go to Discussion Boards!" /></h2>
             </div>
         </div>
         
@@ -63,10 +59,10 @@
 
     <div class="row-fluid">
         <h2>Project Milestones and Objectives!</h2>
+        <a href="#addMilestone" class="addNewMilestone">Add a New Milestone</a><br /><br />
 
         <asp:Literal runat="server" ID="lit_Milestones" />
         
-        <a href="#addMilestone"><h3>Add a New Milestone</h3></a>
     </div>
 
 

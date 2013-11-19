@@ -4,7 +4,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta charset="utf-8" />
-		<title>Project Honey Badger</title>
+		<title>Development Project A</title>
 		<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="" />
@@ -68,7 +68,7 @@
 					</li>
 
 					</ul>
-					<a class="brand" href="Home.aspx">Here For the Beer.</a>
+					<a class="brand" href="Home.aspx">Development Project A</a>
 				</div>
 			</div>
 		</header>
@@ -120,19 +120,11 @@
 					
 				</div>
 
-				<!-- Responsive Design Nav Menu --  Below is for Tablet and Larger -->
-                                <%--<li><a href="MyReport.aspx">My Reports</a></li>
-                    <li><a href="ViewWip.aspx">View Tasks</a>
-                        <ul class="sub-level">
-                            <li><a href="ViewWip.aspx">Wip Tasks</a></li>
-                            <li><a href="ViewReady.aspx">Ready Tasks</a></li>
-                            <li><a href="ViewUpcoming.aspx">Upcoming Tasks</a></li>
-                            <li><a href="ViewComplete.aspx">Completed Tasks</a></li>
-                        </ul>
-                    </li>--%>
 				<div id="sidebar-nav">
 
-					<ul id="dashboard-menu" class="nav nav-list">
+                    <asp:Literal runat="server" ID="lit_Menu" />
+
+					<%--<ul id="dashboard-menu" class="nav nav-list">
 					
 					<li class="active "><a href="Home.aspx"><i class="icon-home"></i> <span>Dashboard</span></a></li>
 
@@ -144,19 +136,7 @@
 
                     <li class=" "><a href="ViewComplete.aspx"><i class="icon-book"></i> <span>Completed Projects</span></a></li>
 
-					<%--<li class=" "><a href="blog.html"><i class="icon-beaker"></i> <span>Blog</span></a></li>
-
-					<li class=" "><a href="help.html"><i class="icon-question-sign"></i> <span>Help</span></a></li>
-
-					<li class=" "><a href="calendar.html"><i class="icon-calendar"></i> <span>Calendar</span></a></li>
-
-					<li class=" "><a href="tables.html"><i class="icon-table"></i> <span>Tables</span></a></li>
-
-					<li class=" theme-mobile-hack"><a href="mobile.html"><i class="icon-comment-alt"></i> <span>Mobile</span></a></li>
-
-					<li class=" "><a href="icons.html"><i class="icon-heart"></i> <span>Font Awesome</span></a></li>
---%>
-					</ul>
+					</ul>--%>
 				</div>
 				<!-- End Table++ Nav Menu -->
 			</nav>

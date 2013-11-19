@@ -20,44 +20,47 @@ public partial class Boards : System.Web.UI.Page
     {
         if (Request.QueryString["ID"] == null) Response.Redirect("Home.aspx");
 
-        Board brd = new Board(Int32.Parse(Request.QueryString["ID"].ToString()));
-        
-        DataTable DT = theCake.getBoard(Int32.Parse(Request.QueryString["ID"].ToString()));
-        if (brd.isActive())//(DT.Rows.Count == 1)
+        if (!IsPostBack)
         {
-            boardName.Text = brd.get_board_CategoryName();// DT.Rows[0]["board_CategoryName"].ToString();
-            boardName.PostBackUrl = "Boards.aspx?ID=" + brd.get_BoardID().ToString(); //DT.Rows[0]["boardID"].ToString();
-            lnk_ReturnToProject.PostBackUrl = "ViewTask.aspx?ID=" + DT.Rows[0]["projectID"].ToString(); // need to remedy this one
+            Board brd = new Board(Int32.Parse(Request.QueryString["ID"].ToString()));
 
-            getThreads();
-
-            DataTable newDT = theCake.getTask(Int32.Parse(DT.Rows[0]["projectID"].ToString()));
-            projectName.Text = newDT.Rows[0]["taskName"].ToString();
-            projectName.PostBackUrl = "ViewTask.aspx?ID=" + DT.Rows[0]["projectID"].ToString();
-
-            string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-
-            if (theCake.getActiveUserName(IP) != DT.Rows[0]["ownerAlias"].ToString())
+            DataTable DT = theCake.getBoard(Int32.Parse(Request.QueryString["ID"].ToString()));
+            if (brd.isActive())//(DT.Rows.Count == 1)
             {
-                DataTable DT2 = theCake.getUserProjectPermissions(theCake.getUserID(theCake.getActiveUserName(IP)), Int32.Parse(DT.Rows[0]["projectID"].ToString()));
-                if (DT2.Rows.Count == 1)
+                boardName.Text = brd.get_board_CategoryName();// DT.Rows[0]["board_CategoryName"].ToString();
+                boardName.PostBackUrl = "Boards.aspx?ID=" + brd.get_BoardID().ToString(); //DT.Rows[0]["boardID"].ToString();
+                lnk_ReturnToProject.PostBackUrl = "ViewTask.aspx?ID=" + DT.Rows[0]["projectID"].ToString(); // need to remedy this one
+
+                getThreads();
+
+                DataTable newDT = theCake.getTask(Int32.Parse(DT.Rows[0]["projectID"].ToString()));
+                projectName.Text = newDT.Rows[0]["taskName"].ToString();
+                projectName.PostBackUrl = "ViewTask.aspx?ID=" + DT.Rows[0]["projectID"].ToString();
+
+                string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
+
+                if (theCake.getActiveUserName(IP) != DT.Rows[0]["ownerAlias"].ToString())
                 {
-                    if (DT2.Rows[0]["permission_Board_Write"].ToString() == "0") BoardWrite = false;
+                    DataTable DT2 = theCake.getUserProjectPermissions(theCake.getUserID(theCake.getActiveUserName(IP)), Int32.Parse(DT.Rows[0]["projectID"].ToString()));
+                    if (DT2.Rows.Count == 1)
+                    {
+                        if (DT2.Rows[0]["permission_Board_Write"].ToString() == "0") BoardWrite = false;
+                    }
+                    else
+                    {
+                        Response.Redirect("Home.aspx");
+                    }
                 }
-                else
+
+                if (!BoardWrite)
                 {
-                    Response.Redirect("Home.aspx");
+                    pnl_addThread.Visible = false;
                 }
             }
-
-            if (!BoardWrite)
+            else
             {
-                pnl_addThread.Visible = false;
+                Response.Redirect("Home.aspx");
             }
-        }
-        else
-        {
-            Response.Redirect("Home.aspx");
         }
     }
 

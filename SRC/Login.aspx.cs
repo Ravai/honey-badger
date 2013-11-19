@@ -24,7 +24,7 @@ public partial class Login : System.Web.UI.Page
         //string user_IP = (HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"] == null) ? HttpContext.Current.Request.UserHostAddress : HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
         if (theCake.Login_User(txt_UserName.Text, txt_password.Text, user_IP))
         {
-            Response.Redirect("Default.aspx");
+            Response.Redirect("Home.aspx");
         }
         else
         {

@@ -1,4 +1,36 @@
-﻿.google.button {
+﻿.addNewMilestone
+{
+    text-decoration:none;
+    background: -moz-linear-gradient(#fff, #999);
+	background: -webkit-linear-gradient(#fff, #999);
+	background: -o-linear-gradient(#fff, #999);
+    border:1px solid black;
+    padding-left:30px;
+    padding-right:30px;
+    padding-top:5px;
+    padding-bottom:5px;
+    width:200px;
+    color:black;
+    border-radius: 10px;
+}
+
+.specialOperationsButton
+{
+    text-decoration:none;
+    background: -moz-linear-gradient(#fff, #999);
+	background: -webkit-linear-gradient(#fff, #999);
+	background: -o-linear-gradient(#fff, #999);
+    border:1px solid black;
+    padding-left:30px;
+    padding-right:30px;
+    padding-top:5px;
+    padding-bottom:5px;
+    width:200px;
+    color:black;
+    border-radius: 10px;
+}
+
+.google.button {
   padding: 3px 8px;
   -webkit-border-radius: 2px 2px;
   border: solid 1px rgb(153, 153, 153);

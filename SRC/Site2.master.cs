@@ -26,17 +26,55 @@ public partial class Site2 : System.Web.UI.MasterPage
             LoggedIn = true;
             lbl_userName.Text = DT.Rows[0]["Display_Name"].ToString();
             lnk_MyAccount.PostBackUrl = "UserProfile.aspx?userID=" + DT.Rows[0]["ID"].ToString();
+
+            string menuString = "<ul id=\"dashboard-menu\" class=\"nav nav-list\">";
+            if (Request.Url.ToString().Contains("Home.aspx"))
+                menuString += "<li class=\"active \"><a href=\"Home.aspx\"><i class=\"icon-home\"></i> <span>Dashboard</span></a></li>";
+            else
+                menuString += "<li class=\" \"><a href=\"Home.aspx\"><i class=\"icon-home\"></i> <span>Dashboard</span></a></li>";
+            if (Request.Url.ToString().Contains("ViewWip.aspx"))
+                menuString += "<li class=\"active \"><a href=\"ViewWip.aspx\"><i class=\"icon-book\"></i> <span>Projects in Progress</span></a></li>";
+            else
+                menuString += "<li class=\" \"><a href=\"ViewWip.aspx\"><i class=\"icon-book\"></i> <span>Projects in Progress</span></a></li>";
+            if (Request.Url.ToString().Contains("ViewReady.aspx"))
+                menuString += "<li class=\"active \"><a href=\"ViewReady.aspx\"><i class=\"icon-book\"></i> <span>Ready Projects</span></a></li>";
+            else
+                menuString += "<li class=\" \"><a href=\"ViewReady.aspx\"><i class=\"icon-book\"></i> <span>Ready Projects</span></a></li>";
+            if (Request.Url.ToString().Contains("ViewUpcoming.aspx"))
+                menuString += "<li class=\"active \"><a href=\"ViewUpcoming.aspx\"><i class=\"icon-book\"></i> <span>Upcoming Projects</span></a></li>";
+            else
+                menuString += "<li class=\" \"><a href=\"ViewUpcoming.aspx\"><i class=\"icon-book\"></i> <span>Upcoming Projects</span></a></li>";
+            if (Request.Url.ToString().Contains("ViewComplete.aspx"))
+                menuString += "<li class=\"active \"><a href=\"ViewComplete.aspx\"><i class=\"icon-book\"></i> <span>Completed Projects</span></a></li>";
+            else
+                menuString += "<li class=\" \"><a href=\"ViewComplete.aspx\"><i class=\"icon-book\"></i> <span>Completed Projects</span></a></li>";
+            menuString += "</ul>";
+
+            lit_Menu.Text = menuString;
+
+            if (Request.Url.ToString().Contains("Default.aspx") || !(Request.Url.ToString().Contains(".aspx")))
+            {
+                Response.Redirect("Home.aspx");
+            }
         }
         else
         {
-            if (!(Request.Url.ToString().Contains("Login.aspx") || Request.Url.ToString().Contains("Register.aspx")))
-                Response.Redirect("Login.aspx");
+            if (!(Request.Url.ToString().Contains("Login.aspx") || Request.Url.ToString().Contains("Register.aspx") || Request.Url.ToString().Contains("Default.aspx")))
+                Response.Redirect("Default.aspx");
+
+            string menuString = "<ul id=\"dashboard-menu\" class=\"nav nav-list\">" +
+                    "<li class=\"active \"><a href=\"Default.aspx\"><i class=\"icon-home\"></i> <span>Home</span></a></li>" +
+                    "<li class=\"active \"><a href=\"Login.aspx\"><i class=\"icon-home\"></i> <span>Log-In</span></a></li>" +
+                    "</ul>";
+            lit_Menu.Text = menuString;
         }
+
+        
 
         if (IsPostBack || !IsPostBack)
         {
-            //if (theCake.checkMaintenance())
-            //    Response.Redirect("Maintenance.aspx");
+            if (theCake.checkMaintenance())
+                Response.Redirect("Maintenance.aspx");
         }
     }
 
