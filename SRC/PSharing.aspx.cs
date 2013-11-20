@@ -22,6 +22,7 @@ public partial class PSharing : System.Web.UI.Page
         {
             lnk_ReturnToProject.PostBackUrl = "ViewTask.aspx?ID=" + Request.QueryString["ID"].ToString();
             getPermissions();
+            PermissionLabel.Text = "Select a role to view permission levels";
             if (IsPostBack)
             {
                 SearchNames();
@@ -87,20 +88,20 @@ public partial class PSharing : System.Web.UI.Page
     private void SearchNames()
     {
         DataTable DT = theCake.searchUsersByName(txt_FirstName.Text.Trim(), txt_MiddleName.Text.Trim(), txt_LastName.Text.Trim());
-
+        newAlias = "";
         if (DT.Rows.Count == 0)
         {
             lbl_checkMessages.Text = "No matches found for First and Last name";
-            //btn_AddNewPermission.Enabled = false;
-            newAlias = "";
         }
-
-        tbl_possibleNames.Rows.Clear();
-        if (DT.Rows.Count >= 1)
+        else if (DT.Rows.Count > 10)
         {
-            btn_AddNewPermission.Enabled = true;
+            lbl_checkMessages.Text = "Too many results. Add more criteria";
+        }
+        else
+        {
+            tbl_possibleNames.Rows.Clear();
+            //btn_AddNewPermission.Enabled = true;
             lbl_checkMessages.Text = "";
-            newAlias = "";
             foreach (DataRow DR in DT.Rows)
             {
                 TableRow TR = new TableRow();
@@ -179,45 +180,50 @@ public partial class PSharing : System.Web.UI.Page
     protected void btn_AddNewPermission_OnClick(object sender, EventArgs e)
     {
         btn_AddNewPermission.Enabled = false;
-        bool found = false;
+        bool userFound = false;
+        bool roleSelected = false;
         string newAlias = "";
+        
+        // Check if name/user id selected
         foreach (TableRow TR in tbl_possibleNames.Rows)
         {
             RadioButton rb = (RadioButton)(TR.Cells[0].Controls[0]);
             if (rb.Checked)
             {
-                found = true;
+                userFound = true;
                 newAlias = rb.ID;
                 break;
             }
         }
-        if (!found)
+        if (!userFound)
         {
             foreach (TableRow TR in tbl_possibleNames2.Rows)
             {
                 RadioButton rb = (RadioButton)(TR.Cells[0].Controls[0]);
                 if (rb.Checked)
                 {
-                    found = true;
+                    userFound = true;
                     newAlias = rb.ID;
                     break;
                 }
             }
         }
 
-        int PR = 0;
-        int PW = 0;
-        int BR = 0;
-        int BW = 0;
+        // Check for User role selected
+        int index = Convert.ToInt32(roles_DropDownList.SelectedItem.Value);
+        if (index >= 0)
+            roleSelected = true;
 
-        if (radio_Board_Read.Checked) BR = 1;
-        if (radio_Board_Write.Checked) { BW = 1; BR = 1; }
-        if (radio_Project_Read.Checked) PR = 1;
-        if (radio_Project_Write.Checked) { PW = 1; PR = 1; }
-
-        string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-        theCake.addNewPermission(Int32.Parse(Request.QueryString["ID"].ToString()), newAlias, theCake.getActiveUserName(IP), PR, PW, BR, BW);
-        Response.Redirect("PSharing.aspx?ID=" + Request.QueryString["ID"].ToString());
+        if (userFound && roleSelected)
+        {
+            int[] permissions = Roles.getPermissions(Convert.ToInt32(roles_DropDownList.SelectedItem.Value));
+            string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
+            theCake.addNewPermission(Int32.Parse(Request.QueryString["ID"].ToString()), newAlias, theCake.getActiveUserName(IP), 
+                                     permissions[0], permissions[1], permissions[2], permissions[3]);
+            Response.Redirect("PSharing.aspx?ID=" + Request.QueryString["ID"].ToString());
+        }
+        else
+            ValidationLabel.Text = "***Select User and Role to give them permissions***";
     }
 
     protected void lnkbtn_AddbyName_OnClick(object sender, EventArgs e)
@@ -250,5 +256,12 @@ public partial class PSharing : System.Web.UI.Page
             lnkbtn_AddbyUserName.Text = "[+] Add By userName?";
             lnkbtn_AddbyUserName.CommandArgument = "0";
         }
+    }
+    protected void roles_DropDownList_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int index = Convert.ToInt32(roles_DropDownList.SelectedItem.Value);
+        PermissionLabel.Text = Roles.retrievePermissions(index);
+        if (index >= 0)
+            btn_AddNewPermission.Enabled = true;
     }
 }

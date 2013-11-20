@@ -68,20 +68,21 @@
             <hr />
             <table width="100%">
                 <tr>
-                    <td colspan="2" align="center"><strong><u>Choose Permission Levels</u></strong></td>
+                    <td align="center" colspan="2"><strong><u>Select Role</u>   &nbsp   </strong>
+                        <asp:DropDownList ID="roles_DropDownList" runat="server" AppendDataBoundItems="true" AutoPostBack="True" OnSelectedIndexChanged="roles_DropDownList_SelectedIndexChanged">
+                        <asp:ListItem Text="---Select---" Value="-1"></asp:ListItem>
+                        <asp:ListItem Text="Project Manager" Value="0"></asp:ListItem>  
+                        <asp:ListItem Text="Supervisor" Value="1"></asp:ListItem>  
+                        <asp:ListItem Text="Team Member" Value="2"></asp:ListItem>
+                        <asp:ListItem Text="Client" Value="3"></asp:ListItem>
+                        <asp:ListItem Text="Public Member" Value="4"></asp:ListItem>  
+                    </asp:DropDownList>
+                    </td> 
                 </tr>
-                <tr>
-                    <td align="center"><strong>Project</strong></td>
-                    <td align="center"><strong>Discussion Boards</strong></td>
-                </tr>
-                <tr>
+                 <tr>
                     <td align="center">
-                        <asp:RadioButton runat="server" ID="radio_Project_Read" Checked="true" GroupName="ProjectGroup" Text="Read Only" />
-                        <asp:RadioButton runat="server" ID="radio_Project_Write" Checked="false" GroupName="ProjectGroup" Text="Write" />
-                    </td>
-                    <td align="center">
-                        <asp:RadioButton runat="server" ID="radio_Board_Read" Checked="true" GroupName="BoardGroup" Text="Read Only" />
-                        <asp:RadioButton runat="server" ID="radio_Board_Write" Checked="false" GroupName="BoardGroup" Text="Write" />
+                        <strong><u>These permissions will be applied to this role: </u></strong><br />
+                        <asp:Label ID="PermissionLabel" runat="server"></asp:Label>
                     </td>
                 </tr>
             </table>
@@ -89,7 +90,9 @@
             
             </td></tr>
 
-            <tr><td align="center">
+            <tr><td align="center"><br />
+                <asp:Label ID="ValidationLabel" runat="server" ForeColor="Red" Font-Italic="true"></asp:Label>
+                <br />
             
                 <asp:Button runat="server" ID="btn_AddNewPermission" Text="Add New Permission" OnClick="btn_AddNewPermission_OnClick" Enabled="false" /><br />
             
