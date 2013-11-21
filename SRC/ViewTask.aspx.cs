@@ -484,4 +484,15 @@ public partial class ViewTask : System.Web.UI.Page
 
         Response.Redirect("ViewTask.aspx?ID=" + projectID);
     }
+
+    protected void btn_Delete_Project_OnClick(object sender, EventArgs e)
+    {
+        // Prompt for "Are you sure?"
+
+        // Remove from Projects table
+
+        // Remove from ProjectPermissions table for users who have this project
+
+        // Features table?
+    }
 }
