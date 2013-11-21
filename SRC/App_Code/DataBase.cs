@@ -29,6 +29,22 @@ public class DataBase
     // ==================================================================================================
     // ==================================================================================================
 
+    public void updateUserPassword(int ID, string PW)
+    {
+        string hashedSaltPassword;
+
+        // Hash the password with salt
+        hashedSaltPassword = PasswordHash.PasswordHash.CreateHash(PW);
+
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "UPDATE [TrackingTool_Users] SET [user_PW] = @PW WHERE [ID] = @UserID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@PW", hashedSaltPassword);
+        cmd.Parameters.AddWithValue("@UserID", ID);
+
+        Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+    }
+
     public void updateUserInfo(int UserID, string FirstName, string MiddleName, string LastName, string DisplayName, string Email, string PhoneNumber, string DisplayImage)
     {
         SqlCommand cmd = new SqlCommand();

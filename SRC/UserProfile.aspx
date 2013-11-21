@@ -47,13 +47,10 @@
         </asp:UpdatePanel>
     </div>
 
-
-
-
     <asp:Label runat="server" ID="lbl_DisplayName" />
     <section style="display:table">
         <section style="display:inline-block; vertical-align:top;">
-            <asp:Image runat="server" ID="img_avatar" BorderColor="#0860a8" BorderWidth="2"/>
+            <asp:Image runat="server" ID="img_avatar" BorderColor="#0860a8" BorderWidth="2" Height="100px" Width="100px" />
         </section>
 
         <section style="display:inline-block; vertical-align:top; padding-left:10px;">
@@ -73,29 +70,28 @@
     </section>
     <hr />
 
-    <!-- <strong>Associations</strong><br />
-    No associations as of yet...<br /> -->
-
     <asp:Panel runat="server" ID="pnl_PersonalProjects">
     <h2>Personal Projects</h2>
     <asp:Table runat="server" ID="tbl_Projects" Width="50%" />
+    <br />
     </asp:Panel>
 
-    <br />
+ 
     <h2>Shared Projects</h2>
     <asp:Table runat="server" ID="tbl_sharedProjects" Width="50%" />
 
-    <br />
     <hr />
     <strong>Date Joined:  </strong>
     <asp:Label runat="server" ID="lbl_dateJoined" />
     <br />
-
+    <hr />
     <asp:Panel runat="server" ID="pln_Edit">
         <div class="pull-left">
-            <a href="#openEdit">Edit</a>
+            <a href="#openEdit">Edit Profile</a>
         </div>
+        <br />
     </asp:Panel>
+    <asp:LinkButton runat="server" ID="btn_ChangeUserPW" Text="Change Password" OnClick="btn_ChangeUserPW_OnClick"/>
 
     <div id="openEdit" class="modalDialog">
         <asp:UpdatePanel ID="UpdatePanel2" runat="server">
@@ -142,7 +138,6 @@
         </div>
         </ContentTemplate>
         </asp:UpdatePanel>
-    </div>
-    
+    </div>   
 </div>
 </asp:Content>

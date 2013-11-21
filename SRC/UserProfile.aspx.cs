@@ -11,9 +11,7 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 
-/*NOTES:
- * -Currently you can edit someone elses profile by adding #openEdit to the end of their profile URL
- */
+
 public partial class UserProfile : System.Web.UI.Page
 {
     DataBase theCake = new DataBase();
@@ -22,7 +20,7 @@ public partial class UserProfile : System.Web.UI.Page
     {
         if (Request.QueryString["userID"] != null)
         {
-            if (!IsPostBack)
+            if (!IsPostBack || IsPostBack)
             {
                 int uID;
                 bool result = Int32.TryParse(Request.QueryString["userID"].ToString(), out uID);
@@ -33,15 +31,18 @@ public partial class UserProfile : System.Web.UI.Page
                     DataTable DTactive = theCake.getActiveUserData(IP);
                     DataTable DT = theCake.getUserData(uID);
 
-                    // Only allow editing for the current user if they are on their own profile
+                    // Only allow certain features for the current user if they are on their own profile
                     if (DTactive.Rows[0]["ID"].ToString() == DT.Rows[0]["ID"].ToString())
                     {
                         pln_Edit.Visible = true;
+                        
                     }
-                    else
+                    else  // User is not viewing their own profile, disable features
                     {
                         pln_Edit.Visible = false;
                         pnl_PersonalProjects.Visible = false;
+                        btn_ChangeUserPW.Visible = false;
+                        btn_ApplyChanges.Enabled = false; 
                     }
 
                     // Display user info
@@ -53,7 +54,8 @@ public partial class UserProfile : System.Web.UI.Page
                         // Check if user has an avatar image
                         if (DT.Rows[0]["Display_Image"].ToString() == "")
                         {
-                            img_avatar.ImageUrl = "/images/avatars/Common/SampleAvatar.gif";
+                            // If not working try /images/avatars/Common/SampleAvatar.gif
+                            img_avatar.ImageUrl = "/SRC/images/avatars/Common/SampleAvatar.gif";
                         }
                         else
                         {
@@ -109,6 +111,11 @@ public partial class UserProfile : System.Web.UI.Page
         {
             Response.Redirect("Home.aspx");
         }
+    }
+
+    protected void btn_ChangeUserPW_OnClick(object sender, EventArgs e)
+    {
+        Response.Redirect("ChangePassword.aspx");
     }
 
     protected void btn_SearchUsernames_OnClick(object sender, EventArgs e)
@@ -226,6 +233,7 @@ public partial class UserProfile : System.Web.UI.Page
         }      
     }
 
+    // PERSONAL PROJECTS
     protected void fillProjectsTable()
     {
         int projectFlag = 0;
@@ -303,6 +311,7 @@ public partial class UserProfile : System.Web.UI.Page
         }
     }
 
+    // SHARED PROJECTS
     protected void fillSharedProjectsTable()
     {
         int uID;
@@ -336,22 +345,30 @@ public partial class UserProfile : System.Web.UI.Page
             foreach (DataRow DR in DT6.Rows)
             {
                 DataTable DTp = theCake.getProjectPermissions((int)DR["ID"]);
-                if (DTp.Rows.Count > 1) // We only want projects that have been shared
+
+                if (DTp.Rows.Count > 1)
                 {
-                    sharedFlag = 1;
-                    TableRow TR = new TableRow();
-                    TableCell TownC1 = new TableCell();
-                    TableCell TownC2 = new TableCell();
-                    Label Lown1 = new Label();
-                    Label Lown2 = new Label();
-                    Lown1.Text = DR["taskName"].ToString();
-                    Lown2.Text = "Owner"; // Should probably set this to use getUserProjectPermissions projectTitle value
-                    TownC1.Controls.Add(Lown1);
-                    TownC2.Controls.Add(Lown2);
-                    TR.Cells.Add(TownC1);
-                    TR.Cells.Add(TownC2);
-                    
-                    tbl_sharedProjects.Rows.Add(TR);
+                    foreach (DataRow DRp in DTp.Rows)
+                    {
+                        // If user gives project to themself, they are owner - might be a nicer way to do this
+                        if ((int)DRp["user_GivenTo"] == (int)DRp["user_GivenBy"])
+                        {
+                            sharedFlag = 1;
+                            TableRow TR = new TableRow();
+                            TableCell TownC1 = new TableCell();
+                            TableCell TownC2 = new TableCell();
+                            Label Lown1 = new Label();
+                            Label Lown2 = new Label();
+                            Lown1.Text = DR["taskName"].ToString();
+                            Lown2.Text = DRp["projectTitle"].ToString();
+                            TownC1.Controls.Add(Lown1);
+                            TownC2.Controls.Add(Lown2);
+                            TR.Cells.Add(TownC1);
+                            TR.Cells.Add(TownC2);
+
+                            tbl_sharedProjects.Rows.Add(TR);
+                        }
+                    }
                 }
             }
         }
