@@ -88,6 +88,8 @@ public class Feature
         }
 	}
 
+
+    //Feature Gets
     public int getID()
     {
         return ID;
@@ -107,6 +109,7 @@ public class Feature
     {
         return featureName;
     }
+   
     public string getFeatureDescription()
     {
         return featureDescription;
@@ -157,12 +160,7 @@ public class Feature
         return isFeature;
     }
 
-
-
-
-
-
-
+    //Feature Sts
     public void setID(int i)
     {
         ID = i;
@@ -182,7 +180,6 @@ public class Feature
     {
         featureName = s;
     }
-
 
     public void setFeatureDescription(string s)
     {
@@ -233,7 +230,7 @@ public class Feature
 
 
 
-
+//Feature Functions
     public DataTable getFeatures(int parentID)
     {
         SqlCommand cmd = new SqlCommand();
@@ -248,7 +245,6 @@ public class Feature
         }
         return DT;
     }
-
 
     public DataTable getCurrent(int ID)
     {

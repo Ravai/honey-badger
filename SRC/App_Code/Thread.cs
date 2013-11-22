@@ -100,4 +100,30 @@ public class Thread
     }
 
 
+
+
+    public static int addNewThread(int boardID, string threadName, string threadDescription, int userID)
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "INSERT INTO [TrackingTool_Board_Threads] VALUES(@boardID, @threadName, @threadDescription, CURRENT_TIMESTAMP, @user)";
+        cmd.Parameters.AddWithValue("@boardID", boardID);
+        cmd.Parameters.AddWithValue("@threadName", threadName);
+        cmd.Parameters.AddWithValue("@threadDescription", threadDescription);
+        cmd.Parameters.AddWithValue("@user", userID);
+        DataTable DT = TTDB.TTQuery(cmd);
+
+        if (DT.Rows.Count > 0)
+        {
+            return Int32.Parse(DT.Rows[0]["ID"].ToString());
+        }
+        else
+        {
+            return -1;
+        }
+    }
+	
+
+
+
+
 }

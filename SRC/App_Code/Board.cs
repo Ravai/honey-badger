@@ -111,4 +111,38 @@ public class Board
     {
         return createdBy;
     }
+
+
+
+    public static int addNewBoard(string boardName, int userID, int importance)
+    {
+        // importance is 1 if its a milestone, 0 if its a general board.
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "INSERT INTO [TrackingTool_Board_Main] VALUES(@boardName, @importance, CURRENT_TIMESTAMP, @user)";
+        cmd.Parameters.AddWithValue("@boardName", boardName);
+        cmd.Parameters.AddWithValue("@importance", importance);
+        cmd.Parameters.AddWithValue("@user", userID);
+        TTDB.TTQuery(cmd);
+
+        cmd = new SqlCommand();
+        cmd.CommandText = "SELECT [boardID] FROM [TrackingTool_Board_Main] WHERE [board_CategoryName] = @boardName AND [createdBy] = @user ORDER BY [createdTimestamp] DESC";
+        cmd.Parameters.AddWithValue("@boardName", boardName);
+        cmd.Parameters.AddWithValue("@user", userID);
+        DataTable DT = TTDB.TTQuery(cmd);
+
+        int boardID = -1;
+        if (DT.Rows.Count > 0)
+        {
+            boardID = Int32.Parse(DT.Rows[0]["boardID"].ToString());
+        }
+
+        Thread.addNewThread(boardID, "General Discussion", "Generic Thread for the Board", userID);
+
+        return boardID;
+    }
+	
+
+
+
+
 }

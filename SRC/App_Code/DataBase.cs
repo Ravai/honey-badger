@@ -29,22 +29,6 @@ public class DataBase
     // ==================================================================================================
     // ==================================================================================================
 
-    public void updateUserPassword(int ID, string PW)
-    {
-        string hashedSaltPassword;
-
-        // Hash the password with salt
-        hashedSaltPassword = PasswordHash.PasswordHash.CreateHash(PW);
-
-        SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "UPDATE [TrackingTool_Users] SET [user_PW] = @PW WHERE [ID] = @UserID";
-        cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@PW", hashedSaltPassword);
-        cmd.Parameters.AddWithValue("@UserID", ID);
-
-        Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
-    }
-
     public void updateUserInfo(int UserID, string FirstName, string MiddleName, string LastName, string DisplayName, string Email, string PhoneNumber, string DisplayImage)
     {
         SqlCommand cmd = new SqlCommand();
@@ -1130,7 +1114,7 @@ public class DataBase
 
         int taskID = Int32.Parse(DT.Rows[0]["ID"].ToString());
 
-        addNewPermission(taskID, userName, userName, 1, 1, 1, 1, "Owner");
+        addNewPermission(taskID, userName, userName, 1, 1, 1, 1);
 
         if (DT.Rows.Count > 0)
         {
@@ -1317,7 +1301,7 @@ public class DataBase
         }
     }
 
-    public int addNewPermission(int projectID, string newUserAlias, string GivingUserAlias, int PR, int PW, int BR, int BW, string role)
+    public int addNewPermission(int projectID, string newUserAlias, string GivingUserAlias, int PR, int PW, int BR, int BW)
     {
         int newID = getUserID(newUserAlias);
         if (newID == -1)
@@ -1331,8 +1315,8 @@ public class DataBase
         SqlCommand cmd = new SqlCommand();
         cmd.CommandText = "INSERT INTO [TrackingTool_ProjectPermissions] VALUES(@projectID, @projectTitle, @projectTitleDescription, @userGivenTo, @userGivenBy, @PR, @PW, @BR, @BW, CURRENT_TIMESTAMP, NULL, 0)";
         cmd.Parameters.AddWithValue("@projectID", projectID);
-        cmd.Parameters.AddWithValue("@projectTitle", role);
-        cmd.Parameters.AddWithValue("@projectTitleDescription", "NOT IMPLEMENTED");
+        cmd.Parameters.AddWithValue("@projectTitle", "Team Member");
+        cmd.Parameters.AddWithValue("@projectTitleDescription", "Team Member");
         cmd.Parameters.AddWithValue("@userGivenTo", newID);
         cmd.Parameters.AddWithValue("@userGivenBy", giverID);
         cmd.Parameters.AddWithValue("@PR", PR);

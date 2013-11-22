@@ -150,6 +150,10 @@ public class Project
         return projectOwner;
     }
 
+    public List<int> getMilestones()
+    {
+        return milestones;
+    }
 
 
     private void setID(int i)
@@ -214,6 +218,8 @@ public class Project
             setDoneFlag(true);
         else
             setDoneFlag(false);
+
+        updateProjectPercentComplete();
     }
 
     private void setProjectOwner(User u)
@@ -222,7 +228,26 @@ public class Project
     }
 
 
+    //Get Tasks and Feature functions
+    public Project getTask(int ID)
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ID] = @ID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@ID", ID);
 
+        DataTable DT = TTDB.TTQuery(cmd);
+
+        if (DT.Rows.Count == 1)
+        {
+            return new Project(int.Parse(DT.Rows[0]["ID"].ToString()));
+        }
+        else
+        {
+            return null;
+        }
+
+    }
 
     public static List<Project> getTasks(string userName)
     {
@@ -241,6 +266,22 @@ public class Project
         return tasks;
     }
 
+    private void getFeatures()
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "SELECT * FROM [TrackingTool_Features] WHERE [parentID] is null AND [projectID] = @id ORDER BY [createdTimestamp] ASC";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@id", getID());
+
+        DataTable DT = TTDB.TTQuery(cmd);
+
+        foreach (DataRow DR in DT.Rows)
+        {
+            milestones.Add(int.Parse(DR["ID"].ToString()));
+        }
+    }
+    
+    //Get User's Tasks functions
     public static List<Project> getCompletedTasks(string userName)
     {
         List<Project> completed = new List<Project>();
@@ -315,27 +356,8 @@ public class Project
         return upcoming;
     }
 
-    public static List<Project> getTask(int ID)
-    {
-        List<Project> task = new List<Project>();
-
-        SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ID] = @ID";
-        cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@ID", ID);
-
-        DataTable DT = TTDB.TTQuery(cmd);
-
-        foreach (DataRow DR in DT.Rows)
-        {
-            task.Add(new Project(int.Parse(DR["ID"].ToString())));
-        }
-
-        return task;
-    }
-
-
-
+   
+    //Get Shared Task fucntions
     public static List<Project> getSharedCompletedTasks(int userID)
     {
 		List<Project> sharedTask = new List<Project>();
@@ -498,61 +520,170 @@ public class Project
     }
 
 
-    private void getFeatures()
+    //Task Control functions
+    public void completeTask()
     {
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [TrackingTool_Features] WHERE [parentID] is null AND [projectID] = @id ORDER BY [createdTimestamp] ASC";
+        cmd.CommandText = "UPDATE [TrackingTool_Projects] SET [doneFlag] = '1', [actualStop] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
         cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@id", getID());
+        cmd.Parameters.AddWithValue("@ID", getID());
 
+        TTDB.TTQuery(cmd);
+    }
+
+    public void reOpenTask()
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "UPDATE [TrackingTool_Projects] SET [doneFlag] = '0', [actualStop] = NULL WHERE [ID] = @ID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@ID", getID());
+
+        TTDB.TTQuery(cmd);
+    }
+
+    public void startTask()
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "UPDATE [TrackingTool_Projects] SET [actualStart] = CURRENT_TIMESTAMP WHERE [ID] = @ID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@ID", getID());
+
+        TTDB.TTQuery(cmd);
+    }
+
+    private void updateProjectPercentComplete()
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "UPDATE [TrackingTool_Projects] SET [percentComplete] = @perComplete WHERE [ID] = @ID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@perComplete", getPercentComplete());
+        cmd.Parameters.AddWithValue("@ID", getID());
+
+        TTDB.TTQuery(cmd);
+    }
+
+    public void deleteTask()
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "SELECT * FROM [db_forum].[dbo].[TrackingTool_Board_Threads] WHERE [boardID] = @boardID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@boardID", getBoardID());
         DataTable DT = TTDB.TTQuery(cmd);
 
         foreach (DataRow DR in DT.Rows)
         {
-            milestones.Add(int.Parse(DR["ID"].ToString()));
+            SqlCommand cmd2 = new SqlCommand();
+            cmd2.CommandText = "DELETE FROM [db_forum].[dbo].[TrackingTool_Board_Posts] WHERE [threadID] = @threadID";
+            cmd2.Parameters.Clear();
+            cmd2.Parameters.AddWithValue("@threadID", DR["threadID"].ToString());
+            TTDB.TTQuery(cmd2);
+        }
+
+        cmd = new SqlCommand();
+        cmd.CommandText = "DELETE FROM [db_forum].[dbo].[TrackingTool_Board_Threads] WHERE [boardID] = @boardID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@boardID", getBoardID());
+        TTDB.TTQuery(cmd);
+
+        cmd = new SqlCommand();
+        cmd.CommandText = "DELETE FROM [db_forum].[dbo].[TrackingTool_Board_Main] WHERE [boardID] = @boardID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@boardID", getBoardID());
+        TTDB.TTQuery(cmd);
+
+        cmd = new SqlCommand();
+        cmd.CommandText = "DELETE FROM [db_forum].[dbo].[TrackingTool_Features] WHERE [projectID] = @projectID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@projectID", getID());
+        TTDB.TTQuery(cmd);
+
+        cmd = new SqlCommand();
+        cmd.CommandText = "DELETE FROM [TrackingTool_Projects] WHERE [ID] = @ID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@ID", getID());
+
+        TTDB.TTQuery(cmd);
+    }
+
+    public void updateProjectBaseInfo(string Name, string Description)
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "UPDATE [TrackingTool_Projects] SET [taskName] = @Name, [taskDescription] = @Description WHERE [ID] = @taskID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@taskID", getID());
+        cmd.Parameters.AddWithValue("@Name", Name);
+        cmd.Parameters.AddWithValue("@Description", Description);
+
+        TTDB.TTQuery(cmd);
+    }
+
+    public void increaseProjectSize(int ID, int userID)
+    {
+
+        Project proj = getTask(ID);
+        int newBoardID = Board.addNewBoard("General Discussion", userID, 0);
+        Thread.addNewThread(boardID, "General Discussion", "Generic Thread for the Board", userID);
+
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "UPDATE [TrackingTool_Projects] SET [projectSize] = '1', [boardID] = @boardID WHERE [ID] = @ID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@ID", ID);
+        cmd.Parameters.AddWithValue("@boardID", newBoardID);
+
+        TTDB.TTQuery(cmd);   
+    }
+
+    //Add new task functions
+     public int addNewTask(string taskName, string taskDescription, DateTime expectedStart, DateTime expectedStop, string userName)
+    {
+        int userID = User.getUserID(userName);
+
+        if (userID == -1)
+        {
+            userID = User.addNewUser(userName);
+        }
+
+
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "INSERT INTO [TrackingTool_Projects] VALUES(@taskName, @taskDescription, @expectedStart, @expectedStop, NULL, NULL, 0, @ownerID, NULL, 0, 0)";
+        cmd.Parameters.AddWithValue("@taskName", taskName);
+        cmd.Parameters.AddWithValue("@taskDescription", taskDescription);
+        cmd.Parameters.AddWithValue("@expectedStart", expectedStart);
+        cmd.Parameters.AddWithValue("@expectedStop", expectedStop);
+        cmd.Parameters.AddWithValue("@ownerID", userID);
+        TTDB.TTQuery(cmd);
+
+        cmd = new SqlCommand();
+        cmd.CommandText = "SELECT * FROM [TrackingTool_Projects] WHERE [taskName] = @taskName AND [taskDescription] = @taskDescription AND [expectedStart] = @expectedStart AND [expectedStop] = @expectedStop and [ownerID] = @ownerID";
+        cmd.Parameters.AddWithValue("@taskName", taskName);
+        cmd.Parameters.AddWithValue("@taskDescription", taskDescription);
+        cmd.Parameters.AddWithValue("@expectedStart", expectedStart);
+        cmd.Parameters.AddWithValue("@expectedStop", expectedStop);
+        cmd.Parameters.AddWithValue("@ownerID", userID);
+        DataTable DT = TTDB.TTQuery(cmd);
+
+        int taskID = Int32.Parse(DT.Rows[0]["ID"].ToString());
+
+        TTDB.addNewPermission(taskID, userName, userName, 1, 1, 1, 1);
+
+        if (DT.Rows.Count > 0)
+        {
+            return taskID;
+        }
+        else
+        {
+            return -1;
         }
     }
 
-
-
-   /* public DataTable getTask(int ID, string userName)
+    /*
+    //Need to check what it is returning
+    public DataTable getProjectPermissions()
     {
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ID] = @ID and [ownerAlias] = @user";
+        cmd.CommandText = "SELECT * FROM [TrackingTool_ProjectPermissions] WHERE [projectID] = @projectID ORDER BY [updatedTimestamp]";
         cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@ID", ID);
-        cmd.Parameters.AddWithValue("@user", userName);
-
-        DataTable DT = TTDB.TTQuery(cmd);
-        if (DT.Rows.Count == 0)
-        {
-            int userID = getUserID(userName);
-
-            cmd = new SqlCommand();
-            cmd.CommandText = "SELECT * FROM [TrackingTool_ProjectPermissions] WHERE [projectID] = @ID and [user_GivenTo] = @userID";
-            cmd.Parameters.Clear();
-            cmd.Parameters.AddWithValue("@ID", ID);
-            cmd.Parameters.AddWithValue("@userID", userID);
-
-            DT = TTDB.TTQuery(cmd);
-            if (DT.Rows.Count == 1)
-            {
-                cmd = new SqlCommand();
-                cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ID] = @ID";
-                cmd.Parameters.Clear();
-                cmd.Parameters.AddWithValue("@ID", ID);
-                DT = TTDB.TTQuery(cmd);
-            }
-        }
-        return DT;
-    } */
-
-   /*  public DataTable getFeatures(int milestoneID)
-    {
-        SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [TrackingTool_Features] WHERE [MilestoneID] = @milestoneID";
-        cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@milestoneID", milestoneID);
+        cmd.Parameters.AddWithValue("@projectID", getID());
 
         DataTable DT = TTDB.TTQuery(cmd);
         if (DT == null)
@@ -560,47 +691,7 @@ public class Project
             DT = new DataTable();
         }
         return DT;
-    } */
-
-   /*  public int getMilestoneID_fromFeatureID(int featureID)
-    {
-        SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT [MilestoneID] FROM [TrackingTool_Features] WHERE [ID] = @featureID";
-        cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@featureID", featureID);
-
-        DataTable DT = TTDB.TTQuery(cmd);
-        if (DT == null)
-        {
-            return -1;
-        }
-        else
-        {
-            return Int32.Parse(DT.Rows[0]["MilestoneID"].ToString());
-        }
-    } */
-   
-   /* public int getUserID(string userName)
-    {
-        SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [TrackingTool_Users] WHERE [ownerAlias] = @userName";
-        cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@userName", userName);
-
-        DataTable DT = TTDB.TTQuery(cmd);
-        if (DT == null || DT.Rows.Count == 0)
-        {
-            return -1;
-        }
-        else
-        {
-            return Int32.Parse(DT.Rows[0]["ID"].ToString());
-        }
-    } */
-
-
-
-
-
+    }
+    */
 
 }

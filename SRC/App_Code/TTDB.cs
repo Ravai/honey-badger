@@ -92,4 +92,62 @@ public static class TTDB
         //client.Send(msg);
         return;
     }
+
+
+
+
+
+    public bool checkMaintenance()
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "SELECT [Value] FROM [TrackingTool_Flags] WHERE [Type] = 'Maintenance'";
+        cmd.Parameters.Clear();
+
+        DataTable DT = Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+        if (DT.Rows[0]["Value"].ToString() == "0")
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+
+    public static int addNewPermission(int projectID, string newUserAlias, string GivingUserAlias, int PR, int PW, int BR, int BW)
+    {
+        int newID = User.getUserID(newUserAlias);
+        if (newID == -1)
+        {
+            newID = User.addNewUser(newUserAlias);
+        }
+
+
+        int giverID = User.getUserID(GivingUserAlias);
+
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "INSERT INTO [TrackingTool_ProjectPermissions] VALUES(@projectID, @projectTitle, @projectTitleDescription, @userGivenTo, @userGivenBy, @PR, @PW, @BR, @BW, CURRENT_TIMESTAMP, NULL, 0)";
+        cmd.Parameters.AddWithValue("@projectID", projectID);
+        cmd.Parameters.AddWithValue("@projectTitle", "Team Member");
+        cmd.Parameters.AddWithValue("@projectTitleDescription", "Team Member");
+        cmd.Parameters.AddWithValue("@userGivenTo", newID);
+        cmd.Parameters.AddWithValue("@userGivenBy", giverID);
+        cmd.Parameters.AddWithValue("@PR", PR);
+        cmd.Parameters.AddWithValue("@PW", PW);
+        cmd.Parameters.AddWithValue("@BR", BR);
+        cmd.Parameters.AddWithValue("@BW", BW);
+        DataTable DT = Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+
+        if (DT.Rows.Count > 0)
+        {
+            return Int32.Parse(DT.Rows[0]["ID"].ToString());
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+
 }
