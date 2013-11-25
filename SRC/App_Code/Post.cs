@@ -114,14 +114,14 @@ public class Post
 
 
 
-    public int addNewPost(int threadID, string post_Full, int userID)
+    public static int addNewPost(int threadID, string post_Full, int userID)
     {
         SqlCommand cmd = new SqlCommand();
         cmd.CommandText = "INSERT INTO [TrackingTool_Board_Posts] VALUES(@threadID, @post_Full, @user, CURRENT_TIMESTAMP, NULL, NULL)";
         cmd.Parameters.AddWithValue("@threadID", threadID);
         cmd.Parameters.AddWithValue("@post_Full", post_Full);
         cmd.Parameters.AddWithValue("@user", userID);
-        DataTable DT = Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+        DataTable DT = TTDB.TTQuery(cmd);
 
         if (DT.Rows.Count > 0)
         {
@@ -133,7 +133,7 @@ public class Post
         }
     }
 
-    public int addNewPost(int threadID, string post_Full, int userID, string timestamp)
+    public static int addNewPost(int threadID, string post_Full, int userID, string timestamp)
     {
         SqlCommand cmd = new SqlCommand();
         cmd.CommandText = "INSERT INTO [TrackingTool_Board_Posts] VALUES(@threadID, @post_Full, @user, @timestamp, NULL, NULL)";
@@ -141,7 +141,7 @@ public class Post
         cmd.Parameters.AddWithValue("@post_Full", post_Full);
         cmd.Parameters.AddWithValue("@user", userID);
         cmd.Parameters.AddWithValue("@timestamp", timestamp);
-        DataTable DT = Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+        DataTable DT = TTDB.TTQuery(cmd);
 
         if (DT.Rows.Count > 0)
         {

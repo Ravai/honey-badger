@@ -219,7 +219,7 @@ public partial class PSharing : System.Web.UI.Page
         {
             int[] permissions = Roles.getPermissions(Convert.ToInt32(roles_DropDownList.SelectedItem.Value));
             string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-            theCake.addNewPermission(Int32.Parse(Request.QueryString["ID"].ToString()), newAlias, theCake.getActiveUserName(IP), 
+            TTDB.addNewPermission(Int32.Parse(Request.QueryString["ID"].ToString()), newAlias, theCake.getActiveUserName(IP), 
                                      permissions[0], permissions[1], permissions[2], permissions[3], role);
             Response.Redirect("PSharing.aspx?ID=" + Request.QueryString["ID"].ToString());
         }

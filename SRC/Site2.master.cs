@@ -28,6 +28,10 @@ public partial class Site2 : System.Web.UI.MasterPage
             lnk_MyAccount.PostBackUrl = "UserProfile.aspx?userID=" + DT.Rows[0]["ID"].ToString();
 
             string menuString = "<ul id=\"dashboard-menu\" class=\"nav nav-list\">";
+            if (Request.Url.ToString().Contains("Default.aspx"))
+                menuString += "<li class=\"active \"><a href=\"Default.aspx\"><i class=\"icon-home\"></i> <span>Home</span></a></li>";
+            else
+                menuString += "<li class=\" \"><a href=\"Default.aspx\"><i class=\"icon-home\"></i> <span>Home</span></a></li>";
             if (Request.Url.ToString().Contains("Home.aspx"))
                 menuString += "<li class=\"active \"><a href=\"Home.aspx\"><i class=\"icon-home\"></i> <span>Dashboard</span></a></li>";
             else
@@ -51,21 +55,22 @@ public partial class Site2 : System.Web.UI.MasterPage
             menuString += "</ul>";
 
             lit_Menu.Text = menuString;
-
-            if (Request.Url.ToString().Contains("Default.aspx") || !(Request.Url.ToString().Contains(".aspx")))
-            {
-                Response.Redirect("Home.aspx");
-            }
         }
         else
         {
             if (!(Request.Url.ToString().Contains("Login.aspx") || Request.Url.ToString().Contains("Register.aspx") || Request.Url.ToString().Contains("Default.aspx")))
                 Response.Redirect("Default.aspx");
 
-            string menuString = "<ul id=\"dashboard-menu\" class=\"nav nav-list\">" +
-                    "<li class=\"active \"><a href=\"Default.aspx\"><i class=\"icon-home\"></i> <span>Home</span></a></li>" +
-                    "<li class=\"active \"><a href=\"Login.aspx\"><i class=\"icon-home\"></i> <span>Log-In</span></a></li>" +
-                    "</ul>";
+            string menuString = "<ul id=\"dashboard-menu\" class=\"nav nav-list\">";
+            if (Request.Url.ToString().Contains("Default.aspx"))
+                menuString += "<li class=\"active \"><a href=\"Default.aspx\"><i class=\"icon-home\"></i> <span>Home</span></a></li>";
+            else
+                menuString += "<li class=\" \"><a href=\"Default.aspx\"><i class=\"icon-home\"></i> <span>Home</span></a></li>";
+            if (Request.Url.ToString().Contains("Login.aspx"))
+                menuString += "<li class=\"active \"><a href=\"Login.aspx\"><i class=\"icon-home\"></i> <span>Log-In</span></a></li>";
+            else
+                menuString += "<li class=\" \"><a href=\"Login.aspx\"><i class=\"icon-home\"></i> <span>Log-In</span></a></li>";
+            menuString += "</ul>";
             lit_Menu.Text = menuString;
         }
 

@@ -17,6 +17,7 @@ public partial class ViewTask : System.Web.UI.Page
     bool ProjectWrite = true;
     bool BoardWrite = true;
     string ID = "";
+    Project currentProject;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -28,6 +29,7 @@ public partial class ViewTask : System.Web.UI.Page
 
             ID = Request.QueryString["ID"].ToString();
             string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
+            currentProject = new Project(int.Parse(ID));
             DataTable DT = theCake.getTask(Int32.Parse(ID), theCake.getActiveUserName(IP));
 
             if (DT.Rows.Count == 0)
@@ -35,7 +37,7 @@ public partial class ViewTask : System.Web.UI.Page
                 Response.Redirect("Home.aspx");
             }
 
-            string ownerAlias = theCake.getUserAlias(Int32.Parse(DT.Rows[0]["ownerID"].ToString()));
+            string ownerAlias = userClass.getUserAlias(Int32.Parse(DT.Rows[0]["ownerID"].ToString()));
             if (theCake.getActiveUserName(IP) != ownerAlias)
             {
                 int userID = theCake.getUserID(theCake.getActiveUserName(IP));
@@ -492,12 +494,7 @@ public partial class ViewTask : System.Web.UI.Page
 
     protected void btn_Delete_Project_OnClick(object sender, EventArgs e)
     {
-        // Prompt for "Are you sure?"
-
-        // Remove from Projects table
-
-        // Remove from ProjectPermissions table for users who have this project
-
-        // Features table?
+        currentProject.deleteTask();
+        Response.Redirect("Home.aspx");
     }
 }

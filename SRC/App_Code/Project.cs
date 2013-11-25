@@ -25,7 +25,7 @@ public class Project
     private int boardID;
     private int projectSize;
     private int percentComplete;
-    private User projectOwner;
+    private userClass projectOwner;
     private List<int> milestones;
 
     public Project(int id)
@@ -145,7 +145,7 @@ public class Project
         return percentComplete;
     }
 
-    public User getProjectOwner()
+    public userClass getProjectOwner()
     {
         return projectOwner;
     }
@@ -222,7 +222,7 @@ public class Project
         updateProjectPercentComplete();
     }
 
-    private void setProjectOwner(User u)
+    private void setProjectOwner(userClass u)
     {
         projectOwner = u;
     }
@@ -636,11 +636,11 @@ public class Project
     //Add new task functions
      public int addNewTask(string taskName, string taskDescription, DateTime expectedStart, DateTime expectedStop, string userName)
     {
-        int userID = User.getUserID(userName);
+        int userID = userClass.getUserID(userName);
 
         if (userID == -1)
         {
-            userID = User.addNewUser(userName);
+            userID = userClass.addNewUser(userName);
         }
 
 
@@ -664,7 +664,7 @@ public class Project
 
         int taskID = Int32.Parse(DT.Rows[0]["ID"].ToString());
 
-        TTDB.addNewPermission(taskID, userName, userName, 1, 1, 1, 1);
+        TTDB.addNewPermission(taskID, userName, userName, 1, 1, 1, 1, "Owner");
 
         if (DT.Rows.Count > 0)
         {

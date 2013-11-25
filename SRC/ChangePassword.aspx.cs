@@ -39,7 +39,8 @@ public partial class ChangePassword : System.Web.UI.Page
                 bool result = Int32.TryParse(userID, out uID);
 
                 // Update user password
-                theCake.updateUserPassword(uID, txt_newPassword.Text);
+                // NEEDS FUNCTION
+                //User.updateUserPassword(uID, txt_newPassword.Text);
 
                 // Redirect back to user profile
                 Response.Redirect("UserProfile.aspx?userID=" + uID);

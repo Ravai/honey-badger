@@ -5,7 +5,7 @@
         
         <asp:Panel runat="server" ID="pnl_MainHeader">
         <h1><asp:Label runat="server" ID="lbl_TaskName" /></h1>
-        <asp:Label runat="server" ID="lbl_Description" />
+        <h2><asp:Label runat="server" ID="lbl_Description" /></h2>
 
         <asp:Literal runat="server" ID="progress_Header" />
         <%--<asp:Label runat="server" style="float:right; font-size:xx-large;" ID="lbl_totalPercentComplete" Visible="false" />--%>
@@ -44,7 +44,7 @@
                 <asp:Panel runat="server" ID="pnl_EditOperations">
                 <asp:LinkButton runat="server" PostBackUrl="#UpdateProjectName" CssClass="specialOperationsButton" Text="Update Project Name and Description" /><br /><br />
                 <asp:LinkButton runat="server" ID="btn_Edit_Sharing" CssClass="specialOperationsButton" OnClick="btn_Edit_Sharing_OnClick" Enabled="true" Text="Edit Project Sharing" /><br /><br />
-                <asp:LinkButton runat="server" ID="btn_Delete_Project" CssClass="specialOperationsButton" OnClick="btn_Delete_Project_OnClick" Enabled="false" Text="Delete this Project" /><br />
+                <asp:LinkButton runat="server" ID="btn_Delete_Project" CssClass="specialOperationsButton" OnClick="btn_Delete_Project_OnClick" OnClientClick="return confirm('Are you sure you want to delete this project?');" Enabled="true" Text="Delete this Project" /><br />
                 </asp:Panel>
                 </asp:Panel>
             </div>

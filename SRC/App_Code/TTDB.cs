@@ -97,7 +97,7 @@ public static class TTDB
 
 
 
-    public bool checkMaintenance()
+    public static bool checkMaintenance()
     {
         SqlCommand cmd = new SqlCommand();
         cmd.CommandText = "SELECT [Value] FROM [TrackingTool_Flags] WHERE [Type] = 'Maintenance'";
@@ -115,22 +115,22 @@ public static class TTDB
     }
 
 
-    public static int addNewPermission(int projectID, string newUserAlias, string GivingUserAlias, int PR, int PW, int BR, int BW)
+    public static int addNewPermission(int projectID, string newUserAlias, string GivingUserAlias, int PR, int PW, int BR, int BW, string role)
     {
-        int newID = User.getUserID(newUserAlias);
+        int newID = userClass.getUserID(newUserAlias);
         if (newID == -1)
         {
-            newID = User.addNewUser(newUserAlias);
+            newID = userClass.addNewUser(newUserAlias);
         }
 
 
-        int giverID = User.getUserID(GivingUserAlias);
+        int giverID = userClass.getUserID(GivingUserAlias);
 
         SqlCommand cmd = new SqlCommand();
         cmd.CommandText = "INSERT INTO [TrackingTool_ProjectPermissions] VALUES(@projectID, @projectTitle, @projectTitleDescription, @userGivenTo, @userGivenBy, @PR, @PW, @BR, @BW, CURRENT_TIMESTAMP, NULL, 0)";
         cmd.Parameters.AddWithValue("@projectID", projectID);
-        cmd.Parameters.AddWithValue("@projectTitle", "Team Member");
-        cmd.Parameters.AddWithValue("@projectTitleDescription", "Team Member");
+        cmd.Parameters.AddWithValue("@projectTitle", role);
+        cmd.Parameters.AddWithValue("@projectTitleDescription", role);
         cmd.Parameters.AddWithValue("@userGivenTo", newID);
         cmd.Parameters.AddWithValue("@userGivenBy", giverID);
         cmd.Parameters.AddWithValue("@PR", PR);
