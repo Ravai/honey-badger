@@ -336,6 +336,11 @@ public partial class ViewTask : System.Web.UI.Page
 
     protected void btn_AddMilestone_Final_OnClick(object sender, EventArgs e)
     {
+        if (String.Equals(txt_Milestone_Name.Text, "") || String.Equals(txt_Milestone_Name.Text, "Add milestone name"))
+        {
+            txt_Milestone_Name.Text = "Add milestone name";
+            return;
+        }
         string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
         int boardID = theCake.addNewBoard(txt_Milestone_Name.Text, theCake.getUserID(theCake.getActiveUserName(IP)), 1);
         //theCake.addNewMilestone(Int32.Parse(Request.QueryString["ID"].ToString()), txt_Milestone_Name.Text, txt_Milestone_Desc.Text, Int32.Parse(ddl_Milestone_Weight.SelectedItem.Value), boardID);
