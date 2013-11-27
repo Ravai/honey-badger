@@ -70,14 +70,14 @@ public partial class Threads : System.Web.UI.Page
             foreach (DataRow DR in DT.Rows)
             {
                 Post pst = new Post(Int32.Parse(DR["postID"].ToString()));
-
+                int uID = pst.get_postBy();
                 string postBlock = "";
-
+                
                 postBlock += "<div class=\"widget\">" + 
                     "<section style=\"display:table;\">" + 
                         "<section style=\"display:inline-block;\">" + 
                             "<div class=\"widget\" align=\"center\">" + 
-                                pst.get_DisplayName() + "<br />" + 
+                                "<a href=\"UserProfile.aspx?userID=" + uID.ToString() + "\">" + pst.get_DisplayName() + "</a>" + "<br />" + 
                                 "<img height=\"100px\" width=\"100px\" src=\"" + pst.get_DisplayImage() + "\" />" + 
                             "</div>" + 
                         "</section>" + 

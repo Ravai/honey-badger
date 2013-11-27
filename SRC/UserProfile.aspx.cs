@@ -48,14 +48,12 @@ public partial class UserProfile : System.Web.UI.Page
                     // Display user info
                     if (DT.Rows.Count == 1)
                     {
-                        
                         lbl_DisplayName.Text = "<h2>" + DT.Rows[0]["Display_Name"].ToString() + "</h2>";
 
                         // Check if user has an avatar image
                         if (DT.Rows[0]["Display_Image"].ToString() == "")
                         {
-                            // If not working try /images/avatars/Common/SampleAvatar.gif
-                            img_avatar.ImageUrl = "/SRC/images/avatars/Common/SampleAvatar.gif";
+                            img_avatar.ImageUrl = "/images/avatars/Common/SampleAvatar.gif";
                         }
                         else
                         {

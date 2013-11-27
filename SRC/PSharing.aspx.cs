@@ -78,7 +78,7 @@ public partial class PSharing : System.Web.UI.Page
                     else board = "Write";
                 }
 
-                TC.Text = Name + "[Project - " + project + "] [Boards - " + board + "]";
+                TC.Text = "<a href=\"UserProfile.aspx?userID=" + ID.ToString() + "\">" + Name + "</a>" + "[Project - " + project + "] [Boards - " + board + "]";
                 TR.Cells.Add(TC);
                 tbl_List.Rows.Add(TR);
             }
