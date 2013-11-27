@@ -269,6 +269,38 @@ public class DataBase
         }
     }
 
+    public string resetPassword(string username, string email)
+    {
+        var cmd = new SqlCommand();
+        cmd.CommandText = "SELECT * FROM TrackingTool_Users WHERE [ownerAlias] = @UserName";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@UserName", username);
+
+        var DT = Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+
+        if (DT.Rows.Count == 1 && DT.Rows[0]["eMail"].ToString().Equals(email, StringComparison.OrdinalIgnoreCase))
+        {
+            string newPass =DT.Rows[0]["user_PW"].ToString().Substring(0, 6);
+
+            changePass(username, newPass);
+            return newPass;
+        }
+        else
+            return "";
+    }
+
+    public void changePass(string username,string newPassword)
+    {
+        var cmd = new SqlCommand();
+        var newHashPass = PasswordHash.PasswordHash.CreateHash(newPassword);
+        cmd.CommandText = "UPDATE TrackingTool_Users SET [user_PW] = @PW WHERE [ownerAlias] = @UserName";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@PW", newHashPass);
+        cmd.Parameters.AddWithValue("@UserName",username);
+
+Query(cmd, ConfigurationManager.ConnectionStrings["TTConnectionString"].ConnectionString);
+
+    }
 
 
 

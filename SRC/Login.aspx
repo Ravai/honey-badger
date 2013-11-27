@@ -10,7 +10,7 @@
     
     <asp:Button runat="server" ID="btn_Submit" OnClick="btn_Submit_OnClick" Width="100px" Text="Login" />
     <asp:Button runat="server" PostBackUrl="~/Register.aspx" Width="100px" Text="Register" /><br />
-    <asp:LinkButton runat="server" ID="btn_ForgotPass" Width="205px" Text="Forget Your Password?" />
+    <asp:LinkButton runat="server" ID="btn_ForgotPass" PostBackUrl="~/ForgotPassword.aspx" Width="205px" Text="Forget Your Password?" />
     <br />
     <asp:Label runat="server" ID="lbl_FailMessage" ForeColor="Red" Font-Bold="true" /><br />
 </div>
