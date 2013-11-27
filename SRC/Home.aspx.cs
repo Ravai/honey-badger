@@ -45,13 +45,15 @@ public partial class Home : System.Web.UI.Page
 
             foreach (DataRow DR in DT.Rows)
             {
-                DataTable DT2 = theCake.getTask(Int32.Parse(DR["projectID"].ToString()));
+                Project aProj = new Project(int.Parse(DR["projectID"].ToString()));
+                //DataTable DT2 = theCake.getTask(Int32.Parse(DR["projectID"].ToString()));
                 TableRow TR = new TableRow();
                 TableCell TC = new TableCell();
                 Label L1 = new Label();
                 L1.Text = "A project has been shared with you!  Check out ";
                 LinkButton newLink = new LinkButton();
-                newLink.Text = DT2.Rows[0]["taskName"].ToString();
+                newLink.Text = aProj.getTaskName();
+                //newLink.Text = DT2.Rows[0]["taskName"].ToString();
                 newLink.Click += new EventHandler(btn_AcknowledgeMessage);
                 newLink.CommandArgument = DR["ID"].ToString();
                 newLink.CommandName = DR["projectID"].ToString();
@@ -90,7 +92,9 @@ public partial class Home : System.Web.UI.Page
             Description = Description.Replace("\r\n", "<br />");
 
             string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-            int projectID = theCake.addNewTask(txt_addNew_Task_Name.Text, Description, Calendar_ExpectedStart.SelectedDate, Calendar_ExpectedStop.SelectedDate, theCake.getActiveUserName(IP));
+
+            
+            int projectID = Project.addNewTask(txt_addNew_Task_Name.Text, Description, Calendar_ExpectedStart.SelectedDate, Calendar_ExpectedStop.SelectedDate, theCake.getActiveUserName(IP));
             theCake.increaseProjectSize(projectID, theCake.getUserID(theCake.getActiveUserName(IP)));
             Response.Redirect("Home.aspx");
         }
@@ -99,14 +103,12 @@ public partial class Home : System.Web.UI.Page
     protected void fillWipTable()
     {
         string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-        DataTable DT = theCake.getWipTasks(theCake.getActiveUserName(IP));
-        DataTable DT2 = theCake.getSharedWipTasks(theCake.getActiveUserName(IP));
 
         List<Project> myWipTasks = Project.getWipTasks(theCake.getActiveUserName(IP));
         List<Project> mySharedWipTasks = Project.getSharedWipTasks(theCake.getUserID(theCake.getActiveUserName(IP)));
 
         ProgressList.Text += "<ul class=\"cards\">";
-        if (DT.Rows.Count > 0 || DT2.Rows.Count > 0)
+        if ((myWipTasks.Count + mySharedWipTasks.Count) > 0)
         {
             foreach (Project proj in myWipTasks)
             {
@@ -118,18 +120,7 @@ public partial class Home : System.Web.UI.Page
                 ProgressList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + proj.getID() + "\"><strong>[SHARED]</strong> " + proj.getTaskName() + "</a>" +
                     "<p><progress value=\"" + ((decimal)(proj.getPercentComplete())) / 100 + "\" ></progress></p>" + "</li>";
             }
-
-            //foreach (DataRow DR in DT.Rows)
-            //{
-            //    ProgressList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
-            //        "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
-            //}
-            //foreach (DataRow DR in DT2.Rows)
-            //{
-            //    ProgressList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\"><strong>[SHARED]</strong> " + DR["taskName"].ToString() + "</a>" +
-            //        "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
-            //}
-            lit_totInProgress.Text = (DT.Rows.Count + DT2.Rows.Count).ToString();
+            lit_totInProgress.Text = (myWipTasks.Count + mySharedWipTasks.Count).ToString();
         }
         else
         {
@@ -143,23 +134,24 @@ public partial class Home : System.Web.UI.Page
     protected void fillReadyTable()
     {
         string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-        DataTable DT = theCake.getReadyTasks(theCake.getActiveUserName(IP));
-        DataTable DT2 = theCake.getSharedReadyTasks(theCake.getActiveUserName(IP));
 
-        if (DT.Rows.Count > 0)
+        List<Project> myReadyTasks = Project.getReadyTasks(theCake.getActiveUserName(IP));
+        List<Project> mySharedReadyTasks = Project.getSharedReadyTasks(theCake.getUserID(theCake.getActiveUserName(IP)));
+
+        if ((myReadyTasks.Count + mySharedReadyTasks.Count) > 0)
         {
-            foreach (DataRow DR in DT.Rows)
+            foreach (Project proj in myReadyTasks)
             {
-                ReadyList.Text += "<li><p class=\"pull-right\"><progress value=\"" + float.Parse(DR["Percent_Completed"].ToString()) / 100 + "\" /></p>" +
-                    "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
-                    "<p class=\"info\">" + DR["taskDescription"].ToString() + "</p></li>";
+                ReadyList.Text += "<li><p class=\"pull-right\"><progress value=\"" + ((decimal)(proj.getPercentComplete())) / 100 + "\" /></p>" +
+                    "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + proj.getID() + "\">" + proj.getTaskName() + "</a>" +
+                    "<p class=\"info\">" + proj.getTaskDescription() + "</p></li>";
             }
-            foreach (DataRow DR in DT2.Rows)
+            foreach (Project proj in mySharedReadyTasks)
             {
-                ReadyList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\"><strong>[SHARED]</strong> " + DR["taskName"].ToString() + "</a>" +
-                    "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
+                ReadyList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + proj.getID() + "\"><strong>[SHARED]</strong> " + proj.getTaskName() + "</a>" +
+                    "<p><progress value=\"" + ((decimal)(proj.getPercentComplete())) / 100 + "\" ></progress></p>" + "</li>";
             }
-            lit_totReady.Text = (DT.Rows.Count + DT2.Rows.Count).ToString();
+            lit_totReady.Text = (myReadyTasks.Count + mySharedReadyTasks.Count).ToString();
         }
         else
         {
@@ -173,27 +165,27 @@ public partial class Home : System.Web.UI.Page
     protected void fillUpcomingTable()
     {
         string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-        DataTable DT = theCake.getUpcomingTasks(theCake.getActiveUserName(IP));
-        DataTable DT2 = theCake.getSharedUpcomingTasks(theCake.getActiveUserName(IP));
+        List<Project> myUpcomingTasks = Project.getUpcomingTasks(theCake.getActiveUserName(IP));
+        List<Project> mySharedUpcomingTasks = Project.getSharedUpcomingTasks(theCake.getUserID(theCake.getActiveUserName(IP)));
 
-        if (DT.Rows.Count > 0)
+        if ((myUpcomingTasks.Count + mySharedUpcomingTasks.Count) > 0)
         {
-            foreach (DataRow DR in DT.Rows)
+            foreach (Project proj in myUpcomingTasks)
             {
-                UpcomingList.Text += "<li><p class=\"pull-right\"><progress value=\"" + float.Parse(DR["Percent_Completed"].ToString()) / 100 + "\" /></p>" +
-                    "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\">" + DR["taskName"].ToString() + "</a>" +
-                    "<p class=\"info\">" + DR["taskDescription"].ToString() + "</p></li>";
+                ReadyList.Text += "<li><p class=\"pull-right\"><progress value=\"" + ((decimal)(proj.getPercentComplete())) / 100 + "\" /></p>" +
+                    "<p class=\"title\"><a href=\"ViewTask.aspx?ID=" + proj.getID() + "\">" + proj.getTaskName() + "</a>" +
+                    "<p class=\"info\">" + proj.getTaskDescription() + "</p></li>";
             }
-            foreach (DataRow DR in DT2.Rows)
+            foreach (Project proj in mySharedUpcomingTasks)
             {
-                UpcomingList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + DR["ID"].ToString() + "\"><strong>[SHARED]</strong> " + DR["taskName"].ToString() + "</a>" +
-                    "<p><progress value=\"" + ((decimal)(int.Parse(DR["Percent_Completed"].ToString()))) / 100 + "\" ></progress></p>" + "</li>";
+                ReadyList.Text += "<li><p class=\"title\"><a href=\"ViewTask.aspx?ID=" + proj.getID() + "\"><strong>[SHARED]</strong> " + proj.getTaskName() + "</a>" +
+                    "<p><progress value=\"" + ((decimal)(proj.getPercentComplete())) / 100 + "\" ></progress></p>" + "</li>";
             }
-            lit_totUpcoming.Text = (DT.Rows.Count + DT2.Rows.Count).ToString();
+            lit_totReady.Text = (myUpcomingTasks.Count + mySharedUpcomingTasks.Count).ToString();
         }
         else
         {
-            UpcomingList.Text += "You have no tasks Upcoming";
+            ReadyList.Text += "You have no tasks Ready";
             lit_totUpcoming.Text = "0";
         }
 

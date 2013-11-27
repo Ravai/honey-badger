@@ -253,7 +253,7 @@ public class Project
     {
         List<Project> tasks = new List<Project>();
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ownerAlias] = @user ORDER BY [expectedStart] ASC";
+        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ownerAlias] = @user AND [isActive] = 1 ORDER BY [expectedStart] ASC";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@user", userName);
 
@@ -286,7 +286,7 @@ public class Project
     {
         List<Project> completed = new List<Project>();
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ownerAlias] = @user AND [doneFlag] = '1' ORDER BY [actualStop] DESC";
+        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ownerAlias] = @user AND [doneFlag] = '1' AND [isActive] = 1 ORDER BY [actualStop] DESC";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@user", userName);
 
@@ -304,7 +304,7 @@ public class Project
         List<Project> wip = new List<Project>();
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ownerAlias] = @user AND [doneFlag] = '0' AND [expectedStart] < CURRENT_TIMESTAMP AND [actualStart] IS NOT NULL ORDER BY [expectedStart] ASC";
+        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ownerAlias] = @user AND [doneFlag] = '0' AND [expectedStart] < CURRENT_TIMESTAMP AND [actualStart] IS NOT NULL AND [isActive] = 1 ORDER BY [expectedStart] ASC";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@user", userName);
 
@@ -323,7 +323,7 @@ public class Project
         List<Project> ready = new List<Project>();
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ownerAlias] = @user AND [doneFlag] = '0' AND [expectedStart] < CURRENT_TIMESTAMP AND [actualStart] IS NULL ORDER BY [expectedStart] ASC";
+        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE  [isActive] = 1 AND [ownerAlias] = @user AND [doneFlag] = '0' AND [expectedStart] < CURRENT_TIMESTAMP AND [actualStart] IS NULL ORDER BY [expectedStart] ASC";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@user", userName);
 
@@ -342,7 +342,7 @@ public class Project
         List<Project> upcoming = new List<Project>();
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ownerAlias] = @user AND [doneFlag] = '0' AND [expectedStart] > CURRENT_TIMESTAMP ORDER BY [expectedStart] ASC";
+        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Projects] WHERE [ownerAlias] = @user AND [doneFlag] = '0' AND [expectedStart] > CURRENT_TIMESTAMP AND [isActive] = 1 ORDER BY [expectedStart] ASC";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@user", userName);
 
@@ -363,7 +363,7 @@ public class Project
 		List<Project> sharedTask = new List<Project>();
 	
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT DISTINCT [projectID] FROM [TrackingTool_ProjectPermissions] WHERE [user_GivenTo] = @user AND [user_GivenBy] != @user";
+        cmd.CommandText = "SELECT DISTINCT [projectID] FROM [viewTrackingTool_ProjectPermissions] WHERE [user_GivenTo] = @user AND [user_GivenBy] != @user AND [isActive] = 1";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@user", userID);
 
@@ -404,7 +404,7 @@ public class Project
         List<Project> sharedWip = new List<Project>();
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT DISTINCT [projectID] FROM [TrackingTool_ProjectPermissions] WHERE [user_GivenTo] = @user AND [user_GivenBy] != @user";
+        cmd.CommandText = "SELECT DISTINCT [projectID] FROM [viewTrackingTool_ProjectPermissions] WHERE [user_GivenTo] = @user AND [user_GivenBy] != @user AND [isActive] = 1";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@user", userID);
 
@@ -444,7 +444,7 @@ public class Project
         List<Project> sharedReady = new List<Project>();
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT DISTINCT [projectID] FROM [TrackingTool_ProjectPermissions] WHERE [user_GivenTo] = @user AND [user_GivenBy] != @user";
+        cmd.CommandText = "SELECT DISTINCT [projectID] FROM [viewTrackingTool_ProjectPermissions] WHERE [user_GivenTo] = @user AND [user_GivenBy] != @user AND [isActive] = 1";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@user", userID);
 
@@ -484,7 +484,7 @@ public class Project
         List<Project> sharedUpcoming = new List<Project>();
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT DISTINCT [projectID] FROM [TrackingTool_ProjectPermissions] WHERE [user_GivenTo] = @user AND [user_GivenBy] != @user";
+        cmd.CommandText = "SELECT DISTINCT [projectID] FROM [viewTrackingTool_ProjectPermissions] WHERE [user_GivenTo] = @user AND [user_GivenBy] != @user AND [isActive] = 1";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@user", userID);
 
@@ -565,44 +565,52 @@ public class Project
     public void deleteTask()
     {
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [db_forum].[dbo].[TrackingTool_Board_Threads] WHERE [boardID] = @boardID";
-        cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@boardID", getBoardID());
-        DataTable DT = TTDB.TTQuery(cmd);
-
-        foreach (DataRow DR in DT.Rows)
-        {
-            SqlCommand cmd2 = new SqlCommand();
-            cmd2.CommandText = "DELETE FROM [db_forum].[dbo].[TrackingTool_Board_Posts] WHERE [threadID] = @threadID";
-            cmd2.Parameters.Clear();
-            cmd2.Parameters.AddWithValue("@threadID", DR["threadID"].ToString());
-            TTDB.TTQuery(cmd2);
-        }
-
-        cmd = new SqlCommand();
-        cmd.CommandText = "DELETE FROM [db_forum].[dbo].[TrackingTool_Board_Threads] WHERE [boardID] = @boardID";
-        cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@boardID", getBoardID());
-        TTDB.TTQuery(cmd);
-
-        cmd = new SqlCommand();
-        cmd.CommandText = "DELETE FROM [db_forum].[dbo].[TrackingTool_Board_Main] WHERE [boardID] = @boardID";
-        cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@boardID", getBoardID());
-        TTDB.TTQuery(cmd);
-
-        cmd = new SqlCommand();
-        cmd.CommandText = "DELETE FROM [db_forum].[dbo].[TrackingTool_Features] WHERE [projectID] = @projectID";
-        cmd.Parameters.Clear();
-        cmd.Parameters.AddWithValue("@projectID", getID());
-        TTDB.TTQuery(cmd);
-
-        cmd = new SqlCommand();
-        cmd.CommandText = "DELETE FROM [TrackingTool_Projects] WHERE [ID] = @ID";
+        cmd.CommandText = "UPDATE [TrackingTool_Projects] SET [isActive] = 0 WHERE [ID] = @ID";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@ID", getID());
 
         TTDB.TTQuery(cmd);
+
+
+        //SqlCommand cmd = new SqlCommand();
+        //cmd.CommandText = "SELECT * FROM [db_forum].[dbo].[TrackingTool_Board_Threads] WHERE [boardID] = @boardID";
+        //cmd.Parameters.Clear();
+        //cmd.Parameters.AddWithValue("@boardID", getBoardID());
+        //DataTable DT = TTDB.TTQuery(cmd);
+
+        //foreach (DataRow DR in DT.Rows)
+        //{
+        //    SqlCommand cmd2 = new SqlCommand();
+        //    cmd2.CommandText = "DELETE FROM [db_forum].[dbo].[TrackingTool_Board_Posts] WHERE [threadID] = @threadID";
+        //    cmd2.Parameters.Clear();
+        //    cmd2.Parameters.AddWithValue("@threadID", DR["threadID"].ToString());
+        //    TTDB.TTQuery(cmd2);
+        //}
+
+        //cmd = new SqlCommand();
+        //cmd.CommandText = "DELETE FROM [db_forum].[dbo].[TrackingTool_Board_Threads] WHERE [boardID] = @boardID";
+        //cmd.Parameters.Clear();
+        //cmd.Parameters.AddWithValue("@boardID", getBoardID());
+        //TTDB.TTQuery(cmd);
+
+        //cmd = new SqlCommand();
+        //cmd.CommandText = "DELETE FROM [db_forum].[dbo].[TrackingTool_Board_Main] WHERE [boardID] = @boardID";
+        //cmd.Parameters.Clear();
+        //cmd.Parameters.AddWithValue("@boardID", getBoardID());
+        //TTDB.TTQuery(cmd);
+
+        //cmd = new SqlCommand();
+        //cmd.CommandText = "DELETE FROM [db_forum].[dbo].[TrackingTool_Features] WHERE [projectID] = @projectID";
+        //cmd.Parameters.Clear();
+        //cmd.Parameters.AddWithValue("@projectID", getID());
+        //TTDB.TTQuery(cmd);
+
+        //cmd = new SqlCommand();
+        //cmd.CommandText = "DELETE FROM [TrackingTool_Projects] WHERE [ID] = @ID";
+        //cmd.Parameters.Clear();
+        //cmd.Parameters.AddWithValue("@ID", getID());
+
+        //TTDB.TTQuery(cmd);
     }
 
     public void updateProjectBaseInfo(string Name, string Description)
@@ -634,7 +642,7 @@ public class Project
     }
 
     //Add new task functions
-     public int addNewTask(string taskName, string taskDescription, DateTime expectedStart, DateTime expectedStop, string userName)
+     public static int addNewTask(string taskName, string taskDescription, DateTime expectedStart, DateTime expectedStop, string userName)
     {
         int userID = userClass.getUserID(userName);
 
@@ -645,7 +653,7 @@ public class Project
 
 
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "INSERT INTO [TrackingTool_Projects] VALUES(@taskName, @taskDescription, @expectedStart, @expectedStop, NULL, NULL, 0, @ownerID, NULL, 0, 0)";
+        cmd.CommandText = "INSERT INTO [TrackingTool_Projects] VALUES(@taskName, @taskDescription, @expectedStart, @expectedStop, NULL, NULL, 0, @ownerID, NULL, 0, 0, 1)";
         cmd.Parameters.AddWithValue("@taskName", taskName);
         cmd.Parameters.AddWithValue("@taskDescription", taskDescription);
         cmd.Parameters.AddWithValue("@expectedStart", expectedStart);

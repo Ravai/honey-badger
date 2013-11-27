@@ -59,7 +59,7 @@ public static class TTDB
         catch (SqlException S)
         {
             mailException(S);
-            return null;
+            return new DataTable();
         }
     }
 
