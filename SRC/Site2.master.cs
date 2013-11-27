@@ -58,7 +58,7 @@ public partial class Site2 : System.Web.UI.MasterPage
         }
         else
         {
-            if (!(Request.Url.ToString().Contains("Login.aspx") || Request.Url.ToString().Contains("Register.aspx") || Request.Url.ToString().Contains("Default.aspx")))
+            if (!(Request.Url.ToString().Contains("Login.aspx") || Request.Url.ToString().Contains("Register.aspx") || Request.Url.ToString().Contains("Default.aspx") || Request.Url.ToString().Contains("ForgotPassword.aspx")))
                 Response.Redirect("Default.aspx");
 
             string menuString = "<ul id=\"dashboard-menu\" class=\"nav nav-list\">";
