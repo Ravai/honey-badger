@@ -571,6 +571,13 @@ public class Project
 
         TTDB.TTQuery(cmd);
 
+        //Deleted projects should not show notifications
+        cmd = new SqlCommand();
+        cmd.CommandText = "UPDATE [TrackingTool_ProjectPermissions] SET [userAcknowledged] = 1 WHERE [projectID] = @ID";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@ID", getID());
+
+        TTDB.TTQuery(cmd);
 
         //SqlCommand cmd = new SqlCommand();
         //cmd.CommandText = "SELECT * FROM [db_forum].[dbo].[TrackingTool_Board_Threads] WHERE [boardID] = @boardID";
