@@ -123,11 +123,18 @@ public partial class Threads : System.Web.UI.Page
 
     protected void btn_newPost_OnClick(object sender, EventArgs e)
     {
-        string newPost = txt_newPost.Text;
-        newPost = newPost.Replace("\n", "<br />");
+        if (txt_newPost.Text.Length > 0)
+        {
+            string newPost = txt_newPost.Text;
+            newPost = newPost.Replace("\n", "<br />");
 
-        string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-        theCake.addNewPost(Int32.Parse(Request.QueryString["ID"].ToString()), newPost, theCake.getUserID(theCake.getActiveUserName(IP)));
-        Response.Redirect("Threads.aspx?ID=" + Request.QueryString["ID"].ToString());
+            string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
+            theCake.addNewPost(Int32.Parse(Request.QueryString["ID"].ToString()), newPost, theCake.getUserID(theCake.getActiveUserName(IP)));
+            Response.Redirect("Threads.aspx?ID=" + Request.QueryString["ID"].ToString());
+        }
+        else
+        {
+            lbl_Error.Visible = true;
+        }
     }
 }

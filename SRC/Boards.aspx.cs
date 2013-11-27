@@ -108,8 +108,15 @@ public partial class Boards : System.Web.UI.Page
 
     protected void btn_newThread_OnClick(object sender, EventArgs e)
     {
-        string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-        theCake.addNewThread(Int32.Parse(Request.QueryString["ID"].ToString()),txt_Subject.Text, txt_Description.Text, theCake.getUserID(theCake.getActiveUserName(IP)));
-        Response.Redirect("Boards.aspx?ID=" + Request.QueryString["ID"].ToString());
+        if (txt_Description.Text.Length > 0 && txt_Subject.Text.Length > 0)
+        {
+            string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
+            theCake.addNewThread(Int32.Parse(Request.QueryString["ID"].ToString()), txt_Subject.Text, txt_Description.Text, theCake.getUserID(theCake.getActiveUserName(IP)));
+            Response.Redirect("Boards.aspx?ID=" + Request.QueryString["ID"].ToString());
+        }
+        else
+        {
+            lbl_Error.Visible = true;
+        }
     }
 }
