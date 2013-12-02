@@ -6,7 +6,7 @@
     <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true" />
     
     <div style="font-size:medium;">
-    <asp:LinkButton ID="projectName" ForeColor="Black" CssClass="google2 blue button" runat="server" /> -> <asp:LinkButton runat="server" ForeColor="Black" CssClass="google2 blue button" ID="boardName" /> -> <asp:LinkButton runat="server" CssClass="google2 blue button" ForeColor="Black" ID="lbl_ThreadName" /><br />
+    <asp:LinkButton ID="projectName" ForeColor="Black" CssClass="navLink" runat="server" /> -> <asp:LinkButton runat="server" ForeColor="Black" CssClass="navLink" ID="boardName" /> -> <asp:LinkButton runat="server" CssClass="navLink" ForeColor="Black" ID="lbl_ThreadName" /><br />
     </div>
     <hr />
     <asp:Literal runat="server" ID="lit_Posts"/><br />

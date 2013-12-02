@@ -78,8 +78,10 @@
 			
 				<!-- Main Menu for MOBILE ONLY -->
 				<div id="main-menu">
+                    
+                    <asp:Literal runat="server" ID="lit_phoneMenu" />
 
-					<div id="phone-navigation">
+					<%--<div id="phone-navigation">
 						<select class="selectnav" id="phone-menu">
 
 						<option value="Home.aspx" selected="selected" /> Dashboard
@@ -92,30 +94,12 @@
                         
                         <option value="ViewComplete.aspx" /> Completed Projects
 
-						<option value="" /> Settings
+						<option value="Login.aspx" />- Sign In Page
 
-						<option value="login.aspx" />- Sign In Page
-
-						<option value="register.aspx" />- Sign Up Page
-
-						<%--<option value="reset-password.html" />- Reset Password Page--%>
-
-						<option value="" />----------------------
-
-						<option value="blog.html" /> Blog
-
-						<option value="help.html" /> Help
-
-						<option value="calendar.html" /> Calendar
-
-						<option value="forms.html" /> Forms
-
-						<option value="tables.html" /> Tables
-
-						<option value="icons.html" /> Font Awesome
+						<option value="Register.aspx" />- Sign Up Page
 
 						</select>
-					</div>
+					</div>--%>
 
 					
 				</div>
@@ -124,19 +108,6 @@
 
                     <asp:Literal runat="server" ID="lit_Menu" />
 
-					<%--<ul id="dashboard-menu" class="nav nav-list">
-					
-					<li class="active "><a href="Home.aspx"><i class="icon-home"></i> <span>Dashboard</span></a></li>
-
-            		<li class=" "><a href="ViewWip.aspx"><i class="icon-book"></i> <span>Projects in Progress</span></a></li>
-
-					<li class=" "><a href="ViewReady.aspx"><i class="icon-book"></i> <span>Ready Projects</span></a></li>
-
-                    <li class=" "><a href="ViewUpcoming.aspx"><i class="icon-book"></i> <span>Upcoming Projects</span></a></li>
-
-                    <li class=" "><a href="ViewComplete.aspx"><i class="icon-book"></i> <span>Completed Projects</span></a></li>
-
-					</ul>--%>
 				</div>
 				<!-- End Table++ Nav Menu -->
 			</nav>

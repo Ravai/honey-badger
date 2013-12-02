@@ -21,7 +21,23 @@
 
 .specialOperationsButton
 {
-    text-decoration:none;
+    border: none;
+	padding: 0.6em 1.2em;
+    color:black;
+	font-family: 'Lato', Calibri, Arial, sans-serif;
+	font-size: 1em;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	cursor: pointer;
+	display: inline-block;
+	margin: 3px 2px;
+	border-radius: 2px;
+
+    background: -moz-linear-gradient(#fff, #999);
+	background: -webkit-linear-gradient(#fff, #999);
+	background: -o-linear-gradient(#fff, #999);
+
+    /*text-decoration:none;
     background: -moz-linear-gradient(#fff, #999);
 	background: -webkit-linear-gradient(#fff, #999);
 	background: -o-linear-gradient(#fff, #999);
@@ -30,9 +46,28 @@
     padding-right:30px;
     padding-top:5px;
     padding-bottom:5px;
-    width:200px;
     color:black;
     border-radius: 10px;
+    font-size: 0.8em;*/
+}
+
+.navLink
+{
+    border: none;
+	padding: 0.4em 0.8em;
+    color:black;
+	font-family: 'Lato', Calibri, Arial, sans-serif;
+	font-size: 0.8em;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	cursor: pointer;
+	display: inline-block;
+	margin: 3px 2px;
+	border-radius: 2px;
+
+    background: -moz-linear-gradient(#fff, #999);
+	background: -webkit-linear-gradient(#fff, #999);
+	background: -o-linear-gradient(#fff, #999);
 }
 
 .google.button {

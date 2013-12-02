@@ -40,12 +40,13 @@
                 <asp:Panel runat="server" ID="btn_startTask" Visible="false"><asp:LinkButton ID="LinkButton3" runat="server" OnClick="btn_startTask_OnClick" CssClass="specialOperationsButton" Text="Start Task" /></asp:Panel>
                 <asp:Panel runat="server" ID="btn_UpgradeSize" Visible="false"><asp:LinkButton ID="LinkButton4" runat="server" OnClick="btn_UpgradeSize_OnClick" CssClass="specialOperationsButton" Text="Make Project a Large Project" /></asp:Panel>
                 
-                <br />
+                
                 <asp:Panel runat="server" ID="pnl_EditOperations">
-                <asp:LinkButton runat="server" ID="btn_ViewProjectReport" CssClass="specialOperationsButton floatright" Enabled="true" Text="View Project Report" />
-                <asp:LinkButton runat="server" PostBackUrl="#UpdateProjectName" CssClass="specialOperationsButton" Text="Update Project Name and Description" /><br /><br />
-                <asp:LinkButton runat="server" ID="btn_Edit_Sharing" CssClass="specialOperationsButton" OnClick="btn_Edit_Sharing_OnClick" Enabled="true" Text="Edit Project Sharing" /><br /><br />
-                <asp:LinkButton runat="server" ID="btn_Delete_Project" CssClass="specialOperationsButton" OnClick="btn_Delete_Project_OnClick" OnClientClick="return confirm('Are you sure you want to delete this project?');" Enabled="true" Text="Delete this Project" /><br />
+                <asp:LinkButton runat="server" ID="btn_ViewProjectReport" CssClass="specialOperationsButton" Enabled="true" Text="View Project Report" />
+                <asp:LinkButton runat="server" ID="btn_ViewMemberReport" CssClass="specialOperationsButton" Enabled="true" Text="View Member Report" />
+                <asp:LinkButton runat="server" PostBackUrl="#UpdateProjectName" CssClass="specialOperationsButton" Text="Update Project Name and Description" />
+                <asp:LinkButton runat="server" ID="btn_Edit_Sharing" CssClass="specialOperationsButton" OnClick="btn_Edit_Sharing_OnClick" Enabled="true" Text="Edit Project Sharing" />
+                <asp:LinkButton runat="server" ID="btn_Delete_Project" CssClass="specialOperationsButton" OnClick="btn_Delete_Project_OnClick" OnClientClick="return confirm('Are you sure you want to delete this project?');" Enabled="true" Text="Delete this Project" />
                 </asp:Panel>
                 </asp:Panel>
             </div>

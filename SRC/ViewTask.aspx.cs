@@ -30,15 +30,16 @@ public partial class ViewTask : System.Web.UI.Page
             ID = Request.QueryString["ID"].ToString();
             string IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
             currentProject = new Project(int.Parse(ID));
-            DataTable DT = theCake.getTask(Int32.Parse(ID), theCake.getActiveUserName(IP));
+            //DataTable DT = theCake.getTask(Int32.Parse(ID), theCake.getActiveUserName(IP));
 
-            if (DT.Rows.Count == 0)
+            if (!currentProject.isValid)
             {
                 Response.Redirect("Home.aspx");
             }
 
-            string ownerAlias = userClass.getUserAlias(Int32.Parse(DT.Rows[0]["ownerID"].ToString()));
-            if (theCake.getActiveUserName(IP) != ownerAlias)
+            //string ownerAlias = userClass.getUserAlias(Int32.Parse(DT.Rows[0]["ownerID"].ToString()));
+            userClass projOwner = new userClass(currentProject.getOwnerID());
+            if (theCake.getActiveUserName(IP) != projOwner.getOwnerAlias())
             {
                 int userID = theCake.getUserID(theCake.getActiveUserName(IP));
                 DataTable permissionChecker = theCake.getUserProjectPermissions(userID, Int32.Parse(ID));
@@ -52,34 +53,34 @@ public partial class ViewTask : System.Web.UI.Page
             {
                 pnl_EditOperations.Visible = false;
                 pnl_SpecialOptions.Visible = false;
-                //btn_AddMilestone.Visible = false;
             }
             if (!BoardWrite)
             {
                 btn_AddComment.Visible = false;
             }
 
-            lbl_TaskName.Text = DT.Rows[0]["taskName"].ToString();
-            lbl_Description.Text = DT.Rows[0]["taskDescription"].ToString();
-            lbl_projectOwner.Text = "<a href=\"UserProfile.aspx?userID=" + DT.Rows[0]["ownerID"].ToString() + "\">" + DT.Rows[0]["Display_Name"].ToString();
+            lbl_TaskName.Text = currentProject.getTaskName(); //DT.Rows[0]["taskName"].ToString();
+            lbl_Description.Text = currentProject.getTaskDescription(); //DT.Rows[0]["taskDescription"].ToString();
+            lbl_projectOwner.Text = "<a href=\"UserProfile.aspx?userID=" + currentProject.getOwnerID() + "\">" + projOwner.getDisplayName();
 
             btn_ViewProjectReport.PostBackUrl = "printProjectReport.aspx?ID=" + Request.QueryString["ID"].ToString();
+            btn_ViewMemberReport.PostBackUrl = "printMemberReport.aspx?ID=" + Request.QueryString["ID"].ToString();
 
             if (!IsPostBack)
             {
-                txt_Edit_TaskName.Text = DT.Rows[0]["taskName"].ToString();
-                txt_Edit_TaskDescription.Text = DT.Rows[0]["taskDescription"].ToString();
+                txt_Edit_TaskName.Text = currentProject.getTaskName();
+                txt_Edit_TaskDescription.Text = currentProject.getTaskDescription(); //DT.Rows[0]["taskDescription"].ToString();
             }
-            lbl_ExpectedStart.Text = DateTime.Parse(DT.Rows[0]["expectedStart"].ToString()).ToShortDateString();
-            lbl_ExpectedStop.Text = DateTime.Parse(DT.Rows[0]["expectedStop"].ToString()).ToShortDateString();
+            lbl_ExpectedStart.Text = currentProject.getExpectedStart().ToShortDateString();
+            lbl_ExpectedStop.Text = currentProject.getExpectedStop().ToShortDateString();
 
-            if (DT.Rows[0]["actualStart"].ToString() == "") lbl_ActualStart.Text = "Not Yet Started";
-            else lbl_ActualStart.Text = DateTime.Parse(DT.Rows[0]["actualStart"].ToString()).ToShortDateString();
+            if (currentProject.getActualStart() == DateTime.MinValue) lbl_ActualStart.Text = "Not Yet Started";
+            else lbl_ActualStart.Text = currentProject.getActualStart().ToShortDateString();
 
-            if (DT.Rows[0]["actualStop"].ToString() == "") lbl_ActualStop.Text = "Not Yet Completed";
-            else lbl_ActualStop.Text = DateTime.Parse(DT.Rows[0]["actualStop"].ToString()).ToShortDateString();
+            if (currentProject.getActualStop() == DateTime.MinValue) lbl_ActualStop.Text = "Not Yet Completed";
+            else lbl_ActualStop.Text = currentProject.getActualStop().ToShortDateString();
 
-            if (DT.Rows[0]["doneFlag"].ToString() == "1")
+            if (currentProject.getDoneFlag())
             {
                 btn_markDone.Visible = false;
                 btn_markWip.Visible = true;
@@ -87,18 +88,8 @@ public partial class ViewTask : System.Web.UI.Page
 
                 AddComments.Visible = false;
 
-                if (DT.Rows[0]["projectSize"].ToString() == "0")
-                {
-                    pnl_Comments.Visible = true;
-                    FillComments();
-                }
-                else
-                {
-                    //pnl_Milestone.Visible = true;
-                    FillMilestones();
-                    //pnl_Boards.Visible = true;
-                    getallBoards();
-                }
+                FillMilestones();
+                getallBoards();
             }
             else
             {
@@ -141,7 +132,7 @@ public partial class ViewTask : System.Web.UI.Page
                     }
                 }
 
-                if (DT.Rows[0]["actualStart"].ToString() == "")
+                if (currentProject.getActualStart() == DateTime.MinValue)
                 {
                     btn_markDone.Visible = false;
                     btn_markWip.Visible = false;
@@ -150,19 +141,8 @@ public partial class ViewTask : System.Web.UI.Page
                     btn_startTask.Visible = true;
                 }
 
-                if (DT.Rows[0]["projectSize"].ToString() == "0")
-                {
-                    pnl_Comments.Visible = true;
-                    FillComments();
-                    btn_UpgradeSize.Visible = true;
-                }
-                else
-                {
-                    //pnl_Milestone.Visible = true;
-                    FillMilestones();
-                    //pnl_Boards.Visible = true;
-                    getallBoards();
-                }
+                FillMilestones();
+                getallBoards();
             }
         }
         else

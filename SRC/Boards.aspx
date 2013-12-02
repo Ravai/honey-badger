@@ -7,7 +7,7 @@
     <!--<div class="fullContainer" style="background-color:Black; color:White; font-size:large;">-->
     
     <div style="font-size:medium;">
-    <asp:LinkButton ID="projectName" ForeColor="Black" CssClass="google2 blue button" runat="server" /> -> <asp:LinkButton runat="server" ForeColor="Black" CssClass="google2 blue button" ID="boardName" /><br />
+    <asp:LinkButton ID="projectName" ForeColor="Black" CssClass="navLink" runat="server" /> -> <asp:LinkButton runat="server" ForeColor="Black" CssClass="navLink" ID="boardName" /><br />
     </div>
     <!--/div>-->
     <hr />

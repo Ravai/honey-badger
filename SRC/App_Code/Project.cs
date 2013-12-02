@@ -28,6 +28,8 @@ public class Project
     private userClass projectOwner;
     private List<int> milestones;
 
+    public bool isValid;
+
     public Project(int id)
     {
        SqlCommand cmd = new SqlCommand();
@@ -74,10 +76,12 @@ public class Project
                 setActualStop(DateTime.Parse(DR["actualStop"].ToString()));
             else
                 setActualStop(DateTime.MinValue);
+
+            isValid = true;
         }
         else
         {
-            //Shouldnt happen
+            isValid = false;
         }
 
         milestones = new List<int>();
@@ -691,12 +695,11 @@ public class Project
         }
     }
 
-    /*
     //Need to check what it is returning
     public DataTable getProjectPermissions()
     {
         SqlCommand cmd = new SqlCommand();
-        cmd.CommandText = "SELECT * FROM [TrackingTool_ProjectPermissions] WHERE [projectID] = @projectID ORDER BY [updatedTimestamp]";
+        cmd.CommandText = "SELECT * FROM [viewTrackingTool_ProjectPermissions] WHERE [projectID] = @projectID ORDER BY [updatedTimestamp]";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@projectID", getID());
 
@@ -707,6 +710,5 @@ public class Project
         }
         return DT;
     }
-    */
 
 }

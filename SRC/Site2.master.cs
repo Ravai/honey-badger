@@ -55,6 +55,22 @@ public partial class Site2 : System.Web.UI.MasterPage
             menuString += "</ul>";
 
             lit_Menu.Text = menuString;
+
+            string phoneString = "";
+
+            phoneString += "<div id=\"phone-navigation\">" +
+                "<select class=\"selectnav\" id=\"phone-menu\">" +
+                "<option value=\"\" selected=\"selected\" /> ----------" +
+                "<option value=\"Default.aspx\" /> Home" +
+                "<option value=\"Home.aspx\" /> Dashboard" + 
+				"<option value=\"ViewWip.aspx\" /> Projects in Progess" + 
+                "<option value=\"ViewReady.aspx\" /> Ready Projects" + 
+                "<option value=\"ViewUpcoming.aspx\" /> Upcoming Projects" + 
+                "<option value=\"ViewComplete.aspx\" /> Completed Projects" + 
+                "</select>" + 
+			"</div>";
+
+            lit_phoneMenu.Text = phoneString;
         }
         else
         {
@@ -72,6 +88,19 @@ public partial class Site2 : System.Web.UI.MasterPage
                 menuString += "<li class=\" \"><a href=\"Login.aspx\"><i class=\"icon-home\"></i> <span>Log-In</span></a></li>";
             menuString += "</ul>";
             lit_Menu.Text = menuString;
+
+            string phoneString = "";
+
+            phoneString += "<div id=\"phone-navigation\">" +
+                "<select class=\"selectnav\" id=\"phone-menu\">" +
+                "<option value=\"\" selected=\"selected\" /> ----------" +
+                "<option value=\"Default.aspx\" /> Home" +
+                "<option value=\"Login.aspx\" />- Sign In Page" +
+                "<option value=\"Register.aspx\" />- Sign Up Page" +
+                "</select>" +
+            "</div>";
+
+            lit_phoneMenu.Text = phoneString;
         }
 
         
