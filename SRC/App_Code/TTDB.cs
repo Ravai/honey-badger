@@ -89,7 +89,7 @@ public static class TTDB
         msg.Subject = Subject;
         msg.Body = Body;
         SmtpClient client = new SmtpClient();
-        //client.Send(msg);
+        client.Send(msg);
         return;
     }
 

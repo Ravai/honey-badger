@@ -37,7 +37,7 @@ public partial class Register : System.Web.UI.Page
     protected void btn_Submit_OnClick(object sender, EventArgs e)
     {
         string user_IP = Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"];
-        
+
         if (txt_Password1.Text == txt_Password2.Text)
         {
             string displayName = "";
@@ -55,6 +55,8 @@ public partial class Register : System.Web.UI.Page
             if (theCake.Register_User(txt_UserName.Text, txt_FirstName.Text, txt_MI.Text, txt_LastName.Text, txt_Email.Text, txt_Phone.Text, displayName, txt_Password1.Text, user_IP))
             {
                 theCake.Login_User(txt_UserName.Text, txt_Password1.Text, user_IP);
+
+                TTDB.mailTo(txt_Email.Text, "Registration to - Development Project A", "Thanks " + txt_FirstName.Text + " " + txt_LastName.Text + " for registering to the Development Project A!  This is just a receipt of action for you.<br /><br />Your username:  " + txt_UserName.Text + " <br /><br />Thanks again for registering!");
 
                 Response.Redirect("Default.aspx");
             }
