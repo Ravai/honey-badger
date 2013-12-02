@@ -55,7 +55,7 @@ public class userClass
             setIPLast(DR["IP_Last"].ToString());
             setDateCreated(DateTime.Parse(DR["dateCreated"].ToString()));
             setDateLastLoggedIn(DateTime.Parse(DR["dateLastLoggedIn"].ToString()));
-            setDateLastLoggedOut(DateTime.Parse(DR["dateLasLoggedOut"].ToString()));
+            setDateLastLoggedOut(DateTime.Parse(DR["dateLastLoggedOut"].ToString()));
             setActive(int.Parse(DR["Active"].ToString()));
             setUserLevel(int.Parse(DR["userLevel"].ToString()));
             setFirstName(DR["firstName"].ToString());
@@ -285,7 +285,23 @@ public class userClass
         cmd.Parameters.AddWithValue("@UserID", UserID);
 
         TTDB.TTQuery(cmd);
-    } 
+    }
+
+   public static void updateUserPassword(int ID, string PW)
+   {
+       string hashedSaltPassword;
+
+       // Hash the password with salt
+       hashedSaltPassword = PasswordHash.PasswordHash.CreateHash(PW);
+
+       SqlCommand cmd = new SqlCommand();
+       cmd.CommandText = "UPDATE [TrackingTool_Users] SET [user_PW] = @PW WHERE [ID] = @UserID";
+       cmd.Parameters.Clear();
+       cmd.Parameters.AddWithValue("@PW", hashedSaltPassword);
+       cmd.Parameters.AddWithValue("@UserID", ID);
+
+       TTDB.TTQuery(cmd);
+   }
     
     public static DataTable searchUsersByName(string firstName, string middleName, string lastName)
     {
@@ -530,6 +546,24 @@ public class userClass
         cmd.CommandText = "SELECT * FROM [TrackingTool_Users] WHERE [ownerAlias] = @userName";
         cmd.Parameters.Clear();
         cmd.Parameters.AddWithValue("@userName", userName);
+
+        DataTable DT = TTDB.TTQuery(cmd);
+        if (DT == null || DT.Rows.Count == 0)
+        {
+            return -1;
+        }
+        else
+        {
+            return Int32.Parse(DT.Rows[0]["ID"].ToString());
+        }
+    }
+
+    public static int getUserIDByIP(string IP)
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "SELECT * FROM [viewTrackingTool_Active_Users] WHERE [User_IP] = @IP";
+        cmd.Parameters.Clear();
+        cmd.Parameters.AddWithValue("@IP", IP);
 
         DataTable DT = TTDB.TTQuery(cmd);
         if (DT == null || DT.Rows.Count == 0)

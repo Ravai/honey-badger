@@ -62,6 +62,9 @@ public partial class ViewTask : System.Web.UI.Page
             lbl_TaskName.Text = DT.Rows[0]["taskName"].ToString();
             lbl_Description.Text = DT.Rows[0]["taskDescription"].ToString();
             lbl_projectOwner.Text = "<a href=\"UserProfile.aspx?userID=" + DT.Rows[0]["ownerID"].ToString() + "\">" + DT.Rows[0]["Display_Name"].ToString();
+
+            btn_ViewProjectReport.PostBackUrl = "printProjectReport.aspx?ID=" + Request.QueryString["ID"].ToString();
+
             if (!IsPostBack)
             {
                 txt_Edit_TaskName.Text = DT.Rows[0]["taskName"].ToString();
