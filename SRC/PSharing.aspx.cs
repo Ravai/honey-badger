@@ -15,12 +15,15 @@ public partial class PSharing : System.Web.UI.Page
 {
     DataBase theCake = new DataBase();
     string newAlias = "";
+    Project curProject;
 
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Request.QueryString["ID"] != null)
         {
             lnk_ReturnToProject.PostBackUrl = "ViewTask.aspx?ID=" + Request.QueryString["ID"].ToString();
+            curProject = new Project(int.Parse(Request.QueryString["ID"].ToString()));
+            lbl_ProjectName.Text = curProject.getTaskName();
             getPermissions();
             PermissionLabel.Text = "Select a role to view permission levels";
             if (IsPostBack)

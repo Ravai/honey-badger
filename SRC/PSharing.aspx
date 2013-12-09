@@ -4,6 +4,7 @@
 
     <div class="fullContainer">
         <div class="row-fluid">
+        <h1><asp:Label runat="server" ID="lbl_ProjectName" /></h1>
         <asp:LinkButton runat="server" ID="lnk_ReturnToProject" Text="Return to Project" /><br /><br />
 
         <div class="span5 widget">

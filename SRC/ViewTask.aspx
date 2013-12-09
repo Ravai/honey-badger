@@ -71,6 +71,7 @@
     <div id="addMilestone" class="modalDialog">
 	    <div>
 		    <a href="#close" title="Close" class="close">X</a>
+            <h2>Add New Milestone</h2>
             Name:<br />
             <asp:TextBox runat="server" ID="txt_Milestone_Name" Width="300px" /><br />
             Description:<br />
@@ -110,7 +111,7 @@
     <div id="UpdateProjectName" class="modalDialog">
 	    <div>
 		    <a href="#close" title="Close" class="close">X</a>
-            <div class="modalTitles">Update Project Name and Description</div>
+            <h2>Update Project Name and Description</h2>
             <strong>Name:</strong> <asp:TextBox runat="server" ID="txt_Edit_TaskName" Width="100%" /><br />
             <strong>Description</strong><asp:TextBox runat="server" ID="txt_Edit_TaskDescription" Width="100%" TextMode="MultiLine" Rows="3" /><br />
             <asp:Button runat="server" ID="btn_Update_NameDescription" Text="Update" OnClick="btn_Update_NameDescription_OnClick" /><br />
@@ -120,7 +121,7 @@
     <div id="addChildFeature" class="modalDialog">
 	    <div>
 		    <a href="#close" title="Close" class="close">X</a>
-            <div class="modalTitles">For Adding a Sub-Objective</div>
+            <h2>For Adding a Sub-Objective</h2>
             <hr />
             <strong>Name: </strong><asp:TextBox runat="server" ID="txt_addChildFeature_Name" placeholder="Enter name..." /><br />
             <strong>Description: </strong><asp:TextBox runat="server" ID="txt_addChildFeature_Description" placeholder="Enter description..." /><br />
@@ -134,7 +135,7 @@
     <div id="removeChildFeature" class="modalDialog">
 	    <div>
 		    <a href="#" title="Close" class="close">X</a>
-            <div class="modalTitles">For Removing a Child Feature</div>
+            <h2>For Removing a Child Feature</h2>
             <hr />
             <strong>Name: </strong><asp:Label runat="server" ID="lbl_remChildFeature_Name" /><br />
             <strong>Description: </strong><asp:Label runat="server" ID="lbl_remChildFeature_Description" /><br />
@@ -149,7 +150,7 @@
     <div id="editChildFeature" class="modalDialog">
 	    <div>
 		    <a href="#close" title="Close" class="close">X</a>
-            <div class="modalTitles">For Editing a Child Feature</div>
+            <h2>For Editing a Child Feature</h2>
             <hr />
             <strong>Name: </strong><asp:TextBox runat="server" ID="txt_editChildFeature_Name" /><br />
             <strong>Description: </strong><asp:TextBox runat="server" ID="txt_editChildFeature_Description" /><br />
@@ -164,7 +165,7 @@
     <div id="quickComplete" class="modalDialog">
         <div>
             <a href="#close" title="Close" class="close">X</a>
-            <div class="modalTitles">Quick Complete!</div>
+            <h2>Quick Complete!</h2>
             <hr />
             <strong>Name: </strong><asp:Label runat="server" ID="lbl_quickComplete_Name" /><br />
             <strong>Description: </strong><asp:Label runat="server" ID="lbl_quickComplete_Description" /><br />
