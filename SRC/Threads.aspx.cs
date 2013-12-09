@@ -72,24 +72,40 @@ public partial class Threads : System.Web.UI.Page
                 Post pst = new Post(Int32.Parse(DR["postID"].ToString()));
                 int uID = pst.get_postBy();
                 string postBlock = "";
-                
-                postBlock += "<div class=\"widget\">" + 
-                    "<section style=\"display:table;\">" + 
-                        "<section style=\"display:inline-block;\">" + 
-                            "<div class=\"widget\" align=\"center\">" + 
-                                "<a href=\"UserProfile.aspx?userID=" + uID.ToString() + "\">" + pst.get_DisplayName() + "</a>" + "<br />" + 
-                                "<img height=\"100px\" width=\"100px\" src=\"" + pst.get_DisplayImage() + "\" />" + 
-                            "</div>" + 
-                        "</section>" + 
-                        "<section style=\"display:inline-block; vertical-align:top; margin:5px; width:100%-100px;\">" + 
-                            "<div style=\"font-size:.8em;\">" + 
-                                "<strong>Posted:</strong> " + pst.get_createdTimestamp().ToShortDateString() + " " + pst.get_createdTimestamp().ToShortTimeString() + 
-                            "</div>" + 
-                            "<hr style=\"margin:1px;\" />" + 
-                            "<p style=\"font-size:1.1em;\">" + pst.get_post_Full() + "</p>" + 
-                        "</section>" + 
-                    "</section>" + 
+
+                postBlock += "<div class=\"widget\">" +
+                    "<table width=\"100%\">" +
+                        "<tr>" +
+                            "<td width=\"10%\" class=\"widget\" align=\"center\" valign=\"top\">" +
+                                "<a href=\"UserProfile.aspx?userID=" + uID.ToString() + "\">" + pst.get_DisplayName() + "</a>" + "<br />" +
+                                "<img src=\"" + pst.get_DisplayImage() + "\" />" +
+                            "</td>" +
+                            "<td width=\"90%\" style=\"vertical-align:top; margin:5px;;font-size:.8em;\">" +
+                                "<strong>Posted:</strong> " + pst.get_createdTimestamp().ToShortDateString() + " " + pst.get_createdTimestamp().ToShortTimeString() +
+                            "<hr style=\"margin:1px;\" />" +
+                            "<p style=\"font-size:1.1em;\">" + pst.get_post_Full() + "</p>" +
+                            "</td>" + 
+                        "</tr>" +
+                    "</table>" +
                 "</div>";
+
+                //postBlock += "<div class=\"widget\">" + 
+                //    "<section style=\"display:table;\">" + 
+                //        "<section style=\"display:inline-block;\" width=\"8%\">" + 
+                //            "<div class=\"widget\" align=\"center\">" + 
+                //                "<a href=\"UserProfile.aspx?userID=" + uID.ToString() + "\">" + pst.get_DisplayName() + "</a>" + "<br />" + 
+                //                "<img height=\"100px\" width=\"100px\" src=\"" + pst.get_DisplayImage() + "\" />" + 
+                //            "</div>" + 
+                //        "</section>" + 
+                //        "<section style=\"display:inline-block; vertical-align:top; margin:5px; width:85%;\">" + 
+                //            "<div style=\"font-size:.8em;\">" + 
+                //                "<strong>Posted:</strong> " + pst.get_createdTimestamp().ToShortDateString() + " " + pst.get_createdTimestamp().ToShortTimeString() + 
+                //            "</div>" + 
+                //            "<hr style=\"margin:1px;\" />" + 
+                //            "<p style=\"font-size:1.1em;\">" + pst.get_post_Full() + "</p>" + 
+                //        "</section>" + 
+                //    "</section>" + 
+                //"</div>";
 
                 lit_Posts.Text += postBlock;
 
